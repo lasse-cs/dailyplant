@@ -192,3 +192,10 @@ WAGTAILDOCS_EXTENSIONS = [
 ]
 
 DJANGO_VITE_MANIFEST_PATH = BASE_DIR / "static_built" / ".vite" / "manifest.json"
+
+WAGTAILADMIN_RICH_TEXT_EDITORS = {
+    "default": {
+        "WIDGET": "wagtail.admin.rich_text.DraftailRichTextArea",
+        "OPTIONS": {"features": ["bold", "italic", "link", "ol", "ul"]},
+    },
+}

@@ -1,0 +1,4 @@
+name: Fact
+context:
+  page:
+    title: "Welcome to the Fact Page!"

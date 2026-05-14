@@ -1,0 +1,4 @@
+name: Fact Index
+context:
+  page:
+    title: "Welcome to the Fact Index Page!"
