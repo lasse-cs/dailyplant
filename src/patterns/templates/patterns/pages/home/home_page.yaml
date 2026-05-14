@@ -1,0 +1,4 @@
+name: Home
+context:
+  page:
+    title: "Welcome to your new Home Page!"

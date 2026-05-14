@@ -1,0 +1,34 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Node packages
+node_modules/
+
+# Virtual environments
+.venv
+
+# Database
+*.sqlite3
+
+# Local settings overrides
+**/settings/local.py
+
+# Editor files
+.vscode/
+
+# Environment
+.env
+
+docker/.secrets
+
+# Media Files
+/src/static/
+/src/media/
+
+# Built static files
+/src/static_built

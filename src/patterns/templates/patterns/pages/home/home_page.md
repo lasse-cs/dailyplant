@@ -1,0 +1,1 @@
+This page is served as the home page
