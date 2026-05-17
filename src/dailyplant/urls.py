@@ -1,16 +1,20 @@
 from django.apps import apps
 from django.conf import settings
 from django.urls import include, path
-from django.contrib import admin
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
+from sesame.views import LoginView
+
 from dailyplant.views import error_500_test
+from users.views import EmailLoginView
+
 
 urlpatterns = [
-    path("django-admin/", admin.site.urls),
+    path("sesame/login/", LoginView.as_view(), name="sesame-login"),
+    path("admin/login/", EmailLoginView.as_view(), name="wagtailadmin_login"),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("error-500-test/", error_500_test, name="server_error"),

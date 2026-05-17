@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "home",
     "facts",
     "core",
+    "users",
     "django_vite_tags",
     "patterns",
     "wagtail.contrib.forms",
@@ -60,6 +61,13 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+]
+
+AUTH_USER_MODEL = "users.User"
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "sesame.backends.ModelBackend",
 ]
 
 ROOT_URLCONF = "dailyplant.urls"
@@ -200,3 +208,13 @@ WAGTAILADMIN_RICH_TEXT_EDITORS = {
         "OPTIONS": {"features": ["bold", "italic", "link", "ol", "ul"]},
     },
 }
+
+
+WAGTAIL_PASSWORD_MANAGEMENT_ENABLED = False
+WAGTAIL_PASSWORD_RESET_ENABLED = False
+WAGTAILUSERS_PASSWORD_ENABLED = False
+WAGTAILUSERS_PASSWORD_REQUIRED = False
+
+LOGIN_REDIRECT_URL = "wagtailadmin_home"
+
+SESAME_MAX_AGE = 60 * 5  # 5 minutes

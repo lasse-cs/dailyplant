@@ -1,0 +1,18 @@
+{% extends "patterns/base.html" %}
+
+{% block title %}
+    Log In
+{% endblock title %}
+
+{% block page_content %}
+    <main id="main" class="centered-card">
+        <div class="card login__card">
+            <form action="{% url 'wagtailadmin_login' %}" method="post" class="login__form">
+                {% csrf_token %}
+                <h1 class="title">Log In</h1>
+                {{ form }}
+                <button type="submit">Send log in link</button>
+            </form>
+        </div>
+    </main>
+{% endblock page_content %}
