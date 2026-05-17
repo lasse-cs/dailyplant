@@ -4,3 +4,8 @@ context:
     root_url: "/"
     site_name: "Plant Facts"
     pk: 1
+
+tags:
+  main_menu:
+    current_site:
+      template_name: "patterns/components/menu/main_menu.html"

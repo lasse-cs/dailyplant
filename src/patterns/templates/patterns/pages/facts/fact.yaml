@@ -3,3 +3,8 @@ context:
   page:
     title: Today's awesome fact
     content: Here is some <i>lorem ipsum</i> <b>RichText</b> content! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci suscipit ipsa nisi voluptatem perferendis. Possimus ipsum rerum omnis debitis. Cumque laudantium dolores libero nemo? Sequi distinctio autem modi repellendus a aliquid quos beatae, voluptatum eligendi. Aspernatur itaque, ex quos eveniet eius ut laboriosam quidem similique nobis sunt, consequatur magnam, rem tenetur natus cumque dolor repellendus? Et quae aut similique rem? Ex voluptas nobis non sunt facilis labore facere architecto dolorem itaque accusamus doloribus nam numquam, velit in exercitationem molestiae nisi voluptatum doloremque, cumque, incidunt enim repellendus alias quam mollitia. Voluptatem beatae ducimus repudiandae natus alias possimus, doloribus quibusdam iusto voluptate.
+
+tags:
+  main_menu:
+    current_site:
+      template_name: "patterns/components/menu/main_menu.html"

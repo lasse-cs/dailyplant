@@ -1,4 +1,4 @@
-{% load wagtailcore_tags %}
+{% load menu_tags wagtailcore_tags %}
 
 <header class="site-header">
     {% if not is_pattern_library %}
@@ -11,4 +11,5 @@
             </a>
         {% endif %}
     </div>
+    {% main_menu current_site %}
 </header>

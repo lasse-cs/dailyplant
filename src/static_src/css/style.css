@@ -127,7 +127,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
+    flex-wrap: wrap;
+    column-gap: 4rem;
     padding-block: 2rem;
   }
 
@@ -138,6 +139,29 @@
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.02em;
+  }
+
+  #main-nav {
+    font-size: 1.2rem;
+    font-weight: 500;
+
+    ol {
+      list-style: none;
+      display: flex;
+      row-gap: 1rem;
+      column-gap: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a[aria-current="page"] {
+      text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+    }
   }
 
   .centered-card {

@@ -2,3 +2,8 @@ name: Home
 context:
   page:
     title: "Welcome to your new Home Page!"
+
+tags:
+  main_menu:
+    current_site:
+      template_name: "patterns/components/menu/main_menu.html"
