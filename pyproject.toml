@@ -11,6 +11,7 @@ dependencies = [
     "gunicorn>=25.3.0",
     "honcho>=2.0.0",
     "psycopg>=3.3.4",
+    "sentry-sdk>=2.60.0",
     "wagtail>=7.4,<8.0",
 ]
 

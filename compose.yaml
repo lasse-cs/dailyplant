@@ -48,6 +48,7 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password_file
       - POSTGRES_HOST=postgres
       - WAGTAILADMIN_BASE_URL=${WAGTAILADMIN_BASE_URL:?Must set admin base url}
+      - SENTRY_DSN_FILE=/run/secrets/sentry_dsn_file
     volumes:
       - media_files:/app/media/:rw
     secrets:
@@ -68,6 +69,8 @@ secrets:
     file: ${POSTGRES_PASSWORD_FILE:?Must set postgres password file}
   django_secret_key_file:
     file: ${DJANGO_SECRET_KEY_FILE:?Must set django secret key file}
+  sentry_dsn_file:
+    file: ${SENTRY_DSN_FILE:?Must set sentry dsn file}
 
 volumes:
   media_files:
