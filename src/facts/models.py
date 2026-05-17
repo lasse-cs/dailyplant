@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
 from wagtail.models import Page
@@ -15,6 +16,19 @@ class FactIndexPage(Page):
     introduction = RichTextField(
         blank=True, help_text="Introductory content for the fact index page."
     )
+
+    def get_facts(self):
+        return (
+            FactPage.objects.live()
+            .child_of(self)
+            .filter(date__lte=timezone.localdate())
+            .annotate(heading_level=models.Value("h2"))
+        )
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["facts"] = self.get_facts()
+        return context
 
     content_panels = Page.content_panels + [
         "introduction",
