@@ -26,6 +26,7 @@ BASE_DIR = PROJECT_DIR.parent
 INSTALLED_APPS = [
     "home",
     "facts",
+    "core",
     "django_vite_tags",
     "patterns",
     "wagtail.contrib.forms",
