@@ -1,5 +1,7 @@
 
 {% extends "patterns/base.html" %}
-{% block content %}
-    <h1>{{ page.title }}</h1>
-{% endblock content %}
+{% block page_content %}
+    <main id="main" class="centered-card">
+        {% include "patterns/components/facts/card.html" %}
+    </main>
+{% endblock page_content %}

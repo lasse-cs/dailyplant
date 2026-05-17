@@ -1,4 +1,214 @@
-.body-container {
-    margin: 0 auto;
-    max-inline-size: 960px;
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* https://kilianvalkhof.com/2022/css-html/your-css-reset-needs-text-size-adjust-probably/ */
+  html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+  }
+
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd {
+    margin: 0;
+  }
+
+  /* https://www.scottohara.me/blog/2019/01/12/lists-and-safari.html */
+  [role="list"] {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-block-size: 100vh;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  button,
+  input,
+  label {
+    line-height: 1.1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  img,
+  picture {
+    max-inline-size: 100%;
+    display: block;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer base {
+    :root {
+        --font-heading: "Cormorant Garamond", serif;
+        --font-body: "Source Sans 3", sans-serif;
+        --color-bg: #f7f4ec;
+        --color-surface: rgba(255, 252, 245, 0.82);
+        --color-text: #22211d;
+        --color-text-muted: #5f5b50;
+        --color-border: #8e9184;
+        --color-accent: #3e4638;
+        --color-shadow: rgba(34, 33, 29, 0.12);
+        --radius-card: 20px;
+        --shadow-card: 0 12px 30px var(--color-shadow);
+    }
+
+    body {
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-body);
+
+        margin-inline: clamp(0.5rem, 2.5vw, 3rem);
+    }
+
+    body::before {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: -1;
+        inline-size: min(78vw, 920px);
+        background: linear-gradient(rgba(247, 244, 236, 0.18), rgba(247, 244, 236, 0.22)), url("../assets/background.png") left bottom / contain no-repeat;
+        content: "";
+        opacity: 0.6;
+        margin-top: 6rem;
+    }
+
+    .body-container {
+      margin: 0 auto;
+      max-inline-size: 964px;
+      padding-inline: 2px;
+    }
+
+    a {
+      color: var(--color-text);
+    }
+
+    a:hover {
+      color: var(--color-accent);
+      text-decoration-color: currentcolor;
+    }
+}
+
+@layer components {
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-block: 2rem;
+  }
+
+  .brand-link {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 2.5rem, 3rem);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .centered-card {
+    display: grid;
+    place-items: center;
+  }
+
+  .card {
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(3px);
+  }
+
+  .fact__card {
+    padding: clamp(1rem, 5vw, 3rem);
+    max-inline-size: 35rem;
+  }
+
+  .fact__header {
+    display: grid;
+    grid-template: 
+      "eyebrow date" auto
+      "title title" auto / 1fr 1fr;
+    column-gap: 2rem;
+    row-gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .fact__title {
+    grid-area: title;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 2em;
+    text-transform: uppercase;
+  }
+
+  .fact__date {
+    text-align: end;
+    color: var(--color-text-muted);
+  }
+
+  .fact__eyebrow {
+    color: var(--color-text-muted);
+  }
+
+  .fact__references {
+    list-style: decimal;
+    margin-inline-start: 1rem;
+    margin-block-start: 1rem;
+  }
+
+  .fact__index {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .fact__index__title {
+    font-family: var(--font-heading);
+    margin-block-end: 1rem;
+  }
+
+  .fact__index__intro {
+    padding: clamp(1rem, 5vw, 3rem);
+  }
+
+  .fact__archive {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: 1rem;
+  }
 }

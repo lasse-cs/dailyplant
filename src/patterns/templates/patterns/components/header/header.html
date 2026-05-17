@@ -1,0 +1,14 @@
+{% load wagtailcore_tags %}
+
+<header class="site-header">
+    {% if not is_pattern_library %}
+        {% wagtail_site as current_site %}
+    {% endif %}
+    <div>
+        {% if current_site.site_name %}
+            <a href="{{ current_site.root_url }}" class="brand-link">
+                {{ current_site.site_name }}
+            </a>
+        {% endif %}
+    </div>
+</header>

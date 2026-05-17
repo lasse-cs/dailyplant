@@ -2,14 +2,8 @@
 
 {% load wagtailcore_tags %}
 
-{% block content %}
-    <h1>{{ page.title }}</h1>
-    <p>{{ page.content|richtext }}</p>
-    {% for block in page.references %}
-        <ul>
-            <li>
-                {% include_block block %}
-            </li>
-        </ul>
-    {% endfor %}
-{% endblock content %}
+{% block page_content %}
+    <main id="main" class="centered-card">
+        {% include "patterns/components/facts/card.html" with fact=page %}
+    </main>
+{% endblock page_content %}

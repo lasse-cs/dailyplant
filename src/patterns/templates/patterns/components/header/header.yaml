@@ -1,0 +1,6 @@
+name: Header
+context:
+  current_site:
+    root_url: "/"
+    site_name: "Plant Facts"
+    pk: 1
