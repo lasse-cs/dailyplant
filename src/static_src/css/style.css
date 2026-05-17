@@ -215,6 +215,10 @@
     margin-block-start: 1rem;
   }
 
+  .reference {
+    text-decoration: none;
+  }
+
   .fact__index {
     display: flex;
     flex-direction: column;
