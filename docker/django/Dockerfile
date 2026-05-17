@@ -12,7 +12,7 @@ COPY ./src/static_src /app/src/static_src
 RUN ["npm", "run", "build"]
 
 FROM python:3.14-slim-bookworm AS builder
-COPY --from=ghcr.io/astral-sh/0.11.8 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.8 /uv /uvx /bin/
 
 WORKDIR /app
 
@@ -67,4 +67,18 @@ USER wagtail
 # Copy the build JS from the previous stage
 COPY --from=build-static --chown=wagtail:wagtail /app/src/static_built/ /app/static_built/
 
+# Collect static files
+RUN ["python", "manage.py", "collectstatic", "--settings", "dailyplant.settings.build"]
+
 CMD ["gunicorn", "--bind", ":8000", "dailyplant.wsgi:application"]
+
+
+FROM nginx:1.30.1-alpine AS nginx
+
+# Copy in the public files
+COPY ./public/ /srv/app/public/
+
+# Copy in the build static files
+COPY --from=production /app/static/ /srv/app/static/
+
+EXPOSE 80

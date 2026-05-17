@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+    base: "/static/",
     root: resolve(__dirname, "src/static_src"),
     publicDir: false,
     resolve: {
@@ -28,7 +29,7 @@ export default defineConfig({
             output: {
                 entryFileNames: `js/[name].js`,
                 chunkFileNames: `js/[name].js`,
-                assetFileNames: `css/[name].css`,
+                assetFileNames: `assets/[name][extname]`,
                 manualChunks: {
                 },
             },

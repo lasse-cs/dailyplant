@@ -1,0 +1,74 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/django/Dockerfile
+      target: nginx
+    restart: unless-stopped
+    environment:
+      - NGINX_SERVER_NAME=${NGINX_SERVER_NAME:?Must set nginx server name}
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/templates:/etc/nginx/templates
+      - media_files:/srv/app/media/:ro
+    networks:
+      - web-network
+
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:?Must set postgres user name}
+      - POSTGRES_DB=${POSTGRES_DB:?Must set postgres database name}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password_file
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./docker/postgres/scripts/:/docker-entrypoint-initdb.d/
+    secrets:
+      - postgres_password_file
+    networks:
+      - db-network
+
+  django:
+    build:
+      context: .
+      dockerfile: docker/django/Dockerfile
+      target: production
+    restart: unless-stopped
+    environment:
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:?Must set allowed hosts}
+      - DJANGO_SECRET_KEY_FILE=/run/secrets/django_secret_key_file
+      - DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL:-WARNING}
+      - DJANGO_DEFAULT_FROM_EMAIL=${DJANGO_DEFAULT_FROM_EMAIL:?Must set a default from email}
+      - DJANGO_EMAIL_HOST=${DJANGO_EMAIL_HOST:?Must set an email host}
+      - DJANGO_EMAIL_HOST_USER=${DJANGO_EMAIL_HOST_USER:?Must set an email host user}
+      - DJANGO_EMAIL_HOST_PASSWORD=${DJANGO_EMAIL_HOST_PASSWORD:?Must set an email host password}
+      - POSTGRES_USER=${POSTGRES_USER:?Must set postgres user name}
+      - POSTGRES_DB=${POSTGRES_DB:?Must set postgres database name}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password_file
+      - POSTGRES_HOST=postgres
+      - WAGTAILADMIN_BASE_URL=${WAGTAILADMIN_BASE_URL:?Must set admin base url}
+    volumes:
+      - media_files:/app/media/:rw
+    secrets:
+     - django_secret_key_file
+     - postgres_password_file
+    networks:
+      - web-network
+      - db-network
+
+networks:
+  web-network:
+    name: plants-web-network
+  db-network:
+    name: plants-db-network
+  
+secrets:
+  postgres_password_file:
+    file: ${POSTGRES_PASSWORD_FILE:?Must set postgres password file}
+  django_secret_key_file:
+    file: ${DJANGO_SECRET_KEY_FILE:?Must set django secret key file}
+
+volumes:
+  media_files:
+  db_data:

@@ -8,8 +8,9 @@ dependencies = [
     "django>=6.0,<6.1",
     "django-sesame>=3.2.3",
     "django-vite-tags",
-    "gunicorn>=25.0.2",
+    "gunicorn>=25.3.0",
     "honcho>=2.0.0",
+    "psycopg>=3.3.4",
     "wagtail>=7.4,<8.0",
 ]
 

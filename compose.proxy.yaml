@@ -1,0 +1,12 @@
+services:
+  nginx:
+    environment:
+      - VIRTUAL_HOST=${NGINX_SERVER_NAME:?Must set nginx server name}
+      - NGINX_CONF=proxy
+    networks:
+      - nginx-proxy
+
+networks:
+  nginx-proxy:
+    name: nginx-proxy
+    external: true

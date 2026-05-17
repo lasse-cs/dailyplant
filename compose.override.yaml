@@ -1,0 +1,21 @@
+services:
+  nginx:
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - NGINX_CONF=default
+      - NGINX_SSL_CERT_FILE=/nginx_ssl_cert_file
+      - NGINX_SSL_KEY_FILE=/run/secrets/nginx_ssl_key_file
+    configs:
+      - nginx_ssl_cert_file
+    secrets:
+      - nginx_ssl_key_file
+
+configs:
+  nginx_ssl_cert_file:
+    file: ${NGINX_SSL_CERT_FILE:?Must set nginx ssl cert file}
+
+secrets:
+  nginx_ssl_key_file:
+    file: ${NGINX_SSL_KEY_FILE:?Must set nginx ssl key file}
