@@ -83,7 +83,7 @@ server {
 
 server {
     listen 443 ssl default_server;
-    server_name _:
+    server_name _;
 
     # LOGS
     access_log  /var/log/nginx/access.log;

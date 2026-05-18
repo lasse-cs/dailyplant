@@ -4,4 +4,4 @@ You requested that we send you a link to log in:
 
 {{ link|safe }}
 
-Thank you for using {{ sitename }}!"""
+Thank you for using {{ sitename }}!

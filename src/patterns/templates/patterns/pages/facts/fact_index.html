@@ -6,7 +6,7 @@
     <main id="main" class="fact__index">
         <header class="card wide__card">
             <h1 class="title">{{ page.title }}</h1>
-            <p>{{ page.introduction|richtext }}</p>
+            {{ page.introduction|richtext }}
         </header>
         <div class="fact__archive">
             {% for fact in facts %}

@@ -9,7 +9,7 @@ from django.test import Client
 def test_404_view(client):
     response = client.get("/this-view-should-not-be-found/")
     assert response.status_code == 404
-    assertTemplateUsed("patterns/pages/error/404.html")
+    assertTemplateUsed(response, "patterns/pages/error/404.html")
 
 
 def test_500_view(admin_user, settings):
