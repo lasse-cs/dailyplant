@@ -1,7 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic import FormView
+
+from wagtail.models import Site
 
 from sesame.utils import get_query_string
 
@@ -24,24 +27,20 @@ class EmailLoginView(FormView):
         link += get_query_string(user)
         return link
 
-    def send_email(self, user, link):
+    def send_email(self, user, link, sitename):
         """Send an email with this login link to this user."""
-        user.email_user(
-            subject="[django-sesame] Log in to our app",
-            message=f"""\
-Hello,
-
-You requested that we send you a link to log in to our app:
-
-{link}
-
-Thank you for using django-sesame!""",
+        subject = f"Log in to '{sitename}'"
+        message = render_to_string(
+            "non_patterns/users/login_email.txt", {"link": link, "sitename": sitename}
         )
+        user.email_user(subject=subject, message=message)
 
     def form_valid(self, form):
         email = form.cleaned_data["email"]
         user = self.get_user(email)
+        site = Site.find_for_request(self.request)
+        sitename = site.site_name or str(site)
         if user:
             link = self.create_link(user)
-            self.send_email(user, link)
+            self.send_email(user, link, sitename)
         return render(self.request, "patterns/pages/users/email_login_success.html")
