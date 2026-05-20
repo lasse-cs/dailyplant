@@ -1,0 +1,34 @@
+{% load wagtailimages_tags %}
+
+<title>{{ metadata.title }}{% if metadata.site.site_name %} - {{ metadata.site.site_name }}{% endif %}</title>
+{% if metadata.description %}
+    <meta name="description" content="{{ metadata.description }}">
+{% endif %}
+{% if metadata.url %}
+    <link rel="canonical" href="{{ metadata.url }}">
+{% endif %}
+
+<meta property="og:title" content="{{ metadata.title }}">
+<meta property="og:type" content="{{ metadata.type }}">
+{% if metadata.url %}
+    <meta property="og:url" content="{{ metadata.url }}">
+{% endif %}
+{% if metadata.site.site_name %}
+    <meta property="og:site_name" content="{{ metadata.site.site_name }}">
+{% endif %}
+{% if metadata.description %}
+    <meta property="og:description" content="{{ metadata.description }}">
+{% endif %}
+{% if metadata.image %}
+    <meta property="og:image" content="{{ metadata.site.root_url }}{% image_url metadata.image 'width-600' %}">
+    <meta property="og:image:alt" content="{{ metadata.image.alt }}">
+{% endif %}
+
+<meta name="twitter:title" content="{{ metadata.title }}">
+{% if metadata.description %}
+    <meta name="twitter:description" content="{{ metadata.description }}">
+{% endif %}
+{% if metadata.image %}
+    <meta name="twitter:image" content="{{ metadata.site.root_url }}{% image_url metadata.image 'width-600' %}">
+    <meta property="og:image:alt" content="{{ metadata.image.alt }}">
+{% endif %}

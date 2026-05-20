@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django_vite_tags",
     "patterns",
     "wagtail.contrib.forms",
+    "wagtail.contrib.settings",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
     "wagtail.sites",

@@ -1,6 +1,9 @@
 {% extends "patterns/base.html" %}
+{% load metadata_tags %}
 
-{% block title %}Page not found{% endblock %}
+{% block metadata %}
+    {% render_metadata title="Page not found" description="Sorry, this page could not be found." %}
+{% endblock metadata %}
 
 {% block body_class %}template-404{% endblock %}
 

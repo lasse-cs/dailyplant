@@ -4,6 +4,8 @@ from django.utils import timezone
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
 from wagtail.models import Page
 
+from core.models import MetadataMixin
+
 from facts.blocks import ReferenceStreamBlock
 
 
@@ -35,10 +37,11 @@ class FactIndexPage(Page):
     ]
 
 
-class FactPage(Page):
+class FactPage(MetadataMixin, Page):
     parent_page_types = ["facts.FactIndexPage"]
     subpage_types = []
     template = "patterns/pages/facts/fact.html"
+    metadata_type = "article"
 
     date = models.DateField(help_text="The date this fact is for.", unique=True)
     content = RichTextField(

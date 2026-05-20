@@ -1,11 +1,12 @@
 from django.apps import apps
 from django.conf import settings
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
+from wagtail.images.views.serve import ServeView
 
 from sesame.views import LoginView
 
@@ -20,6 +21,11 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("error-500-test/", error_500_test, name="server_error"),
     path("sitemap.xml", sitemap),
+    re_path(
+        r"^images/([^/]*)/(\d*)/([^/]*)/[^/]*$",
+        ServeView.as_view(),
+        name="wagtailimages_serve",
+    ),
 ]
 
 
