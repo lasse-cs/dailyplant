@@ -217,7 +217,12 @@
   }
 
   .reference {
+    color: var(--color-text-muted);
     text-decoration: none;
+
+    &:hover, &:focus-visible {
+      text-decoration: underline;
+    }
   }
 
   .fact__index {
