@@ -101,7 +101,7 @@
         inset: 0 auto 0 0;
         z-index: -1;
         inline-size: min(78vw, 920px);
-        background: linear-gradient(rgba(247, 244, 236, 0.18), rgba(247, 244, 236, 0.22)), url("../assets/background.png") left bottom / contain no-repeat;
+        background: linear-gradient(rgba(247, 244, 236, 0.18), rgba(247, 244, 236, 0.22)), url("../assets/background.webp") left bottom / contain no-repeat;
         content: "";
         opacity: 0.6;
         margin-top: 6rem;
