@@ -27,6 +27,9 @@ class FactsRssFeed(Feed):
         return site.site_name if site else ""
 
     def title(self, object):
+        site = object.get_site()
+        if site and site.site_name:
+            return f"{site.site_name} - {object.title}"
         return object.title
 
     def description(self, object):
