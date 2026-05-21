@@ -11,6 +11,7 @@ from wagtail.images.views.serve import ServeView
 from sesame.views import LoginView
 
 from dailyplant.views import error_500_test
+from facts.feeds import FactsAtomFeed, FactsRssFeed
 from users.views import EmailLoginView
 
 
@@ -20,6 +21,8 @@ urlpatterns = [
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("error-500-test/", error_500_test, name="server_error"),
+    path("rss.xml", FactsRssFeed(), name="facts_rss_feed"),
+    path("atom.xml", FactsAtomFeed(), name="facts_atom_feed"),
     path("sitemap.xml", sitemap),
     re_path(
         r"^images/([^/]*)/(\d*)/([^/]*)/[^/]*$",
