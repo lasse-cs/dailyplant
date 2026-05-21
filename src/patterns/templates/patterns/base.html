@@ -12,10 +12,6 @@
         <link rel="alternate" type="application/rss+xml" title="dailyplant RSS" href="{% url 'facts_rss_feed' %}">
         <link rel="alternate" type="application/atom+xml" title="dailyplant Atom" href="{% url 'facts_atom_feed' %}">
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-
         {# Force all links in the live preview panel to be opened in a new tab #}
         {% if request.in_preview_panel %}
             <base target="_blank">
