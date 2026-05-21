@@ -54,6 +54,9 @@ if os.environ.get("SENTRY_DSN_FILE"):
         send_default_pii=False,
     )
 
+if os.environ.get("WAGTAIL_SITE_NAME"):
+    WAGTAIL_SITE_NAME = os.environ["WAGTAIL_SITE_NAME"]
+
 try:
     from .local import *
 except ImportError:
