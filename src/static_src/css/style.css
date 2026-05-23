@@ -234,6 +234,89 @@
     margin-block-start: 1rem;
   }
 
+  .fact__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-start: 1.5rem;
+  }
+
+  .fact__footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.125s;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+      text-decoration: underline;
+      text-decoration-color: currentcolor;
+    }
+  }
+
+  .fact__footer-icon {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    flex: 0 0 auto;
+  }
+
+  .fact__share {
+    display: grid;
+    grid-template-areas: "state";
+    border: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    line-height: inherit;
+    padding: 0;
+    text-decoration: none;
+    transition: color 0.125s;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+      text-decoration: underline;
+      text-decoration-color: currentcolor;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentcolor;
+      outline-offset: 0.35rem;
+      border-radius: var(--radius-button);
+    }
+  }
+
+  .fact__share-state {
+    grid-area: state;
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    justify-items: start;
+    transition: opacity 0.125s, visibility 0.125s;
+  }
+
+  .fact__share-state--copied,
+  .fact__share.is-copied .fact__share-state--copy {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .fact__share.is-copied .fact__share-state--copied {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .fact__share-icon {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    flex: 0 0 auto;
+  }
+
   .reference {
     color: var(--color-text-muted);
     text-decoration: none;

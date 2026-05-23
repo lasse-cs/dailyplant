@@ -2,6 +2,8 @@
 {% extends "patterns/base.html" %}
 {% block page_content %}
     <main id="main" class="centered-card">
-        {% include "patterns/components/facts/card.html" %}
+        {% if fact %}
+            {% include "patterns/components/facts/card.html" %}
+        {% endif %}
     </main>
 {% endblock page_content %}

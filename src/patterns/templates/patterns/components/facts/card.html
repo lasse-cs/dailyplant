@@ -24,4 +24,26 @@
             {% endfor %}
         </ol>
     </div>
+    <footer class="fact__footer">
+        <a class="fact__footer-link" href="{% pageurl fact %}">
+            {% include "svgs/document.html" with icon_class="fact__footer-icon" %}
+            <span>View This fact</span>
+        </a>
+        <button class="fact__share"
+                type="button"
+                data-controller="clipboard"
+                data-action="click->clipboard#copy"
+                data-clipboard-copied-class="is-copied"
+                data-clipboard-text-value="{% fullpageurl fact %}"
+                aria-label="Share this fact">
+            <span class="fact__share-state fact__share-state--copy" aria-hidden="true">
+                {% include "svgs/share.html" with icon_class="fact__share-icon" %}
+                <span>Share This Fact</span>
+            </span>
+            <span class="fact__share-state fact__share-state--copied" aria-hidden="true">
+                {% include "svgs/tick.html" with icon_class="fact__share-icon" %}
+                <span>Copied</span>
+            </span>
+        </button>
+    </footer>
 </article>
