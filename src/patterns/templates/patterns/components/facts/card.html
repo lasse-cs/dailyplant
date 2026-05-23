@@ -15,7 +15,9 @@
         <p class="fact__date"><time datetime="{{ fact.date|date:'Y-m-d'}}">{{ fact.date|date:'M d, Y' }}</time></p>
     </header>
     <div class="fact__card__body">
-        {{ fact.content|richtext }}
+        <div class="fact__content">
+            {{ fact.content|richtext }}
+        </div>
         <ol class="fact__references" role="list">
             {% for block in fact.references %}
                 <li>

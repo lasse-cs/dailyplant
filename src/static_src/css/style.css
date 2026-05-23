@@ -197,6 +197,8 @@
   }
 
   .fact__card {
+    display: flex;
+    flex-direction: column;
     padding: clamp(1rem, 5vw, 3rem);
     max-inline-size: 35rem;
   }
@@ -226,6 +228,16 @@
 
   .fact__eyebrow {
     color: var(--color-text-muted);
+  }
+
+  .fact__card__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+
+  .fact__content {
+    flex: 1 1 auto;
   }
 
   .fact__references {
