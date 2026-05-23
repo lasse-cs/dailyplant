@@ -15,6 +15,9 @@
   font-display: swap;
 }
 
+@view-transition {
+  navigation: auto;
+}
 
 @layer reset {
   *,
