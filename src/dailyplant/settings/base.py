@@ -251,4 +251,9 @@ WAGTAILUSERS_PASSWORD_REQUIRED = False
 
 LOGIN_REDIRECT_URL = "wagtailadmin_home"
 
+# Umami Tracking
+UMAMI_HOST = os.getenv("UMAMI_HOST")
+UMAMI_API_KEY = os.getenv("UMAMI_API_KEY")
+UMAMI_API_BASE = os.getenv("UMAMI_API_BASE")
+
 SESAME_MAX_AGE = 60 * 5  # 5 minutes
