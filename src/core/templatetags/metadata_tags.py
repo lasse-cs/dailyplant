@@ -15,13 +15,13 @@ def build_metadata(page, request, **overrides):
 
     title = (
         overrides.get("title")
-        or getattr(page, "seo_title")
-        or getattr(page, "title")
+        or getattr(page, "seo_title", None)
+        or getattr(page, "title", None)
         or site.site_name
     )
     description = (
         overrides.get("description")
-        or getattr(page, "search_description")
+        or getattr(page, "search_description", None)
         or settings.description
     )
     image = getattr(page, "metadata_image", settings.image)
