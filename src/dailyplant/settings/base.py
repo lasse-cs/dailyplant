@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "users",
     "django_vite_tags",
     "patterns",
+    "wagtail_umami_analytics",
     "wagtail.contrib.forms",
     "wagtail.contrib.settings",
     "wagtail.contrib.redirects",

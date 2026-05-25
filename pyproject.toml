@@ -8,6 +8,7 @@ dependencies = [
     "django>=6.0,<6.1",
     "django-sesame>=3.2.3",
     "django-vite-tags",
+    "wagtail-umami-analytics",
     "gunicorn>=25.3.0",
     "honcho>=2.0.0",
     "psycopg>=3.3.4",
@@ -35,6 +36,7 @@ exclude-newer = "P2D"
 
 [tool.uv.sources]
 django-vite-tags = { git = "https://github.com/lasse-cs/django-vite-tags.git", rev = "a69aabf0c10a45bcaa0e6f9cc2f44b4d1d7548fa" }
+wagtail-umami-analytics = { git = "https://github.com/lasse-cs/wagtail-umami-analytics.git", rev = "a5f518f401cf686318e1c15cea3d4d401a60f1ed" }
 
 
 [tool.ruff]

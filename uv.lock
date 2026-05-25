@@ -850,6 +850,7 @@ dependencies = [
     { name = "psycopg" },
     { name = "sentry-sdk" },
     { name = "wagtail" },
+    { name = "wagtail-umami-analytics" },
 ]
 
 [package.dev-dependencies]
@@ -876,6 +877,7 @@ requires-dist = [
     { name = "psycopg", specifier = ">=3.3.4" },
     { name = "sentry-sdk", specifier = ">=2.60.0" },
     { name = "wagtail", specifier = ">=7.4,<8.0" },
+    { name = "wagtail-umami-analytics", git = "https://github.com/lasse-cs/wagtail-umami-analytics.git?rev=a5f518f401cf686318e1c15cea3d4d401a60f1ed" },
 ]
 
 [package.metadata.requires-dev]
@@ -890,6 +892,16 @@ dev = [
     { name = "pytest-django", specifier = ">=4.11.1" },
     { name = "ruff", specifier = ">=0.15.12" },
     { name = "wagtail-factories", specifier = ">=4.4.0" },
+]
+
+[[package]]
+name = "wagtail-umami-analytics"
+version = "0.1.0"
+source = { git = "https://github.com/lasse-cs/wagtail-umami-analytics.git?rev=a5f518f401cf686318e1c15cea3d4d401a60f1ed#a5f518f401cf686318e1c15cea3d4d401a60f1ed" }
+dependencies = [
+    { name = "django" },
+    { name = "requests" },
+    { name = "wagtail" },
 ]
 
 [[package]]
