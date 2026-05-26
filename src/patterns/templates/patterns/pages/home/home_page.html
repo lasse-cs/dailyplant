@@ -1,7 +1,7 @@
 
 {% extends "patterns/base.html" %}
 {% block page_content %}
-    <main id="main" class="centered-card">
+    <main id="main" class="centered-card" tabindex="-1">
         {% if fact %}
             {% include "patterns/components/facts/card.html" %}
         {% endif %}

@@ -3,7 +3,7 @@
 {% load wagtailcore_tags %}
 
 {% block page_content %}
-    <main id="main" class="fact__index">
+    <main id="main" class="fact__index" tabindex="-1">
         <header class="card wide__card">
             <h1 class="title">{{ page.title }}</h1>
             {{ page.introduction|richtext }}

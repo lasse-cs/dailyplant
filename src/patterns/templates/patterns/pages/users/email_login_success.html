@@ -5,7 +5,7 @@
 {% endblock title %}
 
 {% block page_content %}
-    <main id="main">
+    <main id="main" tabindex="-1">
         <div class="card wide__card">
             <form action="{% url 'wagtailadmin_login' %}" method="post">
                 {% csrf_token %}

@@ -142,6 +142,25 @@
 }
 
 @layer components {
+  .skip-to-main:not(:focus) {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .skip-to-main {
+    position: absolute;
+    padding: 1rem;
+    background-color: var(--color-text-muted);
+    border-radius: var(--radius-button);
+    box-shadow: 0 2px 8px var(--color-shadow);
+    color: var(--color-bg);
+  }
+
   .site-header {
     display: flex;
     align-items: center;
