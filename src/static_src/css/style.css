@@ -205,6 +205,11 @@
   .centered-card {
     display: grid;
     place-items: center;
+
+    & .fact__card {
+      max-inline-size: 35rem;
+      inline-size: 100%;
+    }
   }
 
   .card {
@@ -219,7 +224,6 @@
     display: flex;
     flex-direction: column;
     padding: clamp(1rem, 5vw, 3rem);
-    max-inline-size: 35rem;
   }
 
   .fact__header {
