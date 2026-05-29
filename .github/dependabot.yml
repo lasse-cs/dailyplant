@@ -1,5 +1,10 @@
 version: 2
 
+multi-ecosystem-groups:
+  docker:
+    schedule:
+      interval: weekly
+
 updates:
   - package-ecosystem: github-actions
     directory: /
@@ -13,8 +18,8 @@ updates:
 
   - package-ecosystem: docker
     directory: /docker/django
-    schedule:
-      interval: weekly
-    groups:
-      docker:
-        patterns: ["*"]
+    multi-ecosystem-group: docker
+
+  - package-ecosystem: docker-compose
+    directory: /
+    multi-ecosystem-group: docker
