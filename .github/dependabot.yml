@@ -18,6 +18,7 @@ updates:
 
   - package-ecosystem: docker
     directory: /docker/django
+    multi-ecosystem-group: docker
     patterns: ["*"]
 
   - package-ecosystem: docker-compose
