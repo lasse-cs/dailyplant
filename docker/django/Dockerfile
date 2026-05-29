@@ -73,7 +73,7 @@ RUN ["python", "manage.py", "collectstatic", "--settings", "dailyplant.settings.
 CMD ["gunicorn", "--bind", ":8000", "dailyplant.wsgi:application"]
 
 
-FROM nginx:1.30.1-alpine AS nginx
+FROM nginx:1.30.2-alpine AS nginx
 
 # Copy in the public files
 COPY ./public/ /srv/app/public/
