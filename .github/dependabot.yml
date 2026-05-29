@@ -12,7 +12,7 @@ updates:
         patterns: ["*"]
 
   - package-ecosystem: docker
-    directory: /
+    directory: /docker/django
     schedule:
       interval: weekly
     groups:
