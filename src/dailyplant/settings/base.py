@@ -220,6 +220,7 @@ WAGTAILADMIN_RICH_TEXT_EDITORS = {
                 "ul",
                 "superscript",
                 "subscript",
+                "characters",
             ]
         },
     },
