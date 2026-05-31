@@ -1,5 +1,3 @@
-from django.utils import timezone
-
 from wagtail.models import Page
 
 from facts.models import FactPage
@@ -11,12 +9,7 @@ class HomePage(Page):
     template = "patterns/pages/home/home_page.html"
 
     def get_fact(self):
-        return (
-            FactPage.objects.live()
-            .filter(date__lte=timezone.localdate())
-            .order_by("-date")
-            .first()
-        )
+        return FactPage.objects.live().order_by("-date").first()
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

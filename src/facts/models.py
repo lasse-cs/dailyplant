@@ -1,3 +1,5 @@
+from datetime import datetime, time
+
 from django.db import models
 from django.utils import timezone
 
@@ -23,7 +25,7 @@ class FactIndexPage(Page):
         return (
             FactPage.objects.live()
             .child_of(self)
-            .filter(date__lte=timezone.localdate())
+            .order_by("-date")
             .annotate(heading_level=models.Value("h2"))
         )
 
@@ -51,6 +53,12 @@ class FactPage(MetadataMixin, Page):
     references = StreamField(
         ReferenceStreamBlock, help_text="The references for this fact"
     )
+
+    def clean(self):
+        super().clean()
+        # If we're a future date, schedule it for publishing at midnight
+        if not self.go_live_at and self.date and self.date > timezone.localdate():
+            self.go_live_at = timezone.make_aware(datetime.combine(self.date, time.min))
 
     content_panels = Page.content_panels + [
         "date",

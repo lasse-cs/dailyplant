@@ -62,6 +62,19 @@ services:
     networks:
       - web-network
       - db-network
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.publish_scheduled.schedule: "@hourly"
+      ofelia.job-exec.publish_scheduled.command: "python manage.py publish_scheduled"
+      ofelia.job-exec.publish_scheduled.user: wagtail
+
+  ofelia:
+    image: mcuadros/ofelia:0.3.22
+    depends_on:
+      - django
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
 networks:
   web-network:
