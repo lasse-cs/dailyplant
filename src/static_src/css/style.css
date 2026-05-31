@@ -129,6 +129,7 @@
       margin: 0 auto;
       max-inline-size: 964px;
       padding-inline: 2px;
+      padding-block-end: 4rem;
     }
 
     a {
