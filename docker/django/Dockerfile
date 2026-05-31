@@ -1,4 +1,4 @@
-FROM node:22 AS build-static
+FROM node:24-bookworm-slim AS build-static
 
 COPY ./package.json ./package-lock.json ./vite.config.js /app/
 
