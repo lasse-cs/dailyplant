@@ -23,10 +23,14 @@ INSTALLED_APPS += [
     "debug_toolbar",
 ]
 
+# Debug Toolbar should be as early as possible in the middleware list
+# However, it must come after middleware which encodes responses.
+# In our case - that is one by default
 MIDDLEWARE = [
     # Debug Toolbar should be early in the middleware list
+    *MIDDLEWARE[:1],
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    *MIDDLEWARE,
+    *MIDDLEWARE[1:],
     # Browser Reload can be at the end
     "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
