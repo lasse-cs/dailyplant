@@ -4,11 +4,11 @@
     <header class="fact__header">
         {% if fact.heading_level == 'h2' %}
             <h2 class="fact__title">
-                {{ fact.title }}
+                <a href="{% pageurl fact %}">{{ fact.title }}</a>
             </h2>
         {% else %}
             <h1 class="fact__title">
-                {{ fact.title }}
+                <a href="{% pageurl fact %}">{{ fact.title }}</a>
             </h1>
         {% endif %}
         <p class="fact__eyebrow">Fact of the Day</p>
