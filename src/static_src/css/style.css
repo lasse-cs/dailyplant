@@ -143,7 +143,7 @@
 }
 
 @layer components {
-  .skip-to-main:not(:focus) {
+  .visually-hidden, .skip-to-main:not(:focus) {
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
     height: 1px;
@@ -360,10 +360,19 @@
   .reference {
     color: var(--color-text-muted);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 
     &:hover, &:focus-visible {
       text-decoration: underline;
     }
+  }
+
+  .reference-icon {
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex: 0 0 auto;
   }
 
   .fact__index {

@@ -1,1 +1,4 @@
-<a href="{{ value.url }}" class="reference">{{ value.label }}</a>
+<a href="{{ value.url }}" class="reference" target="_blank" rel="noreferrer noopener">
+    <span>{{ value.label }} <span class="visually-hidden">external</span></span>
+    {% include "svgs/external.html" with icon_class="reference-icon" %}
+</a>
