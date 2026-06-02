@@ -3,12 +3,34 @@ from datetime import datetime, time
 from django.db import models
 from django.utils import timezone
 
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from modelcluster.fields import ParentalKey
+
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
 from wagtail.models import Page
+
+from taggit.models import ItemBase, TagBase
 
 from core.models import MetadataMixin
 
 from facts.blocks import ReferenceStreamBlock
+
+
+class FactTag(TagBase):
+    free_tagging = False
+
+    class Meta:
+        verbose_name = "fact tag"
+        verbose_name_plural = "fact tags"
+
+
+class TaggedFact(ItemBase):
+    tag = models.ForeignKey(
+        FactTag, related_name="tagged_facts", on_delete=models.CASCADE
+    )
+    content_object = ParentalKey(
+        to="facts.FactPage", related_name="tagged_items", on_delete=models.CASCADE
+    )
 
 
 class FactIndexPage(Page):
@@ -25,6 +47,7 @@ class FactIndexPage(Page):
         return (
             FactPage.objects.live()
             .child_of(self)
+            .prefetch_related("tags")
             .order_by("-date")
             .annotate(heading_level=models.Value("h2"))
         )
@@ -53,6 +76,7 @@ class FactPage(MetadataMixin, Page):
     references = StreamField(
         ReferenceStreamBlock, help_text="The references for this fact"
     )
+    tags = ClusterTaggableManager(through="facts.TaggedFact", blank=True)
 
     def clean(self):
         super().clean()
@@ -64,4 +88,5 @@ class FactPage(MetadataMixin, Page):
         "date",
         "content",
         "references",
+        "tags",
     ]

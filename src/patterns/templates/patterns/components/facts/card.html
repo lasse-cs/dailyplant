@@ -25,11 +25,22 @@
                 </li>
             {% endfor %}
         </ol>
+        {% with tags=fact.tags.all %}
+            {% if tags %}
+                <ul class="fact__tag__list" role="list">
+                    {% for tag in tags %}
+                        <li class="fact__tag">
+                            {{ tag }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
     </div>
     <footer class="fact__footer">
         <a class="fact__footer-link" href="{% pageurl fact %}">
             {% include "svgs/document.html" with icon_class="fact__footer-icon" %}
-            <span>View This fact</span>
+            <span>View this fact</span>
         </a>
         <button class="fact__share"
                 type="button"
@@ -40,7 +51,7 @@
                 aria-label="Share this fact">
             <span class="fact__share-state fact__share-state--copy" aria-hidden="true">
                 {% include "svgs/share.html" with icon_class="fact__share-icon" %}
-                <span>Share This Fact</span>
+                <span>Share this Fact</span>
             </span>
             <span class="fact__share-state fact__share-state--copied" aria-hidden="true">
                 {% include "svgs/tick.html" with icon_class="fact__share-icon" %}
