@@ -1,0 +1,65 @@
+{% extends 'wagtailadmin/base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'facts/css/admin/calendar.css' %}">
+{% endblock extra_css %}
+
+{% block titletag %}{{ header_title }}{% endblock %}
+
+{% block content %}
+
+    {% include "wagtailadmin/shared/headers/slim_header.html" with breadcrumbs_items=breadcrumbs_items side_panels=side_panels history_url=history_url title=header_title search_url=index_results_url search_form=search_form filters=filters buttons=header_buttons icon_name=header_icon only %}
+
+    <div class="fact-calendar__header">
+        {% include "wagtailadmin/shared/header.html" with title=current_date|date:"F Y" %}
+        <div class="nice-padding">
+            <a class="button button-secondary" href="{% url 'fact_calendar:index_by_month' year=previous_date.year month=previous_date.month %}">Previous Month</a>
+            <a class="button button-secondary" href="{% url 'fact_calendar:index_by_month' year=next_date.year month=next_date.month %}">Next Month</a>
+        </div>
+    </div>
+
+    <div class="nice-padding">
+        <div class="fact-calendar__scroll">
+            <table class="fact-calendar">
+                <thead>
+                    <tr>
+                        <th scope="col">Mon</th>
+                        <th scope="col">Tue</th>
+                        <th scope="col">Wed</th>
+                        <th scope="col">Thu</th>
+                        <th scope="col">Fri</th>
+                        <th scope="col">Sat</th>
+                        <th scope="col">Sun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in dates_with_facts %}
+                        <tr>
+                            {% for date, fact in week %}
+                                <td class="fact-calendar__day{% if date.month != current_date.month %} fact-calendar__day--outside-month{% endif %}">
+                                    <time class="fact-calendar__date" datetime="{{ date|date:'Y-m-d' }}">
+                                        {{ date|date:"j" }}
+                                    </time>
+                                    {% if fact %}
+                                        <a class="fact-calendar__fact" href="{% url 'wagtailadmin_pages:edit' fact.id %}">
+                                            <span class="fact-calendar__fact-title">{{ fact.get_admin_display_title }}</span>
+                                            <span class="fact-calendar__status">{{ fact.status_string }}</span>
+                                        </a>
+                                    {% elif add_url %}
+                                        <a class="fact-calendar__fact fact-calendar__add" href="{{ add_url }}">
+                                            <span class="fact-calendar__fact-title">New Fact</span>
+                                            <span class="fact-calendar__status">Create a new fact</span>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
