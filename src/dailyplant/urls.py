@@ -10,7 +10,7 @@ from wagtail.images.views.serve import ServeView
 
 from sesame.views import LoginView
 
-from dailyplant.views import error_500_test
+from dailyplant.views import error_500_test, robots_txt
 from facts.feeds import FactsAtomFeed, FactsRssFeed
 from users.views import EmailLoginView
 
@@ -23,7 +23,8 @@ urlpatterns = [
     path("error-500-test/", error_500_test, name="server_error"),
     path("rss.xml", FactsRssFeed(), name="facts_rss_feed"),
     path("atom.xml", FactsAtomFeed(), name="facts_atom_feed"),
-    path("sitemap.xml", sitemap),
+    path("sitemap.xml", sitemap, name="sitemap"),
+    path("robots.txt", robots_txt, name="robots_txt"),
     re_path(
         r"^images/([^/]*)/(\d*)/([^/]*)/[^/]*$",
         ServeView.as_view(),
