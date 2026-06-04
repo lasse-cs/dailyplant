@@ -33,6 +33,7 @@ dev = [
 
 [tool.uv]
 exclude-newer = "P2D"
+exclude-newer-package = { django = false, wagtail = false }
 
 [tool.uv.sources]
 django-vite-tags = { git = "https://github.com/lasse-cs/django-vite-tags.git", rev = "a69aabf0c10a45bcaa0e6f9cc2f44b4d1d7548fa" }
