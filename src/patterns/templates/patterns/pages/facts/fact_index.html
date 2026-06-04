@@ -7,10 +7,13 @@
         <header class="card wide__card">
             <h1 class="title">{{ page.title }}</h1>
             {{ page.introduction|richtext }}
+            <div>
+                {% include "patterns/components/tags/tag_list.html" with index_page=page %}
+            </div>
         </header>
         <div class="fact__archive">
             {% for fact in facts %}
-                {% include "patterns/components/facts/card.html" %}
+                {% include "patterns/components/facts/card.html" with index_page=page %}
             {% endfor %}
         </div>
     </main>

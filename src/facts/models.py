@@ -2,10 +2,12 @@ from datetime import datetime, time
 
 from django.db import models
 from django.utils import timezone
+from django.shortcuts import get_object_or_404, render
 
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 
+from wagtail.contrib.routable_page.models import RoutablePage, path
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
 from wagtail.models import Page
 
@@ -33,7 +35,7 @@ class TaggedFact(ItemBase):
     )
 
 
-class FactIndexPage(Page):
+class FactIndexPage(RoutablePage):
     parent_page_types = ["home.HomePage"]
     subpage_types = ["facts.FactPage"]
     max_count = 1
@@ -43,18 +45,33 @@ class FactIndexPage(Page):
         blank=True, help_text="Introductory content for the fact index page."
     )
 
-    def get_facts(self):
-        return (
+    @path("tags/<slug:slug>/", name="tag")
+    def tag(self, request, slug):
+        get_object_or_404(FactTag, slug=slug)
+        context = self.get_context(request, slug=slug)
+        template = self.get_template(request)
+        return render(request, template, context)
+
+    def get_facts(self, slug=None):
+        facts = (
             FactPage.objects.live()
             .child_of(self)
             .prefetch_related("tags")
             .order_by("-date")
             .annotate(heading_level=models.Value("h2"))
         )
+        if slug:
+            facts = facts.filter(tags__slug=slug)
+        return facts
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context["facts"] = self.get_facts()
+    def get_tags(self):
+        return FactTag.objects.all()
+
+    def get_context(self, request, slug=None):
+        context = super().get_context(request)
+        context["facts"] = self.get_facts(slug)
+        context["tags"] = self.get_tags()
+        context["active_slug"] = slug
         return context
 
     content_panels = Page.content_panels + [
