@@ -1,0 +1,9 @@
+{% if tags %}
+    <ul class="fact__tag__list" role="list">
+        {% for tag in tags %}
+            <li class="fact__tag">
+                {{ tag.name }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
