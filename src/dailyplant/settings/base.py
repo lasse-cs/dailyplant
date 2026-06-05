@@ -271,3 +271,13 @@ UMAMI_API_KEY = os.getenv("UMAMI_API_KEY")
 UMAMI_API_BASE = os.getenv("UMAMI_API_BASE")
 
 SESAME_MAX_AGE = 60 * 5  # 5 minutes
+
+BLUESKY_USERNAME = os.getenv("BLUESKY_USERNAME")
+BLUESKY_PASSWORD = None
+if "BLUESKY_PASSWORD_FILE" in os.environ:
+    bluesky_password_file = Path(os.getenv("BLUESKY_PASSWORD_FILE"))
+    BLUESKY_PASSWORD = (
+        bluesky_password_file.read_text().strip()
+        if bluesky_password_file.is_file()
+        else None
+    )

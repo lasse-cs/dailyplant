@@ -53,12 +53,15 @@ services:
       - UMAMI_API_KEY=${UMAMI_API_KEY}
       - UMAMI_API_BASE=${UMAMI_API_BASE}
       - SENTRY_DSN_FILE=/run/secrets/sentry_dsn_file
+      - BLUESKY_USERNAME=${BLUESKY_USERNAME}
+      - BLUESKY_PASSWORD_FILE=/run/secrets/bluesky_password_file
     volumes:
       - media_files:/app/media/:rw
     secrets:
      - django_secret_key_file
      - postgres_password_file
      - sentry_dsn_file
+     - bluesky_password_file
     networks:
       - web-network
       - db-network
@@ -67,6 +70,9 @@ services:
       ofelia.job-exec.publish_scheduled.schedule: "@hourly"
       ofelia.job-exec.publish_scheduled.command: "python manage.py publish_scheduled"
       ofelia.job-exec.publish_scheduled.user: wagtail
+      ofelia.job-exec.publish_social.schedule: "@hourly"
+      ofelia.job-exec.publish_social.command: "python manage.py publish_social_posts"
+      ofelia.job-exec.publish_social.user: wagtail
 
   ofelia:
     image: mcuadros/ofelia:0.3.22
@@ -89,6 +95,8 @@ secrets:
     file: ${DJANGO_SECRET_KEY_FILE:?Must set django secret key file}
   sentry_dsn_file:
     file: ${SENTRY_DSN_FILE:?Must set sentry dsn file}
+  bluesky_password_file:
+    file: ${BLUESKY_PASSWORD_FILE:?Must set bluesky password file}
 
 volumes:
   media_files:
