@@ -32,3 +32,6 @@ docker/.secrets
 
 # Built static files
 /src/static_built
+
+# Local justfile
+.justfile.local
