@@ -1,0 +1,15 @@
+{% load wagtailcore_tags %}
+
+{% with social_links=settings.core.SocialMediaSettings.social_links.all %}
+    {% if social_links %}
+        <footer class="site-footer">
+            <ul role="list" class="social__list">
+                {% for social_link in social_links %}
+                    <li>
+                        <a href="{{ social_link.url }}" target="_blank" rel="noopener noreferrer" class="icon-link" data-gap="sm">{% include "svgs/"|add:social_link.type|add:".html" with icon_class="social__icon" %}{{ social_link.display }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </footer>
+    {% endif %}
+{% endwith %}

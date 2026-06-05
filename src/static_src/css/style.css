@@ -130,7 +130,6 @@
       margin: 0 auto;
       max-inline-size: 964px;
       padding-inline: 2px;
-      padding-block-end: 4rem;
     }
 
     a {
@@ -170,6 +169,12 @@
     flex-wrap: wrap;
     column-gap: 4rem;
     padding-block: 2rem;
+  }
+
+  .site-footer {
+    display: flex;
+    justify-content: center;
+    padding-block: 4rem;
   }
 
   .brand-link {
@@ -311,7 +316,7 @@
     margin-block-start: 1rem;
   }
 
-  .fact__footer-link {
+  .icon-link {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -458,5 +463,15 @@
       border-radius: var(--radius-button);
       border: 1px solid var(--color-border);
     }
+  }
+
+  .social__icon {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+
+  .social__list {
+    display: inline-flex;
+    gap: 2rem;
   }
 }

@@ -44,6 +44,10 @@
 
                 {% block page_content %}
                 {% endblock page_content %}
+
+                {% block footer %}
+                    {% include "patterns/components/footer/footer.html" %}
+                {% endblock footer %}
             {% endblock content %}
         </div>
 

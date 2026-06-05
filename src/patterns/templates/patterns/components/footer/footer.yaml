@@ -1,0 +1,13 @@
+name: Footer
+context:
+  settings:
+    core:
+      SocialMediaSettings:
+        social_links:
+          all:
+            - url: "#"
+              display: "Bluesky!"
+              type: "bluesky"
+            - url: "#"
+              display: "RSS Feed!"
+              type: "feed"
