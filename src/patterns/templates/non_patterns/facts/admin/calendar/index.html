@@ -48,8 +48,8 @@
                                             <span class="fact-calendar__fact-title">{{ fact.get_admin_display_title }}</span>
                                             <span class="fact-calendar__status">{{ fact.status_string }}</span>
                                         </a>
-                                    {% elif add_url %}
-                                        <a class="fact-calendar__fact fact-calendar__add" href="{{ add_url }}">
+                                    {% elif can_add_fact %}
+                                        <a class="fact-calendar__fact fact-calendar__add" href="{% url 'fact_calendar:add' year=date.year month=date.month day=date.day %}">
                                             <span class="fact-calendar__fact-title">New Fact</span>
                                             <span class="fact-calendar__status">Create a new fact</span>
                                         </a>

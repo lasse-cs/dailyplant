@@ -2,13 +2,14 @@ import calendar
 import datetime
 
 from django.http import Http404
-from django.urls import path, reverse, reverse_lazy
+from django.urls import path, reverse_lazy
 from django.utils import timezone
 from django.views.generic import TemplateView
 
 from django_filters.filters import DateFromToRangeFilter
 
 from wagtail.admin.filters import DateRangePickerWidget
+from wagtail.admin.views.pages.create import CreateView
 from wagtail.admin.views.generic import WagtailAdminTemplateMixin
 from wagtail.admin.ui.tables import Column
 from wagtail.admin.viewsets.base import ViewSet
@@ -80,8 +81,8 @@ class FactCalendarIndexView(WagtailAdminTemplateMixin, TemplateView):
 
         try:
             return datetime.date(year, month, 1)
-        except ValueError, TypeError:
-            raise Http404("Invalid Year and Month combination")
+        except (ValueError, TypeError) as exc:
+            raise Http404("Invalid Year and Month combination") from exc
 
     def _get_dates_with_facts(self, month_dates):
         first_date = month_dates[0][0]
@@ -95,18 +96,11 @@ class FactCalendarIndexView(WagtailAdminTemplateMixin, TemplateView):
 
         return [[(day, facts_by_date.get(day)) for day in week] for week in month_dates]
 
-    def _get_add_url(self):
+    def _can_add_fact(self):
         parent_page = FactIndexPage.objects.first()
         if not parent_page:
-            return ""
-        return reverse(
-            "wagtailadmin_pages:add",
-            args=(
-                FactPage._meta.app_label,
-                FactPage._meta.model_name,
-                parent_page.id,
-            ),
-        )
+            return False
+        return parent_page.permissions_for_user(self.request.user).can_add_subpage()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -118,9 +112,32 @@ class FactCalendarIndexView(WagtailAdminTemplateMixin, TemplateView):
         context["current_date"] = date
         context["next_date"] = month_dates[-1][-1] + datetime.timedelta(days=1)
         context["previous_date"] = month_dates[0][0] - datetime.timedelta(days=1)
-        context["add_url"] = self._get_add_url()
+        context["can_add_fact"] = self._can_add_fact()
 
         return context
+
+
+class FactPageCreateView(CreateView):
+    def dispatch(self, request, year, month, day):
+        try:
+            self.prefilled_date = datetime.date(year, month, day)
+        except ValueError as exc:
+            raise Http404("Invalid date") from exc
+
+        parent_page = FactIndexPage.objects.first()
+        if not parent_page:
+            raise Http404("Fact index page not found")
+
+        return super().dispatch(
+            request,
+            FactPage._meta.app_label,
+            FactPage._meta.model_name,
+            parent_page.id,
+        )
+
+    def get(self, request):
+        self.page.date = self.prefilled_date
+        return super().get(request)
 
 
 class FactCalendarViewSet(ViewSet):
@@ -133,6 +150,11 @@ class FactCalendarViewSet(ViewSet):
     def get_urlpatterns(self):
         return [
             path("", FactCalendarIndexView.as_view(), name="index"),
+            path(
+                "add/<int:year>/<int:month>/<int:day>/",
+                FactPageCreateView.as_view(),
+                name="add",
+            ),
             path(
                 "<int:year>/<int:month>/",
                 FactCalendarIndexView.as_view(),
