@@ -34,7 +34,11 @@
     <body class="{% block body_class %}{% endblock %}">
         {% wagtailuserbar %}
 
-        <a href="#main" class="skip-to-main">Skip to main content</a>
+        <div class="skip-links">
+            {% block skiplinks %}
+                <a href="#main" class="skip-to-main">Skip to main content</a>
+            {% endblock skiplinks %}
+        </div>
 
         <div class="body-container">
             {% block content %}

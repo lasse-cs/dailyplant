@@ -4,7 +4,7 @@
     <ul class="fact__tag__list" role="list">
         {% for tag in tags %}
             <li class="fact__tag">
-                <a href="{% routablepageurl index_page 'tag' tag.slug %}"{% if active_slug and tag.slug == active_slug %} class="active"{% endif %}>{{ tag.name }}</a>
+                <a href="{% routablepageurl index_page 'tag' tag.slug %}"{% if active_slug and tag.slug == active_slug %} class="active" aria-current="page" {% endif %}>{{ tag.name }}</a>
             </li>
         {% endfor %}
     </ul>

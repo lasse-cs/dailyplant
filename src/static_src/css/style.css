@@ -143,7 +143,7 @@
 }
 
 @layer components {
-  .visually-hidden, .skip-to-main:not(:focus) {
+  .visually-hidden, .skip-links:not(:focus-within) {
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
     height: 1px;
@@ -153,8 +153,14 @@
     width: 1px;
   }
 
-  .skip-to-main {
+  .skip-links {
+    display: flex;
     position: absolute;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .skip-to-main {
     padding: 1rem;
     background-color: var(--color-text-muted);
     border-radius: var(--radius-button);
@@ -265,6 +271,7 @@
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
+    gap: 1rem;
   }
 
   .fact__content {
@@ -274,14 +281,12 @@
   .fact__references {
     list-style: decimal;
     margin-inline-start: 1rem;
-    margin-block-start: 1rem;
   }
 
   .fact__tag__list {
-    margin-block-start: 1rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.55rem 0.7rem;
+    gap: 1.2rem 0.7rem;
   }
 
   .fact__tag a {
@@ -294,6 +299,7 @@
       font-size: 0.9rem;
       padding: 0.35rem 0.75rem;
       text-decoration: none;
+      flex-shrink: 0;
 
       transition: color 0.125s, background-color 0.125s;
 
@@ -413,6 +419,17 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+  }
+
+  .fact__filters__container {
+    margin-block-start: 1rem;
+  }
+
+  .fact__filters {
+    margin-block-start: 0.5rem;
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
   }
 
   .title {

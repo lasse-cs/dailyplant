@@ -2,16 +2,33 @@
 
 {% load wagtailcore_tags %}
 
+{% block skiplinks %}
+    {{ block.super }}
+    <a href="#fact__archive" class="skip-to-main">Skip to fact list</a>
+{% endblock skiplinks %}
+
 {% block page_content %}
     <main id="main" class="fact__index" tabindex="-1">
         <header class="card wide__card">
             <h1 class="title">{{ page.title }}</h1>
             {{ page.introduction|richtext }}
-            <div>
-                {% include "patterns/components/tags/tag_list.html" with index_page=page %}
+            <div class="fact__filters__container">
+                <p>
+                    Select a tag to filter items by that tag.
+                </p>
+                <div class="fact__filters">
+                    {% include "patterns/components/tags/tag_list.html" with index_page=page %}
+                    {% if active_slug %}
+                        <div class="fact__tag">
+                            <a href="{% pageurl page %}">
+                                Clear
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </header>
-        <div class="fact__archive">
+        <div class="fact__archive" id="fact__archive" tabindex="-1">
             {% for fact in facts %}
                 {% include "patterns/components/facts/card.html" with index_page=page %}
             {% endfor %}
