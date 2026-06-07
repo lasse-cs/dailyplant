@@ -1,0 +1,8 @@
+{% load i18n wagtailadmin_tags %}
+
+<li>
+    {% icon name="doc-empty" %}
+    <a href="{% url 'fact_calendar:index' %}">
+        {{ upcoming }} Upcoming Fact{{ upcoming|pluralize }}
+    </a>
+</li>
