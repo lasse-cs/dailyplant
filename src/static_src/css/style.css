@@ -183,6 +183,10 @@
     padding-block: 4rem;
   }
 
+  .link-unstyled {
+    text-decoration: none;
+  }
+
   .brand-link {
     font-family: var(--font-heading);
     font-size: clamp(2rem, 2.5rem, 3rem);

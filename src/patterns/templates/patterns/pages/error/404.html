@@ -7,8 +7,18 @@
 
 {% block body_class %}template-404{% endblock %}
 
-{% block content %}
-    <h1>Page not found</h1>
-
-    <h2>Sorry, this page could not be found.</h2>
-{% endblock %}
+{% block page_content %}
+    <main id="main" class="centered-card" tabindex="-1">
+        <div class="card wide__card">
+            <h1 class="title">Page Not Found</h1>
+            <div>
+                <p>Sorry, this page could not be found.</p>
+                <p>
+                    <a href="{{ current_site.root_url|default:'/' }}" class="link-unstyled">
+                        Return to Home
+                    </a>
+                </p>
+            </div>
+        </div>
+    </main>
+{% endblock page_content %}
