@@ -190,7 +190,6 @@
   .brand-link {
     font-family: var(--font-heading);
     font-size: clamp(2rem, 2.5rem, 3rem);
-    text-decoration: none;
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -204,10 +203,6 @@
       display: flex;
       row-gap: 1rem;
       column-gap: 2rem;
-    }
-
-    a {
-      text-decoration: none;
     }
 
     a[aria-current="page"] {
@@ -258,10 +253,6 @@
     text-transform: uppercase;
   }
 
-  .fact__title a {
-    text-decoration: none;
-  }
-
   .fact__date {
     text-align: end;
     color: var(--color-text-muted);
@@ -302,7 +293,6 @@
       line-height: 1.2;
       font-size: 0.9rem;
       padding: 0.35rem 0.75rem;
-      text-decoration: none;
       flex-shrink: 0;
 
       transition: color 0.125s, background-color 0.125s;
@@ -331,7 +321,6 @@
     align-items: center;
     gap: 0.5rem;
     color: var(--color-text-muted);
-    text-decoration: none;
     transition: color 0.125s;
 
     &:hover,
@@ -403,7 +392,6 @@
 
   .reference {
     color: var(--color-text-muted);
-    text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.25rem;

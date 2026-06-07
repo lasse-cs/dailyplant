@@ -4,11 +4,11 @@
     <header class="fact__header">
         {% if fact.heading_level == 'h2' %}
             <h2 class="fact__title">
-                <a href="{% pageurl fact %}">{{ fact.title }}</a>
+                <a href="{% pageurl fact %}" class="link-unstyled">{{ fact.title }}</a>
             </h2>
         {% else %}
             <h1 class="fact__title">
-                <a href="{% pageurl fact %}">{{ fact.title }}</a>
+                <a href="{% pageurl fact %}" class="link-unstyled">{{ fact.title }}</a>
             </h1>
         {% endif %}
         <p class="fact__eyebrow">Fact of the Day</p>
@@ -32,7 +32,7 @@
         {% endwith %}
     </div>
     <footer class="fact__footer">
-        <a class="icon-link" href="{% pageurl fact %}">
+        <a class="icon-link link-unstyled" href="{% pageurl fact %}">
             {% include "svgs/document.html" with icon_class="fact__footer-icon" %}
             <span>View this fact</span>
         </a>

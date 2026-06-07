@@ -4,7 +4,7 @@
     <ol role="list">
         {% for menu_item in menu_items %}
             <li>
-                <a href="{% pageurl menu_item %}">{{ menu_item.title }}</a>
+                <a href="{% pageurl menu_item %}" class="link-unstyled">{{ menu_item.title }}</a>
             </li>
         {% endfor %}
     </ol>
