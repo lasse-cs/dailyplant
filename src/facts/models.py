@@ -1,8 +1,10 @@
 from datetime import datetime, time
 
 from django.db import models
-from django.utils import timezone
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
+from django.utils.html import strip_tags
+from django.utils.text import Truncator
 
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
@@ -10,6 +12,7 @@ from modelcluster.fields import ParentalKey
 from wagtail.contrib.routable_page.models import RoutablePage, path
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
 from wagtail.models import Page
+from wagtail.rich_text import expand_db_html
 
 from taggit.models import ItemBase, TagBase
 
@@ -94,6 +97,11 @@ class FactPage(MetadataMixin, Page):
         ReferenceStreamBlock, help_text="The references for this fact"
     )
     tags = ClusterTaggableManager(through="facts.TaggedFact", blank=True)
+
+    @property
+    def metadata_description(self):
+        content = strip_tags(expand_db_html(self.content))
+        return Truncator(" ".join(content.split())).chars(240, truncate="...")
 
     def clean(self):
         super().clean()

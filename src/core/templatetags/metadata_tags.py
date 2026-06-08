@@ -21,10 +21,15 @@ def build_metadata(page, request, **overrides):
     )
     description = (
         overrides.get("description")
+        or getattr(page, "metadata_description", None)
         or getattr(page, "search_description", None)
         or settings.description
     )
-    image = getattr(page, "metadata_image", settings.image)
+    image = (
+        overrides.get("image")
+        or getattr(page, "metadata_image", None)
+        or settings.image
+    )
 
     return {
         "title": title,
