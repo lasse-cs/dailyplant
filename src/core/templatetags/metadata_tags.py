@@ -30,12 +30,20 @@ def build_metadata(page, request, **overrides):
         or getattr(page, "metadata_image", None)
         or settings.image
     )
+    url = overrides.get("url")
+    if not url:
+        if page and hasattr(page, "get_metadata_url"):
+            url = page.get_metadata_url(request)
+        elif page:
+            url = page.get_full_url(request)
+        else:
+            url = request.build_absolute_uri()
 
     return {
         "title": title,
         "description": description,
         "site": site,
-        "url": page.get_full_url(request) if page else request.build_absolute_uri(),
+        "url": url,
         "type": overrides.get("type") or getattr(page, "metadata_type", "website"),
         "image": image,
     }

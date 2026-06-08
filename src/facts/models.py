@@ -10,6 +10,9 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 
 from wagtail.contrib.routable_page.models import RoutablePage, path
+from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import (
+    routablefullpageurl,
+)
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
 from wagtail.models import Page
 from wagtail.rich_text import expand_db_html
@@ -38,7 +41,7 @@ class TaggedFact(ItemBase):
     )
 
 
-class FactIndexPage(RoutablePage):
+class FactIndexPage(MetadataMixin, RoutablePage):
     parent_page_types = ["home.HomePage"]
     subpage_types = ["facts.FactPage"]
     max_count = 1
@@ -69,6 +72,18 @@ class FactIndexPage(RoutablePage):
 
     def get_tags(self):
         return FactTag.objects.all()
+
+    def get_metadata_url(self, request):
+        resolver_match = getattr(request, "routable_resolver_match", None)
+        if resolver_match and resolver_match.url_name == "tag":
+            return routablefullpageurl(
+                {"request": request},
+                self,
+                resolver_match.url_name,
+                *resolver_match.args,
+                **resolver_match.kwargs,
+            )
+        return super().get_metadata_url(request)
 
     def get_context(self, request, slug=None):
         context = super().get_context(request)

@@ -14,6 +14,9 @@ class MetadataMixin:
     metadata_template_name = "patterns/components/metadata/default.html"
     metadata_type = "website"
 
+    def get_metadata_url(self, request):
+        return self.get_full_url(request)
+
     @property
     def metadata_image(self):
         return None
