@@ -11,6 +11,10 @@
   overflow: hidden;
 }
 
+.fact-calendar-list {
+  display: none;
+}
+
 .fact-calendar {
   border-collapse: separate;
   border-spacing: 0;
@@ -102,12 +106,73 @@
   }
 }
 
-@media (max-width: 50rem) {
-  .fact-calendar {
-    min-width: 48rem;
+@media (max-width: 64rem) {
+  .fact-calendar__header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
   }
 
-  .fact-calendar__scroll {
-    overflow-x: auto;
+  .fact-calendar__header > .nice-padding {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+
+  .fact-calendar__header > .nice-padding .button {
+    text-align: center;
+  }
+
+  .fact-calendar__desktop {
+    display: none;
+  }
+
+  .fact-calendar-list {
+    display: grid;
+    gap: 0.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .fact-calendar-list__item {
+    align-items: start;
+    background: var(--w-color-surface-field);
+    border: 1px solid var(--w-color-border-field-default);
+    border-radius: 0.5rem;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 3.5rem 1fr;
+    min-height: 4.25rem;
+    padding: 0.875rem;
+  }
+
+  .fact-calendar-list__date {
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .fact-calendar-list__weekday,
+  .fact-calendar-list__day {
+    display: block;
+  }
+
+  .fact-calendar-list__day {
+    font-size: 1.35rem;
+  }
+
+  .fact-calendar-list__weekday {
+    color: var(--w-color-text-meta);
+  }
+
+  .fact-calendar-list .fact-calendar__fact {
+    margin-top: -0.25rem;
+  }
+
+  .fact-calendar-list .fact-calendar__add {
+    opacity: 1;
   }
 }

@@ -22,7 +22,7 @@
     </div>
 
     <div class="nice-padding">
-        <div class="fact-calendar__scroll">
+        <div class="fact-calendar__scroll fact-calendar__desktop">
             <table class="fact-calendar">
                 <thead>
                     <tr>
@@ -43,17 +43,7 @@
                                     <time class="fact-calendar__date" datetime="{{ date|date:'Y-m-d' }}">
                                         {{ date|date:"j" }}
                                     </time>
-                                    {% if fact %}
-                                        <a class="fact-calendar__fact" href="{% url 'wagtailadmin_pages:edit' fact.id %}">
-                                            <span class="fact-calendar__fact-title">{{ fact.get_admin_display_title }}</span>
-                                            <span class="fact-calendar__status">{{ fact.status_string }}</span>
-                                        </a>
-                                    {% elif can_add_fact %}
-                                        <a class="fact-calendar__fact fact-calendar__add" href="{% url 'fact_calendar:add' year=date.year month=date.month day=date.day %}">
-                                            <span class="fact-calendar__fact-title">New Fact</span>
-                                            <span class="fact-calendar__status">Create a new fact</span>
-                                        </a>
-                                    {% endif %}
+                                    {% include "non_patterns/facts/admin/calendar/day_action.html" %}
                                 </td>
                             {% endfor %}
                         </tr>
@@ -61,5 +51,21 @@
                 </tbody>
             </table>
         </div>
+
+        <ol class="fact-calendar-list" aria-label="{{ current_date|date:'F Y' }} facts">
+            {% for week in dates_with_facts %}
+                {% for date, fact in week %}
+                    {% if date.month == current_date.month %}
+                        <li class="fact-calendar-list__item">
+                            <time class="fact-calendar-list__date" datetime="{{ date|date:'Y-m-d' }}">
+                                <span class="fact-calendar-list__weekday">{{ date|date:"D" }}</span>
+                                <span class="fact-calendar-list__day">{{ date|date:"j" }}</span>
+                            </time>
+                            {% include "non_patterns/facts/admin/calendar/day_action.html" %}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </ol>
     </div>
 {% endblock content %}
