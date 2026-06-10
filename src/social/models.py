@@ -57,3 +57,6 @@ class BlueskyPost(models.Model):
 
     def get_description(self):
         return self.page.metadata_description
+
+    def __str__(self):
+        return f"Bluesky Post - {self.status} - {self.page.title}"
