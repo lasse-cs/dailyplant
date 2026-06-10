@@ -2,6 +2,8 @@ from django.db import models
 
 from atproto_client.utils.text_builder import TextBuilder
 
+from core.models import MetadataSettings
+
 
 class BlueskyPostStatus(models.TextChoices):
     PENDING = "pending", "Pending"
@@ -38,3 +40,20 @@ class BlueskyPost(models.Model):
                 text_builder.text(" ")
             text_builder.tag(hashtag, hashtag)
         return text_builder
+
+    def get_thumbnail_image(self):
+        if metadata_image := self.page.metadata_image:
+            return metadata_image
+        elif site := self.page.get_site():
+            metadata_settings = MetadataSettings.for_site(site)
+            return metadata_settings.image
+        return None
+
+    def get_url(self):
+        return self.page.get_full_url()
+
+    def get_title(self):
+        return self.page.title
+
+    def get_description(self):
+        return self.page.metadata_description

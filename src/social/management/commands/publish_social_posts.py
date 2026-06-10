@@ -1,9 +1,14 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+
+from atproto import Client, models
+from atproto.exceptions import AtProtocolError
+from wagtail.images.models import SourceImageIOError
+
 from social.models import BlueskyPost, BlueskyPostStatus
 
-from atproto import Client
-from atproto.exceptions import AtProtocolError
+
+BLUESKY_EXTERNAL_THUMB_MAX_BYTES = 1_000_000
 
 
 class Command(BaseCommand):
@@ -39,7 +44,29 @@ class Command(BaseCommand):
                 continue
 
             try:
-                response = client.send_post(post.format_post())
+                thumb_blob = None
+                if thumbnail_image := post.get_thumbnail_image():
+                    rendition = thumbnail_image.get_rendition("fill-1200x630")
+                    with rendition.file.open("rb") as f:
+                        thumb_data = f.read()
+
+                    if len(thumb_data) > BLUESKY_EXTERNAL_THUMB_MAX_BYTES:
+                        raise ValueError(
+                            "Bluesky external thumbnail exceeds 1MB limit."
+                        )
+
+                    thumb_blob = client.upload_blob(thumb_data).blob
+
+                embed = models.AppBskyEmbedExternal.Main(
+                    external=models.AppBskyEmbedExternal.External(
+                        uri=post.get_url(),
+                        title=post.get_title(),
+                        description=post.get_description(),
+                        thumb=thumb_blob,
+                    )
+                )
+
+                response = client.send_post(post.format_post(), embed=embed)
                 post.bluesky_uri = response.uri
                 post.bluesky_cid = response.cid
                 error = ""
@@ -47,7 +74,13 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.SUCCESS(f"Successfully posted {post.page.title}")
                 )
-            except AtProtocolError as e:
+            except (
+                AtProtocolError,
+                FileNotFoundError,
+                OSError,
+                SourceImageIOError,
+                ValueError,
+            ) as e:
                 status = BlueskyPostStatus.FAILED
                 error = str(e)
                 self.stdout.write(
