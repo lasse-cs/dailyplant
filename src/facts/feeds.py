@@ -16,7 +16,7 @@ class FactsRssFeed(Feed):
     def get_object(self, request):
         site = Site.find_for_request(request)
         if not site:
-            raise Http404(("No site found"))
+            raise Http404("No site found")
         try:
             return FactIndexPage.objects.live().in_site(site).get()
         except FactIndexPage.DoesNotExist:
@@ -39,12 +39,7 @@ class FactsRssFeed(Feed):
         return object.full_url
 
     def items(self, object):
-        return (
-            FactPage.objects.live()
-            .child_of(object)
-            .filter(date__lte=timezone.localdate())
-            .order_by("-date")
-        )
+        return FactPage.objects.live().child_of(object).released().order_by("-date")
 
     def item_title(self, item):
         return item.title

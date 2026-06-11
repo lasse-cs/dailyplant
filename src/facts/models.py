@@ -14,7 +14,8 @@ from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import 
     routablefullpageurl,
 )
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
-from wagtail.models import Page
+from wagtail.models import Page, PageManager
+from wagtail.query import PageQuerySet
 from wagtail.rich_text import expand_db_html
 
 from taggit.models import ItemBase, TagBase
@@ -62,6 +63,7 @@ class FactIndexPage(MetadataMixin, RoutablePage):
         facts = (
             FactPage.objects.live()
             .child_of(self)
+            .released()
             .prefetch_related("tags")
             .order_by("-date")
             .annotate(heading_level=models.Value("h2"))
@@ -97,7 +99,14 @@ class FactIndexPage(MetadataMixin, RoutablePage):
     ]
 
 
+class FactPageQuerySet(PageQuerySet):
+    def released(self):
+        return self.filter(date__lte=timezone.localdate())
+
+
 class FactPage(MetadataMixin, Page):
+    objects = PageManager.from_queryset(FactPageQuerySet)()
+
     parent_page_types = ["facts.FactIndexPage"]
     subpage_types = []
     template = "patterns/pages/facts/fact.html"
