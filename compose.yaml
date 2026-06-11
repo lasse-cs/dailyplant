@@ -50,7 +50,8 @@ services:
       - WAGTAILADMIN_BASE_URL=${WAGTAILADMIN_BASE_URL:?Must set admin base url}
       - WAGTAIL_SITE_NAME=${WAGTAIL_SITE_NAME:?Must set wagtail site name}
       - UMAMI_HOST=${UMAMI_HOST}
-      - UMAMI_API_KEY=${UMAMI_API_KEY}
+      - UMAMI_USERNAME=${UMAMI_USERNAME}
+      - UMAMI_PASSWORD=${UMAMI_PASSWORD}
       - UMAMI_API_BASE=${UMAMI_API_BASE}
       - SENTRY_DSN_FILE=/run/secrets/sentry_dsn_file
       - BLUESKY_USERNAME=${BLUESKY_USERNAME}
