@@ -1,0 +1,19 @@
+<ul role="list" class="pagination" id="fact-navigation" hx-swap-oob="outerHTML">
+    {% if facts.has_next %}
+        <li class="fact__tag">
+            <a href="{% querystring page=facts.next_page_number %}"
+               hx-get="{% querystring page=facts.next_page_number %}"
+               hx-swap="beforeend"
+               hx-target="#fact__archive"
+               class="load-more link-unstyled"
+            >
+                <span class="loading-state">
+                    Loading...
+                </span>
+                <span class="normal-state">
+                    Load More
+                </span>
+            </a>
+        </li>
+    {% endif %}
+</ul>

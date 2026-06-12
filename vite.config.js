@@ -25,6 +25,7 @@ export default defineConfig({
         rolldownOptions: {
             input: {
                 main: resolve(__dirname, "src/static_src/js/main.js"),
+                archive: resolve(__dirname, "src/static_src/js/archive.js"),
             },
             output: {
                 entryFileNames: `js/[name].js`,

@@ -490,4 +490,21 @@
     gap: 1rem;
     margin-block-start: 1.5rem;
   }
+
+  .load-more.htmx-request {
+    pointer-events: none;
+  }
+
+  .htmx-request .normal-state {
+    display: none;
+    opacity: 0;
+  }
+
+  .loading-state {
+    display: none;
+  }
+
+  .htmx-request .loading-state {
+    display: inline;
+  }
 }

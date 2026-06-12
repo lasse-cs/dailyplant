@@ -1,0 +1,5 @@
+{% for fact in facts %}
+    {% include "patterns/components/facts/card.html" with index_page=page %}
+{% endfor %}
+
+{% include "patterns/components/facts/fact_navigation.html" %}

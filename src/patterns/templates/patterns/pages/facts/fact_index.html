@@ -1,6 +1,11 @@
 {% extends "patterns/base.html" %}
 
-{% load wagtailcore_tags %}
+{% load vite_tags wagtailcore_tags %}
+
+{% block head_js %}
+    {{ block.super }}
+    {% vite 'js/archive.js' %}
+{% endblock head_js %}
 
 {% block skiplinks %}
     {{ block.super }}
@@ -41,8 +46,8 @@
         </div>
         {% if facts.has_previous or facts.has_next %}
             <footer>
-                <nav aria-label="Pagination" class="pagination">
-                    <ul role="list" class="pagination">
+                <nav aria-label="Pagination" data-controller="replace-template">
+                    <ul role="list" class="pagination" id="fact-navigation">
                         {% if facts.has_previous %}
                             <li class="fact__tag">
                                 <a href="{% querystring page=facts.previous_page_number %}" class="link-unstyled">
@@ -58,6 +63,9 @@
                             </li>
                         {% endif %}
                     </ul>
+                    <template data-replace-template-target="template">
+                        {% include "patterns/components/facts/fact_navigation.html" %}
+                    </template>
                 </nav>
             </footer>
         {% endif %}

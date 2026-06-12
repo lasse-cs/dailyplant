@@ -4,6 +4,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 from django.db import models
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
+from django.utils.cache import patch_vary_headers
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
 
@@ -54,12 +55,22 @@ class FactIndexPage(MetadataMixin, RoutablePage):
         blank=True, help_text="Introductory content for the fact index page."
     )
 
+    def serve(self, request, view=None, args=None, kwargs=None):
+        response = super().serve(request, view=view, args=args, kwargs=kwargs)
+        patch_vary_headers(response, ["HX-Request"])
+        return response
+
     @path("tags/<slug:slug>/", name="tag")
     def tag(self, request, slug):
         get_object_or_404(FactTag, slug=slug)
         context = self.get_context(request, slug=slug)
         template = self.get_template(request)
         return render(request, template, context)
+
+    def get_template(self, request):
+        if "HX-Request" in request.headers:
+            return "non_patterns/facts/partials/fact_index.html"
+        return super().get_template(request)
 
     def get_facts(self, slug=None):
         facts = (

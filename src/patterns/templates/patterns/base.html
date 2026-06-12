@@ -20,7 +20,9 @@
 
         <link rel="preload" href="{% static 'assets/cormorant-garamond-latin.woff2' %}" as="font" type="font/woff2" crossorigin="anonymous" />
         <link rel="preload" href="{% static 'assets/source-sans-3-latin.woff2' %}" as="font" type="font/woff2" crossorigin="anonymous" />
-        {% vite 'js/main.js' %}
+        {% block head_js %}
+            {% vite 'js/main.js' %}
+        {% endblock head_js %}
 
         {% block extra_css %}
         {# Override this in templates to add extra stylesheets #}
