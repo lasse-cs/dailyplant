@@ -33,7 +33,33 @@
         <div class="fact__archive" id="fact__archive" tabindex="-1">
             {% for fact in facts %}
                 {% include "patterns/components/facts/card.html" with index_page=page %}
+            {% empty %}
+                <div class="card wide__card">
+                    No facts found.
+                </div>
             {% endfor %}
         </div>
+        {% if facts.has_previous or facts.has_next %}
+            <footer>
+                <nav aria-label="Pagination" class="pagination">
+                    <ul role="list" class="pagination">
+                        {% if facts.has_previous %}
+                            <li class="fact__tag">
+                                <a href="{% querystring page=facts.previous_page_number %}" class="link-unstyled">
+                                    ← Newer Facts
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if facts.has_next %}
+                            <li class="fact__tag">
+                                <a href="{% querystring page=facts.next_page_number %}" class="link-unstyled">
+                                    Older Facts →
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </footer>
+        {% endif %}
     </main>
 {% endblock page_content %}

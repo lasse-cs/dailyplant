@@ -1,4 +1,5 @@
 from datetime import datetime, time
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from django.db import models
 from django.shortcuts import get_object_or_404, render
@@ -21,6 +22,7 @@ from wagtail.rich_text import expand_db_html
 from taggit.models import ItemBase, TagBase
 
 from core.models import MetadataMixin
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from facts.blocks import ReferenceStreamBlock
 
@@ -85,11 +87,30 @@ class FactIndexPage(MetadataMixin, RoutablePage):
                 *resolver_match.args,
                 **resolver_match.kwargs,
             )
-        return super().get_metadata_url(request)
+        metadata_url = super().get_metadata_url(request)
+        if "page" in request.GET:
+            try:
+                page_number = int(request.GET["page"])
+                if page_number > 1:
+                    parsed = urlparse(metadata_url)
+                    params = parse_qs(parsed.query)
+                    params["page"] = [str(page_number)]
+                    metadata_url = urlunparse(
+                        parsed._replace(query=urlencode(params, doseq=True))
+                    )
+            except ValueError:
+                pass
+        return metadata_url
 
     def get_context(self, request, slug=None):
         context = super().get_context(request)
-        context["facts"] = self.get_facts(slug)
+        page_number = request.GET.get("page", 1)
+        paginator = Paginator(self.get_facts(slug), 20, orphans=2)
+        try:
+            facts = paginator.page(page_number)
+        except PageNotAnInteger, EmptyPage:
+            facts = Paginator([], 1, allow_empty_first_page=True).page(1)
+        context["facts"] = facts
         context["tags"] = self.get_tags()
         context["active_slug"] = slug
         return context

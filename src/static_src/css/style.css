@@ -483,4 +483,11 @@
     display: inline-flex;
     gap: 2rem;
   }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-block-start: 1.5rem;
+  }
 }
