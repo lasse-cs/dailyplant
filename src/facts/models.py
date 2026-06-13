@@ -1,6 +1,7 @@
 from datetime import datetime, time
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
+from django import forms
 from django.db import models
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
@@ -11,6 +12,7 @@ from django.utils.text import Truncator
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 
+from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.contrib.routable_page.models import RoutablePage, path
 from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import (
     routablefullpageurl,
@@ -136,6 +138,14 @@ class FactPageQuerySet(PageQuerySet):
         return self.filter(date__lte=timezone.localdate())
 
 
+class FactPageForm(WagtailAdminPageForm):
+    tags = forms.ModelMultipleChoiceField(
+        queryset=FactTag.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+
 class FactPage(MetadataMixin, Page):
     objects = PageManager.from_queryset(FactPageQuerySet)()
 
@@ -143,6 +153,7 @@ class FactPage(MetadataMixin, Page):
     subpage_types = []
     template = "patterns/pages/facts/fact.html"
     metadata_type = "article"
+    base_form_class = FactPageForm
 
     date = models.DateField(help_text="The date this fact is for.", unique=True)
     content = RichTextField(
