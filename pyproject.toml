@@ -12,14 +12,14 @@ dependencies = [
     "gunicorn>=25.3.0",
     "honcho>=2.0.0",
     "psycopg>=3.3.4",
-    "sentry-sdk>=2.61.0",
+    "sentry-sdk>=2.62.0",
     "wagtail>=7.4,<8.0",
-    "atproto>=0.0.67",
+    "atproto>=0.0.68",
 ]
 
 [dependency-groups]
 dev = [
-    "debugpy>=1.8.20",
+    "debugpy>=1.8.21",
     "django-browser-reload>=1.21.0",
     "django-debug-toolbar>=6.2.0",
     "django-pattern-library>=1.5.0",
@@ -27,8 +27,8 @@ dev = [
     "pre-commit>=4.5.1",
     "pytest>=9.0.3",
     "pytest-django>=4.11.1",
-    "ruff>=0.15.15",
-    "wagtail-factories>=4.4.0",
+    "ruff>=0.15.16",
+    "wagtail-factories>=4.5.0",
 ]
 
 
