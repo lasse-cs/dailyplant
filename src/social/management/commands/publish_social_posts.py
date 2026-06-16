@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from atproto import Client, models
-from atproto.exceptions import AtProtocolError
 from wagtail.images.models import SourceImageIOError
 
 from social.models import BlueskyPost, BlueskyPostStatus
@@ -15,11 +13,18 @@ class Command(BaseCommand):
     help = "Publish the pending social posts"
 
     def _get_client(self, username, password):
+        # Lazily import this
+        from atproto import Client
+
         client = Client()
         client.login(username, password)
         return client
 
     def handle(self, *args, **options):
+        # Lazily import these
+        from atproto import models
+        from atproto.exceptions import AtProtocolError
+
         if not getattr(settings, "BLUESKY_USERNAME", None) or not getattr(
             settings, "BLUESKY_PASSWORD", None
         ):

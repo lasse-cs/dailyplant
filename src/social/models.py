@@ -1,7 +1,5 @@
 from django.db import models
 
-from atproto_client.utils.text_builder import TextBuilder
-
 from core.models import MetadataSettings
 
 
@@ -28,6 +26,9 @@ class BlueskyPost(models.Model):
     error = models.TextField(blank=True)
 
     def format_post(self):
+        # We want to lazily import this.
+        from atproto_client.utils.text_builder import TextBuilder
+
         text_builder = TextBuilder()
         text_builder.text(self.page.title)
         text_builder.text("\n\n")
