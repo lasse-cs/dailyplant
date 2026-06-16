@@ -176,6 +176,41 @@ class FactPage(MetadataMixin, Page):
         if not self.go_live_at and self.date and self.date > timezone.localdate():
             self.go_live_at = timezone.make_aware(datetime.combine(self.date, time.min))
 
+    def get_older_fact(self):
+        """
+        Returns the released fact which is the "next older", or None
+        if this is the oldest fact.
+        """
+        if not self.date:
+            return None
+        return (
+            FactPage.objects.live()
+            .released()
+            .order_by("-date")
+            .filter(date__lt=self.date)
+            .first()
+        )
+
+    def get_newer_fact(self):
+        """
+        Returns the released fact with the "next newer", or None
+        if this is the newest fact.
+        """
+        if not self.date:
+            return None
+        return (
+            FactPage.objects.live()
+            .released()
+            .order_by("date")
+            .filter(date__gt=self.date)
+            .first()
+        )
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["share"] = self.get_full_url(request)
+        return context
+
     content_panels = Page.content_panels + [
         "date",
         "content",

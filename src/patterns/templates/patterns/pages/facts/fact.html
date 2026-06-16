@@ -4,6 +4,6 @@
 
 {% block page_content %}
     <main id="main" class="centered-card" tabindex="-1">
-        {% include "patterns/components/facts/card.html" with fact=page index_page=page.get_parent.specific %}
+        {% include "patterns/components/facts/card.html" with fact=page index_page=page.get_parent.specific include_footer=True %}
     </main>
 {% endblock page_content %}

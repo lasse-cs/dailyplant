@@ -3,7 +3,7 @@
 {% block page_content %}
     <main id="main" class="centered-card" tabindex="-1">
         {% if fact %}
-            {% include "patterns/components/facts/card.html" with index_page=fact.get_parent.specific %}
+            {% include "patterns/components/facts/card.html" with index_page=fact.get_parent.specific include_footer=True %}
         {% endif %}
     </main>
 {% endblock page_content %}

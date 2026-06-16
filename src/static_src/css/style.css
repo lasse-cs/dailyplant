@@ -309,11 +309,28 @@
   }
 
   .fact__footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    grid-template: "newer older" auto / 1fr 1fr;
     gap: 1rem;
     margin-block-start: 1rem;
+
+    & .link-unstyled {
+      color: var(--color-text-muted);
+    }
+
+    & .link-unstyled:focus-visible, & .link-unstyled:hover {
+      text-decoration: underline;
+    }
+
+    & .older {
+      text-align: end;
+      grid-area: older;
+    }
+
+    & .newer {
+      color: var(--color-text-muted);
+      grid-area: newer;
+    }
   }
 
   .icon-link {
@@ -329,12 +346,6 @@
       text-decoration: underline;
       text-decoration-color: currentcolor;
     }
-  }
-
-  .fact__footer-icon {
-    inline-size: 1.25rem;
-    block-size: 1.25rem;
-    flex: 0 0 auto;
   }
 
   .fact__share {

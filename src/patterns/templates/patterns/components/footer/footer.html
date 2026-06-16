@@ -1,7 +1,7 @@
 {% load wagtailcore_tags %}
 
 {% with social_links=settings.core.SocialMediaSettings.social_links.all %}
-    {% if social_links %}
+    {% if social_links or share %}
         <footer class="site-footer">
             <ul role="list" class="social__list">
                 {% for social_link in social_links %}
@@ -9,6 +9,27 @@
                         <a href="{{ social_link.url }}" target="_blank" rel="noopener noreferrer" class="icon-link link-unstyled" data-gap="sm">{% include "svgs/"|add:social_link.type|add:".html" with icon_class="social__icon" %}{{ social_link.display }}</a>
                     </li>
                 {% endfor %}
+                {% if share %}
+                    <li>
+                        <button class="fact__share"
+                                type="button"
+                                data-controller="clipboard"
+                                data-action="click->clipboard#copy"
+                                data-clipboard-copied-class="is-copied"
+                                data-clipboard-text-value="{{ share }}"
+                                aria-label="Share"
+                        >
+                            <span class="fact__share-state fact__share-state--copy" aria-hidden="true">
+                                {% include "svgs/share.html" with icon_class="fact__share-icon" %}
+                                <span>Share</span>
+                            </span>
+                            <span class="fact__share-state fact__share-state--copied" aria-hidden="true">
+                                {% include "svgs/tick.html" with icon_class="fact__share-icon" %}
+                                <span>Copied</span>
+                            </span>
+                        </button>
+                    </li>
+                {% endif %}
             </ul>
         </footer>
     {% endif %}

@@ -1,0 +1,16 @@
+{% load wagtailcore_tags %}
+
+{% with newer_fact=fact.get_newer_fact older_fact=fact.get_older_fact %}
+    <footer class="fact__footer">
+        {% if newer_fact %}
+            <div class="newer">
+                <a href="{% pageurl newer_fact %}" class="link-unstyled">← Newer Fact</a>
+            </div>
+        {% endif %}
+        {% if older_fact %}
+            <div class="older">
+                <a href="{% pageurl older_fact %}" class="link-unstyled">Older Fact →</a>
+            </div>
+        {% endif %}
+    </footer>
+{% endwith %}
