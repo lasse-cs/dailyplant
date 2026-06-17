@@ -21,6 +21,7 @@ INSTALLED_APPS += [
     "django_browser_reload",
     # Django Debug Toolbar
     "debug_toolbar",
+    "wagtail.contrib.styleguide",
 ]
 
 # Debug Toolbar should be as early as possible in the middleware list
