@@ -13,6 +13,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 
 from wagtail.admin.forms import WagtailAdminPageForm
+from wagtail.admin.panels import MultipleChooserPanel, Panel
 from wagtail.contrib.routable_page.models import RoutablePage, path
 from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import (
     routablefullpageurl,
@@ -146,6 +147,16 @@ class FactPageForm(WagtailAdminPageForm):
     )
 
 
+class IncomingRelatedFactsPanel(Panel):
+    class BoundPanel(Panel.BoundPanel):
+        template_name = "non_patterns/facts/admin/incoming_related_facts.html"
+
+        def get_context_data(self, parent_context=None):
+            context = super().get_context_data(parent_context)
+            context["incoming"] = self.instance.get_incoming_related_facts()
+            return context
+
+
 class FactPage(MetadataMixin, Page):
     objects = PageManager.from_queryset(FactPageQuerySet)()
 
@@ -206,9 +217,27 @@ class FactPage(MetadataMixin, Page):
             .first()
         )
 
+    def get_incoming_related_facts(self):
+        return FactPage.objects.live().released().filter(related_facts__fact=self)
+
+    def get_outgoing_related_facts(self):
+        return (
+            FactPage.objects.live()
+            .released()
+            .filter(id__in=self.related_facts.values_list("fact_id", flat=True))
+        )
+
+    def get_related_facts(self):
+        return (
+            (self.get_outgoing_related_facts() | self.get_incoming_related_facts())
+            .exclude(id=self.id)
+            .distinct()
+        )
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["share"] = self.get_full_url(request)
+        context["related_facts"] = self.get_related_facts()
         return context
 
     content_panels = Page.content_panels + [
@@ -216,4 +245,19 @@ class FactPage(MetadataMixin, Page):
         "content",
         "references",
         "tags",
+        MultipleChooserPanel(
+            "related_facts", label="Related Facts", chooser_field_name="fact"
+        ),
+        IncomingRelatedFactsPanel(),
+    ]
+
+
+class FactPageRelatedFact(models.Model):
+    owner = ParentalKey(
+        FactPage, on_delete=models.CASCADE, related_name="related_facts"
+    )
+    fact = models.ForeignKey(FactPage, on_delete=models.CASCADE, related_name="+")
+
+    panels = [
+        "fact",
     ]

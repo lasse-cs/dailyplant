@@ -1,0 +1,33 @@
+{% load wagtailadmin_tags %}
+
+<section class="w-panel" aria-labelledby="incoming-heading" data-panel id="incoming-section">
+    <div class="w-panel__header">
+        <a class="w-panel__anchor w-panel__anchor--prefix" href="#incoming-section" data-panel-anchor aria-labelledby="incoming-heading">
+            {% icon name="link" classname="w-panel__icon" %}
+        </a>
+        <button class="w-panel__toggle" type="button" aria-label="Toggle section" aria-describedby="incoming-heading" data-panel-toggle aria-controls="incoming-content" aria-expanded="true">
+            {% icon name="placeholder" classname="w-panel__icon" %}
+        </button>
+        <h2 class="w-panel__heading w-panel__heading--label" id="incoming-heading" data-panel-heading>
+            <span data-panel-heading-text>Incoming facts</span>
+        </h2>
+        <a class="w-panel__anchor w-panel__anchor--suffix" href="#incoming-section" aria-labelledby="incoming-heading">
+            {% icon name="link" classname="w-panel__icon" %}
+        </a>
+    </div>
+    <div id="incoming-content" class="w-panel__content">
+        <ul class="listing">
+            {% for fact in incoming %}
+                <li>
+                    <a href="{% url 'wagtailadmin_pages:edit' fact.id %}" class="title">
+                        {{ fact.title }}
+                    </a>
+                </li>
+            {% empty %}
+                <li>
+                    No incoming related facts.
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>

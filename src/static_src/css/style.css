@@ -215,7 +215,7 @@
     display: grid;
     place-items: center;
 
-    & .fact__card {
+    & .card {
       max-inline-size: 35rem;
       inline-size: 100%;
     }
@@ -331,6 +331,45 @@
       color: var(--color-text-muted);
       grid-area: newer;
     }
+  }
+
+  .fact__page {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .related__card {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1rem, 5vw, 3rem);
+  }
+
+  .related__listing {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+
+    & a {
+      display: flex;
+      justify-content: space-between;
+      color: var(--color-text-muted);
+    }
+
+    & a:hover, & a:focus-visible {
+      text-decoration: underline;
+    }
+
+    & a::after {
+      content: "→";
+    }
+  }
+
+  .related__header {
+    font-family: var(--font-heading);
+    font-size: 1em;
+    text-transform: uppercase;
   }
 
   .icon-link {
