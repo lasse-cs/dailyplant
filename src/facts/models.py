@@ -25,6 +25,8 @@ from wagtail.rich_text import expand_db_html
 
 from taggit.models import ItemBase, TagBase
 
+from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
+
 from core.models import MetadataMixin
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
@@ -250,6 +252,10 @@ class FactPage(MetadataMixin, Page):
         ),
         IncomingRelatedFactsPanel(),
     ]
+
+    promote_panels = [
+        UmamiAnalyticsPanel(),
+    ] + Page.promote_panels
 
 
 class FactPageRelatedFact(models.Model):

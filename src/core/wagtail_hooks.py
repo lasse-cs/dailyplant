@@ -5,7 +5,10 @@ from wagtail.admin.rich_text.editors.draftail.features import ControlFeature
 from wagtail.contrib.settings.models import register_setting
 
 from wagtail_umami_analytics.models import UmamiAnalyticsSetting
-from wagtail_umami_analytics.views import UmamiAnalyticsViewSet
+from wagtail_umami_analytics.views import (
+    register_umami_page_analytics_urls,
+    UmamiAnalyticsViewSet,
+)
 
 
 register_setting(UmamiAnalyticsSetting)
@@ -14,6 +17,9 @@ register_setting(UmamiAnalyticsSetting)
 @hooks.register("register_admin_viewset")
 def umami_dashboard():
     return UmamiAnalyticsViewSet()
+
+
+hooks.register("register_admin_urls", register_umami_page_analytics_urls)
 
 
 @hooks.register("register_rich_text_features")
