@@ -38,7 +38,7 @@ exclude-newer-package = { django = false, wagtail = false }
 
 [tool.uv.sources]
 django-vite-tags = { git = "https://github.com/lasse-cs/django-vite-tags.git", rev = "a69aabf0c10a45bcaa0e6f9cc2f44b4d1d7548fa" }
-wagtail-umami-analytics = { git = "https://github.com/lasse-cs/wagtail-umami-analytics.git", rev = "0e08a8b546e54e927511e8be5e65a6cd0416ae5c" }
+wagtail-umami-analytics = { git = "https://github.com/lasse-cs/wagtail-umami-analytics.git", rev = "b3f39616d9ec2a120f5ab33cbac979244e13da60" }
 
 
 [tool.ruff]
