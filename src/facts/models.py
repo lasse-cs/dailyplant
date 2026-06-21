@@ -22,6 +22,7 @@ from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamFiel
 from wagtail.models import Page, PageManager
 from wagtail.query import PageQuerySet
 from wagtail.rich_text import expand_db_html
+from wagtail.search import index
 
 from taggit.models import ItemBase, TagBase
 
@@ -256,6 +257,17 @@ class FactPage(MetadataMixin, Page):
     promote_panels = [
         UmamiAnalyticsPanel(),
     ] + Page.promote_panels
+
+    search_fields = Page.search_fields + [
+        index.SearchField("content"),
+        index.FilterField("date"),
+        index.RelatedFields(
+            "tags",
+            [
+                index.SearchField("name"),
+            ],
+        ),
+    ]
 
 
 class FactPageRelatedFact(models.Model):
