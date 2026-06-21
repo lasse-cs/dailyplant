@@ -1,4 +1,4 @@
-FROM node:24-bookworm-slim AS build-static
+FROM node:26-bookworm-slim AS build-static
 
 COPY ./package.json ./package-lock.json ./vite.config.js /app/
 
@@ -73,7 +73,7 @@ RUN ["python", "manage.py", "collectstatic", "--settings", "dailyplant.settings.
 CMD ["gunicorn", "--bind", ":8000", "dailyplant.wsgi:application"]
 
 
-FROM nginx:1.30.2-alpine AS nginx
+FROM nginx:1.31.2-alpine AS nginx
 
 # Copy in the build static files
 COPY --from=production /app/static/ /srv/app/static/
