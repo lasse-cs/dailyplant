@@ -11,7 +11,7 @@ from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
 
 class MetadataMixin:
-    metadata_template_name = "patterns/components/metadata/default.html"
+    metadata_template = "patterns/components/metadata/default.html"
     metadata_type = "website"
 
     def get_metadata_url(self, request):
