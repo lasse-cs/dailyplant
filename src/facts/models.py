@@ -97,14 +97,16 @@ class FactIndexPage(MetadataMixin, RoutablePage):
     def get_metadata_url(self, request):
         resolver_match = getattr(request, "routable_resolver_match", None)
         if resolver_match and resolver_match.url_name == "tag":
-            return routablefullpageurl(
+            metadata_url = routablefullpageurl(
                 {"request": request},
                 self,
                 resolver_match.url_name,
                 *resolver_match.args,
                 **resolver_match.kwargs,
             )
-        metadata_url = super().get_metadata_url(request)
+        else:
+            metadata_url = super().get_metadata_url(request)
+
         if "page" in request.GET:
             try:
                 page_number = int(request.GET["page"])
