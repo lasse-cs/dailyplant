@@ -223,6 +223,10 @@ class FactPage(MetadataMixin, Page):
         )
 
     def get_incoming_related_facts(self):
+        # If the fact is not saved, it can not have incoming facts
+        # and can not be used in a filter
+        if not self.id:
+            return FactPage.objects.none()
         return FactPage.objects.live().released().filter(related_facts__fact=self)
 
     def get_outgoing_related_facts(self):
