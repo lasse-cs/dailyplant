@@ -10,13 +10,10 @@
 {% block page_content %}
     <main id="main" tabindex="-1">
         <div class="card wide__card">
-            <form action="{% url 'wagtailadmin_login' %}" method="post">
-                {% csrf_token %}
-                <h1 class="title">Log In</h1>
-                <p>
-                    A log in link has been sent. Please check your email.
-                </p>
-            </form>
+            <h1 class="title">Log In</h1>
+            <p>
+                A log in link has been sent. Please check your email.
+            </p>
         </div>
     </main>
 {% endblock page_content %}
