@@ -189,7 +189,7 @@ class FactPage(MetadataMixin, Page):
     def clean(self):
         super().clean()
         # If we're a future date, schedule it for publishing at midnight
-        if not self.go_live_at and self.date and self.date > timezone.localdate():
+        if self.date and self.date > timezone.localdate():
             self.go_live_at = timezone.make_aware(datetime.combine(self.date, time.min))
 
     def get_older_fact(self):
