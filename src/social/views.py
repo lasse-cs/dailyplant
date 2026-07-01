@@ -49,6 +49,7 @@ class BlueskyPostListingView(BaseListingView):
     model = BlueskyPost
     page_title = "Bluesky Posts"
     header_icon = "comment"
+    ordering = ["-created_at"]
 
     columns = [
         TitleColumn(
