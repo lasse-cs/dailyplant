@@ -1,6 +1,9 @@
 from django.middleware.csrf import get_token
 from django.urls import path, reverse
 
+from django_filters import DateFromToRangeFilter, FilterSet
+
+from wagtail.admin.filters import DateRangePickerWidget
 from wagtail.admin.ui.tables import (
     ButtonsColumnMixin,
     DateColumn,
@@ -45,11 +48,23 @@ class BlueskyPostRetryView(BaseOperationView):
         self.object.save()
 
 
+class BlueskyPostFilterClass(FilterSet):
+    created_at = DateFromToRangeFilter(widget=DateRangePickerWidget)
+    updated_at = DateFromToRangeFilter(widget=DateRangePickerWidget)
+
+    class Meta:
+        model = BlueskyPost
+        fields = ["status"]
+
+
 class BlueskyPostListingView(BaseListingView):
     model = BlueskyPost
     page_title = "Bluesky Posts"
     header_icon = "comment"
     ordering = ["-created_at"]
+    index_url_name = "bluesky-posts:index"
+    index_results_url_name = "bluesky-posts:index_results"
+    filterset_class = BlueskyPostFilterClass
 
     columns = [
         TitleColumn(
@@ -73,6 +88,11 @@ class BlueskyPostViewset(ViewSet):
     def get_urlpatterns(self):
         return [
             path("", BlueskyPostListingView.as_view(), name="index"),
+            path(
+                "results/",
+                BlueskyPostListingView.as_view(results_only=True),
+                name="index_results",
+            ),
             path("<int:pk>/retry/", BlueskyPostRetryView.as_view(), name="retry"),
         ]
 
