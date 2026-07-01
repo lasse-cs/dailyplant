@@ -60,7 +60,7 @@ class BlueskyPostFilterClass(FilterSet):
 class BlueskyPostListingView(BaseListingView):
     model = BlueskyPost
     page_title = "Bluesky Posts"
-    header_icon = "comment"
+    header_icon = "bluesky"
     ordering = ["-created_at"]
     index_url_name = "bluesky-posts:index"
     index_results_url_name = "bluesky-posts:index_results"
@@ -81,8 +81,8 @@ class BlueskyPostListingView(BaseListingView):
 
 
 class BlueskyPostViewset(ViewSet):
-    icon = "comment"
-    menu_label = "Social Posts"
+    icon = "bluesky"
+    menu_label = "Bluesky Posts"
     add_to_admin_menu = True
 
     def get_urlpatterns(self):
