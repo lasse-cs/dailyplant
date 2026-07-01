@@ -59,5 +59,11 @@ class BlueskyPost(models.Model):
     def get_description(self):
         return self.page.metadata_description
 
+    def get_post_url(self):
+        if not self.bluesky_uri:
+            return None
+        _, _, repo, _, rkey = self.bluesky_uri.split("/")
+        return f"https://bsky.app/profile/{repo}/post/{rkey}"
+
     def __str__(self):
         return f"Bluesky Post - {self.status} - {self.page.title}"

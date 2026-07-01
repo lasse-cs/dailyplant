@@ -1,0 +1,10 @@
+{% load wagtailadmin_tags %}
+<td {% if column.classname %}class="{{ column.classname }} "{% endif %}>
+    {% status value classname=primary|yesno:"w-status--primary," %}
+    {% if retry_url %}
+        <form method="post" action="{{ retry_url }}" class="actions">
+            {% csrf_token %}
+            <button type="submit" class="button button-small button-secondary">Retry</button>
+        </form>
+    {% endif %}
+</td>
