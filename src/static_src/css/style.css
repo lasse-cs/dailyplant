@@ -80,6 +80,7 @@
   img,
   picture {
     max-inline-size: 100%;
+    block-size: auto;
     display: block;
   }
 
@@ -103,6 +104,7 @@
         --color-accent: #3e4638;
         --color-shadow: rgba(34, 33, 29, 0.12);
         --radius-card: 20px;
+        --radius-image: 15px;
         --radius-button: 5px;
         --shadow-card: 0 12px 30px var(--color-shadow);
     }
@@ -273,7 +275,27 @@
     flex: 1 1 auto;
   }
 
-  .fact__references {
+  .fact__figure {
+    margin-block: 0.5rem;
+  }
+
+  .fact__image {
+    border-radius: var(--radius-image);
+  }
+
+  .fact__subtitle {
+    font-family: var(--font-heading);
+    font-size: 1em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .fact__caption {
+    text-align: end;
+    font-style: italic;
+  }
+
+  .fact__references__list {
     list-style: decimal;
     margin-inline-start: 1rem;
   }

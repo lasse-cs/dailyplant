@@ -1,6 +1,6 @@
 {% load wagtailroutablepage_tags %}
 
-<ul class="fact__tag__list" role="list">
+<ul class="fact__tag__list" role="list" aria-label="Tags">
     {% for tag in tags %}
         <li class="fact__tag">
             <a href="{% routablepageurl index_page 'tag' tag.slug %}" class="link-unstyled{% if active_slug and tag.slug == active_slug %} active{% endif %}"{% if active_slug and tag.slug == active_slug %} aria-current="page"{% endif %}>{{ tag.name }}</a>

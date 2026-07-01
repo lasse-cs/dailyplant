@@ -21,7 +21,7 @@
 {% endif %}
 {% if metadata.image %}
     <meta property="og:image" content="{{ metadata.site.root_url }}{% image_url metadata.image 'fill-1200x630' 'wagtailimages_serve' %}">
-    <meta property="og:image:alt" content="{{ metadata.image.alt }}">
+    <meta property="og:image:alt" content="{% if metadata.image_alt %}{{ metadata.image_alt }}{% else %}{{ metadata.image.default_alt_text }}{% endif %}">
 {% endif %}
 
 {% if metadata.image %}
@@ -33,5 +33,5 @@
 {% endif %}
 {% if metadata.image %}
     <meta name="twitter:image" content="{{ metadata.site.root_url }}{% image_url metadata.image 'fill-1200x630' 'wagtailimages_serve' %}">
-    <meta name="twitter:image:alt" content="{{ metadata.image.alt }}">
+    <meta name="twitter:image:alt" content="{% if metadata.image_alt %}{{ metadata.image_alt }}{% else %}{{ metadata.image.default_alt_text }}{% endif %}">
 {% endif %}

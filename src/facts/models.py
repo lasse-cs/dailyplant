@@ -13,13 +13,14 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 
 from wagtail.admin.forms import WagtailAdminPageForm
-from wagtail.admin.panels import MultipleChooserPanel, Panel
+from wagtail.admin.panels import MultiFieldPanel, MultipleChooserPanel, Panel
 from wagtail.contrib.routable_page.models import RoutablePage, path
 from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import (
     routablefullpageurl,
 )
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
 from wagtail.models import Page, PageManager
+from wagtail.images import get_image_model
 from wagtail.query import PageQuerySet
 from wagtail.rich_text import expand_db_html
 from wagtail.search import index
@@ -176,15 +177,44 @@ class FactPage(MetadataMixin, Page):
         help_text="The content of this fact.",
         validators=[RichTextMaxLengthValidator(500)],
     )
+    image = models.ForeignKey(
+        get_image_model(),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="facts",
+    )
+    image_description = models.TextField(
+        max_length=150, help_text="The caption for this image", blank=True
+    )
+    image_alt = models.TextField(
+        max_length=300, help_text="Override the alt text for this image", blank=True
+    )
     references = StreamField(
         ReferenceStreamBlock, help_text="The references for this fact"
     )
     tags = ClusterTaggableManager(through="facts.TaggedFact", blank=True)
 
     @property
+    def image_alt_text(self):
+        if not self.image:
+            return
+        return self.image_alt or self.image.default_alt_text
+
+    @property
     def metadata_description(self):
         content = strip_tags(expand_db_html(self.content))
         return Truncator(" ".join(content.split())).chars(240, truncate="...")
+
+    @property
+    def metadata_image(self):
+        if not self.image:
+            return None
+        return self.image
+
+    @property
+    def metadata_image_alt(self):
+        return self.image_alt_text
 
     def clean(self):
         super().clean()
@@ -252,6 +282,14 @@ class FactPage(MetadataMixin, Page):
     content_panels = Page.content_panels + [
         "date",
         "content",
+        MultiFieldPanel(
+            [
+                "image",
+                "image_description",
+                "image_alt",
+            ],
+            heading="Fact Image",
+        ),
         "references",
         "tags",
         MultipleChooserPanel(

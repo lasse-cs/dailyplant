@@ -1,4 +1,4 @@
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 <article class="fact__card card">
     <header class="fact__header">
@@ -18,13 +18,30 @@
         <div class="fact__content">
             {{ fact.content|richtext }}
         </div>
-        <ol class="fact__references" role="list">
-            {% for block in fact.references %}
-                <li>
-                    {% include_block block %}
-                </li>
-            {% endfor %}
-        </ol>
+        {% if fact.image %}
+            <figure class="fact__figure">
+                {% picture fact.image format-{webp,jpeg} fill-560x315-c90 class="fact__image" alt=fact.image_alt_text %}
+                {% if fact.image_description %}
+                    <figcaption class="fact__caption">
+                        {{ fact.image_description }}
+                    </figcaption>
+                {% endif %}
+            </figure>
+        {% endif %}
+        <div class="fact__references">
+            {% if fact.heading_level == 'h2' %}
+                <h3 class="fact__subtitle" id="references-{{ fact.id }}">References</h3>
+            {% else %}
+                <h2 class="fact__subtitle" id="references-{{ fact.id }}">References</h2>
+            {% endif %}
+            <ol class="fact__references__list" role="list" aria-labelledby="references-{{ fact.id }}">
+                {% for block in fact.references %}
+                    <li>
+                        {% include_block block %}
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
         {% with tags=fact.tags.all %}
             {% if tags %}
                 {% include "patterns/components/tags/tag_list.html" %}
