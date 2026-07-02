@@ -13,6 +13,7 @@ from sesame.views import LoginView
 from dailyplant.views import error_500_test, robots_txt
 from facts.feeds import FactsAtomFeed, FactsRssFeed
 from users.views import EmailLoginView
+from search.views import search
 
 
 urlpatterns = [
@@ -20,6 +21,7 @@ urlpatterns = [
     path("admin/login/", EmailLoginView.as_view(), name="wagtailadmin_login"),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
+    path("search/", search, name="search"),
     path("error-500-test/", error_500_test, name="server_error"),
     path("rss.xml", FactsRssFeed(), name="facts_rss_feed"),
     path("atom.xml", FactsAtomFeed(), name="facts_atom_feed"),

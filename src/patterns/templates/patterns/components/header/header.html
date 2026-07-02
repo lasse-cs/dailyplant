@@ -11,5 +11,8 @@
             </a>
         {% endif %}
     </div>
-    {% main_menu current_site %}
+    <div class="site-header__actions">
+        {% main_menu current_site %}
+        {% include "patterns/components/search/dialog.html" %}
+    </div>
 </header>
