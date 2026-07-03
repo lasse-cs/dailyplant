@@ -273,6 +273,39 @@ class FactPage(MetadataMixin, Page):
             .distinct()
         )
 
+    def get_schema_graph(self, request, metadata):
+        article = {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": metadata["title"],
+            "description": metadata["description"],
+            "url": metadata["url"],
+            "datePublished": self.date,
+        }
+
+        if metadata["site"].site_name:
+            article["author"] = {
+                "@type": "Organization",
+                "name": metadata["site"].site_name,
+            }
+
+        keywords = [tag.name for tag in self.tags.all()]
+        if keywords:
+            article["keywords"] = keywords
+
+        citations = [
+            {
+                "@type": "CreativeWork",
+                "name": strip_tags(block.value["label"]),
+                "url": block.value["url"],
+            }
+            for block in self.references
+        ]
+        if citations:
+            article["citation"] = citations
+
+        return [article]
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["share"] = self.get_full_url(request)
