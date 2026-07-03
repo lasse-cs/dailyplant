@@ -4,6 +4,7 @@
         type="button"
         data-action="search#open keydown.ctrl+k@window->search#openForKey keydown.meta+k@window->search#openForKey"
     >
+        {% include "svgs/search.html" with icon_class="command-search__icon" %}
         <span>Search</span>
         <kbd data-search-target="shortcut">CTRL K</kbd>
     </button>
@@ -17,19 +18,24 @@
         <div class="command-search__panel">
             <h2 class="visually-hidden" id="command-search-title">Search</h2>
             <label class="visually-hidden" for="command-search-input">Search query</label>
-            <input
-                id="command-search-input"
-                class="command-search__input"
-                type="search"
-                name="q"
-                placeholder="Search..."
-                autocomplete="off"
-                autofocus
-                hx-get="{% url 'search' %}"
-                hx-trigger="input changed delay:500ms, keydown[key=='Enter']"
-                hx-target="#command-search-results"
-                hx-swap="innerHTML"
-            >
+            <div class="command-search__input-wrap">
+                {% include "svgs/search.html" with icon_class="command-search__input-icon" %}
+                {% include "svgs/spinner.html" with icon_id="command-search-input-spinner" icon_class="command-search__input-spinner" %}
+                <input
+                    id="command-search-input"
+                    class="command-search__input"
+                    type="search"
+                    name="q"
+                    placeholder="Search..."
+                    autocomplete="off"
+                    autofocus
+                    hx-get="{% url 'search' %}"
+                    hx-trigger="input changed delay:500ms, keydown[key=='Enter']"
+                    hx-target="#command-search-results"
+                    hx-indicator="#command-search-input-spinner"
+                    hx-swap="innerHTML"
+                >
+            </div>
             <div id="command-search-results" class="command-search__results">
                 {% include "patterns/components/search/results.html" with query="" results=None %}
             </div>
