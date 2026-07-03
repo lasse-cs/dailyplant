@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.utils.cache import patch_vary_headers
 from django.views.decorators.http import require_GET
 
 from facts.models import FactPage
@@ -20,11 +21,11 @@ def search(request):
             .search(query)[:MAX_SEARCH_RESULTS]
         )
 
-    return render(
-        request,
-        "patterns/components/search/results.html",
-        {
-            "query": query,
-            "results": results,
-        },
-    )
+    if "HX-Request" in request.headers:
+        template = "patterns/components/search/results.html"
+    else:
+        template = "patterns/pages/search/search.html"
+
+    response = render(request, template, {"query": query, "results": results})
+    patch_vary_headers(response, ["HX-Request"])
+    return response

@@ -1,0 +1,43 @@
+{% extends "patterns/base.html" %}
+
+{% block skiplinks %}
+    {{ block.super }}
+    <a href="#search-results" class="skip-to-main">Skip to search results</a>
+{% endblock skiplinks %}
+
+{% block page_content %}
+    <main id="main" class="search-page" tabindex="-1">
+        <header class="card wide__card">
+            <h1 class="title">Search</h1>
+            <form
+                class="search-page__form"
+                action="{% url 'search' %}"
+                method="get"
+                hx-get="{% url 'search' %}"
+                hx-trigger="input changed delay:500ms, submit"
+                hx-target="#search-results"
+                hx-indicator="#search-page-input-spinner"
+                hx-swap="innerHTML"
+                hx-replace-url="true"
+            >
+                <label class="visually-hidden" for="search-page-input">Search query</label>
+                <div class="command-search__input-wrap">
+                    {% include "svgs/search.html" with icon_class="command-search__input-icon" %}
+                    {% include "svgs/spinner.html" with icon_id="search-page-input-spinner" icon_class="command-search__input-spinner" %}
+                    <input
+                        id="search-page-input"
+                        class="command-search__input"
+                        type="search"
+                        name="q"
+                        value="{{ query }}"
+                        placeholder="Search..."
+                        autocomplete="off"
+                    >
+                </div>
+                <button class="search-page__button" type="submit">Search</button>
+            </form>
+        </header>
+
+        <section id="search-results" class="card wide__card search-page__results" aria-label="Search results" tabindex="-1">{% if query %}{% include "patterns/components/search/results.html" %}{% endif %}</section>
+    </main>
+{% endblock page_content %}

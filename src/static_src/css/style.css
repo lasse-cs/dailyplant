@@ -403,6 +403,49 @@
     padding-inline: 1rem;
   }
 
+  .search-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .search-page__form {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .search-page__form .command-search__input-wrap {
+    flex: 1;
+  }
+
+  .search-page__button {
+    border: 0;
+    border-radius: var(--radius-button);
+    background: var(--color-text);
+    color: var(--color-bg);
+    cursor: pointer;
+    padding-inline: 1rem;
+  }
+
+  .search-page__button:hover,
+  .search-page__button:focus-visible {
+    background-color: var(--color-accent);
+  }
+
+  .search-page__results:not(:has(> *)) {
+    display: none;
+  }
+
+  @media (max-width: 35rem) {
+    .search-page__form {
+      flex-direction: column;
+    }
+
+    .search-page__button {
+      padding-block: 0.5rem;
+    }
+  }
+
   .centered-card {
     display: grid;
     place-items: center;

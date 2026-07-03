@@ -3,6 +3,7 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template import Library
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -75,6 +76,14 @@ def build_base_schema(request, metadata):
         "url": site_url,
         "name": site.site_name,
         "description": settings.description,
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": f"{site_url.rstrip('/')}{reverse('search')}?q={{search_term_string}}",
+            },
+            "query-input": "required name=search_term_string",
+        },
     }
 
     social_settings = SocialMediaSettings.for_site(site)
