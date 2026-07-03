@@ -254,6 +254,16 @@
     padding: 0.1rem 0.45rem;
   }
 
+  @media (max-width: 35rem) {
+    .command-search__trigger {
+      padding: 0.4rem 0.75rem;
+    }
+
+    .command-search__trigger kbd {
+      display: none;
+    }
+  }
+
   .command-search__dialog {
     inline-size: min(42rem, calc(100vw - 1.5rem));
     margin-block-start: 12vh;
