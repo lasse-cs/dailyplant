@@ -13,7 +13,12 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 
 from wagtail.admin.forms import WagtailAdminPageForm
-from wagtail.admin.panels import MultiFieldPanel, MultipleChooserPanel, Panel
+from wagtail.admin.panels import (
+    FieldPanel,
+    MultiFieldPanel,
+    MultipleChooserPanel,
+    Panel,
+)
 from wagtail.contrib.routable_page.models import RoutablePage, path
 from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import (
     routablefullpageurl,
@@ -318,8 +323,15 @@ class FactPage(MetadataMixin, Page):
         MultiFieldPanel(
             [
                 "image",
-                "image_description",
-                "image_alt",
+                FieldPanel(
+                    "image_description",
+                    heading="Image Caption",
+                    help_text="The caption displayed underneath the image.",
+                ),
+                FieldPanel(
+                    "image_alt",
+                    help_text="Override the alt text for this image. If not provided, falls back to the description of the image.",
+                ),
             ],
             heading="Fact Image",
         ),
