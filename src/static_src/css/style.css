@@ -191,7 +191,6 @@
     display: flex;
     justify-content: center;
     padding-block: 4rem;
-    flex-wrap: wrap;
   }
 
   .link-unstyled {
@@ -788,6 +787,7 @@
   .social__list {
     display: inline-flex;
     gap: 2rem;
+    flex-wrap: wrap;
   }
 
   .pagination {
