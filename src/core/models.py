@@ -49,11 +49,17 @@ class MetadataSettings(BaseSiteSetting):
 
 def _is_markdown(request):
     content_type = request.get_preferred_type(["text/html", "text/markdown"])
-    return content_type == "text/markdown"
+    is_markdown = content_type == "text/markdown"
+    is_markdown |= getattr(request, "preview_mode", "") == "markdown"
+    return is_markdown
 
 
 class MarkdownRoutablePageMixin:
     markdown_template = None
+
+    @property
+    def preview_modes(self):
+        return [*super().preview_modes, ("markdown", "Markdown")]
 
     @path("")
     def index_route(self, request, *args, **kwargs):
@@ -97,6 +103,16 @@ class MarkdownRoutablePageMixin:
 
 class MarkdownPageMixin:
     markdown_template = None
+
+    @property
+    def preview_modes(self):
+        return [*super().preview_modes, ("markdown", "Markdown")]
+
+    def serve_preview(self, request, mode_name):
+        if mode_name == "markdown":
+            request.is_markdown_preview = True
+            return self.serve_markdown(request)
+        return super().serve_preview(request, mode_name)
 
     def serve(self, request, *args, **kwargs):
         if _is_markdown(request):
