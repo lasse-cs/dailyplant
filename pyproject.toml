@@ -15,6 +15,7 @@ dependencies = [
     "sentry-sdk>=2.61.0",
     "wagtail>=7.4,<8.0",
     "atproto>=0.0.67",
+    "markdownify>=1.2.3",
 ]
 
 [dependency-groups]

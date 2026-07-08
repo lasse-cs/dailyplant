@@ -1,10 +1,12 @@
-{% load wagtailcore_tags %}
+{% load markdown_tags wagtailcore_tags %}
 ---
 title: "{{ page.title }}"
 url: {{ metadata_url }}
 ---
 
 # {{ page.title }}
+
+{{ page.introduction|richtext|markdownify }}
 
 {% if active_slug %}Filtered on Tag {{ active_slug }}{% endif %}
 
