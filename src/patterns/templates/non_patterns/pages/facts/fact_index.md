@@ -11,7 +11,7 @@ url: {{ metadata_url }}
 {% if active_slug %}Filtered on Tag {{ active_slug }}{% endif %}
 
 {% for fact in facts %}
-1. [{{ fact.title }}]({% fullpageurl fact %})
+1. [{{ fact.title }}]({% markdownpageurl fact %})
 {% empty %}
 No facts found.
 {% endfor %}

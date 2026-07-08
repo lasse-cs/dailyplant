@@ -1,4 +1,4 @@
-{% load menu_tags wagtailcore_tags wagtailimages_tags %}
+{% load markdown_tags menu_tags wagtailcore_tags wagtailimages_tags %}
 ---
 title: "{{ page.title }}"
 url: {% fullpageurl page %}
@@ -18,7 +18,7 @@ url: {% fullpageurl page %}
 
 {% if fact %}
 ## {{ fact.title }}
-Link: {% fullpageurl fact %}
+Link: {% markdownpageurl fact %}
 Date: {{ fact.date|date:'Y-m-d' }}
 
 {% include "non_patterns/facts/fact_body.md" with fact=fact %}

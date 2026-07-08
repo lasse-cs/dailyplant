@@ -1,7 +1,7 @@
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load markdown_tags wagtailcore_tags wagtailimages_tags %}
 ---
 title: "{{ page.title }}"
-url: {% fullpageurl page %}
+url: {% markdownpageurl page %}
 ---
 
 # {{ page.title }}
@@ -15,6 +15,6 @@ Date: {{ page.date|date:'Y-m-d' }}
 {% if related_facts %}
 ## Related Facts
 {% for related_fact in related_facts %}
-- [{{ related_fact.title }}]({% fullpageurl related_fact %})
+- [{{ related_fact.title }}]({% markdownpageurl related_fact %})
 {% endfor %}
 {% endif %}

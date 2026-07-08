@@ -9,6 +9,7 @@ class HomePage(MarkdownPageMixin, Page):
     parent_page_types = ["wagtailcore.Page"]
     template = "patterns/pages/home/home_page.html"
     markdown_template = "non_patterns/pages/home/home_page.md"
+    supports_md_suffix = False
 
     def get_fact(self):
         return FactPage.objects.live().released().order_by("-date").first()

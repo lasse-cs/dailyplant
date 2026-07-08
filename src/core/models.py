@@ -51,11 +51,13 @@ def _is_markdown(request):
     content_type = request.get_preferred_type(["text/html", "text/markdown"])
     is_markdown = content_type == "text/markdown"
     is_markdown |= getattr(request, "preview_mode", "") == "markdown"
+    is_markdown |= getattr(request, "is_md_suffix", False)
     return is_markdown
 
 
 class MarkdownRoutablePageMixin:
     markdown_template = None
+    supports_md_suffix = True
 
     @property
     def preview_modes(self):
@@ -103,6 +105,7 @@ class MarkdownRoutablePageMixin:
 
 class MarkdownPageMixin:
     markdown_template = None
+    supports_md_suffix = True
 
     @property
     def preview_modes(self):

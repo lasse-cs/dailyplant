@@ -10,7 +10,7 @@ from wagtail.images.views.serve import ServeView
 
 from sesame.views import LoginView
 
-from dailyplant.views import error_500_test, robots_txt
+from dailyplant.views import error_500_test, markdown_suffix_page, robots_txt
 from facts.feeds import FactsAtomFeed, FactsRssFeed
 from users.views import EmailLoginView
 from search.views import search
@@ -65,6 +65,11 @@ if settings.DEBUG:
         ]
 
 urlpatterns = urlpatterns + [
+    re_path(
+        r"^(?P<path>(?:[\w-]+/)*[\w-]+)\.md$",
+        markdown_suffix_page,
+        name="markdown_suffix_page",
+    ),
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in
     # the list:

@@ -1,7 +1,7 @@
 {% load markdown_tags wagtailcore_tags %}
 ---
 title: "{{ page.title }}"
-url: {% fullpageurl page %}
+url: {% markdownpageurl page %}
 ---
 
 # {{ page.title }}

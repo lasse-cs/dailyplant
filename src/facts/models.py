@@ -63,6 +63,7 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
     max_count = 1
     template = "patterns/pages/facts/fact_index.html"
     markdown_template = "non_patterns/pages/facts/fact_index.md"
+    supports_md_suffix = False
 
     introduction = RichTextField(
         blank=True, help_text="Introductory content for the fact index page."
