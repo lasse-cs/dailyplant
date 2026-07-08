@@ -3,7 +3,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from django import forms
 from django.db import models
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.cache import patch_vary_headers
 from django.utils.html import strip_tags
@@ -34,7 +34,7 @@ from taggit.models import ItemBase, TagBase
 
 from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
 
-from core.models import MetadataMixin
+from core.models import MarkdownPageMixin, MarkdownRoutablePageMixin, MetadataMixin
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from facts.blocks import ReferenceStreamBlock
@@ -57,11 +57,12 @@ class TaggedFact(ItemBase):
     )
 
 
-class FactIndexPage(MetadataMixin, RoutablePage):
+class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
     parent_page_types = ["home.HomePage"]
     subpage_types = ["facts.FactPage"]
     max_count = 1
     template = "patterns/pages/facts/fact_index.html"
+    markdown_template = "non_patterns/pages/facts/fact_index.md"
 
     introduction = RichTextField(
         blank=True, help_text="Introductory content for the fact index page."
@@ -75,11 +76,9 @@ class FactIndexPage(MetadataMixin, RoutablePage):
     @path("tags/<slug:slug>/", name="tag")
     def tag(self, request, slug):
         get_object_or_404(FactTag, slug=slug)
-        context = self.get_context(request, slug=slug)
-        template = self.get_template(request)
-        return render(request, template, context)
+        return self.render(request, slug=slug)
 
-    def get_template(self, request):
+    def get_template(self, request, *args, **kwargs):
         if "HX-Request" in request.headers:
             return "non_patterns/facts/partials/fact_index.html"
         return super().get_template(request)
@@ -100,19 +99,20 @@ class FactIndexPage(MetadataMixin, RoutablePage):
     def get_tags(self):
         return FactTag.objects.all()
 
-    def get_metadata_url(self, request):
+    def get_index_url(self, request):
         resolver_match = getattr(request, "routable_resolver_match", None)
         if resolver_match and resolver_match.url_name == "tag":
-            metadata_url = routablefullpageurl(
+            return routablefullpageurl(
                 {"request": request},
                 self,
                 resolver_match.url_name,
                 *resolver_match.args,
                 **resolver_match.kwargs,
             )
-        else:
-            metadata_url = super().get_metadata_url(request)
+        return super().get_metadata_url(request)
 
+    def get_metadata_url(self, request):
+        metadata_url = self.get_index_url(request)
         if "page" in request.GET:
             try:
                 page_number = int(request.GET["page"])
@@ -138,6 +138,8 @@ class FactIndexPage(MetadataMixin, RoutablePage):
         context["facts"] = facts
         context["tags"] = self.get_tags()
         context["active_slug"] = slug
+        context["index_url"] = self.get_index_url(request)
+        context["metadata_url"] = self.get_metadata_url(request)
         return context
 
     content_panels = Page.content_panels + [
@@ -168,12 +170,13 @@ class IncomingRelatedFactsPanel(Panel):
             return context
 
 
-class FactPage(MetadataMixin, Page):
+class FactPage(MetadataMixin, MarkdownPageMixin, Page):
     objects = PageManager.from_queryset(FactPageQuerySet)()
 
     parent_page_types = ["facts.FactIndexPage"]
     subpage_types = []
     template = "patterns/pages/facts/fact.html"
+    markdown_template = "non_patterns/pages/facts/fact.md"
     metadata_type = "article"
     base_form_class = FactPageForm
 

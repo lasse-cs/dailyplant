@@ -10,3 +10,8 @@ def main_menu(site):
     return {
         "menu_items": menu_items,
     }
+
+
+@register.inclusion_tag("non_patterns/core/main_menu.md")
+def markdown_main_menu(site):
+    return main_menu(site)

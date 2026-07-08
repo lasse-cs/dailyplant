@@ -1,4 +1,6 @@
 from django.db import models
+from django.shortcuts import render
+from django.utils.cache import patch_vary_headers
 
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -7,6 +9,7 @@ from wagtail.admin.panels import InlinePanel
 from wagtail.fields import RichTextField
 from wagtail.images import get_image_model_string
 from wagtail.models import Orderable, Page
+from wagtail.contrib.routable_page.models import path
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
 
@@ -44,8 +47,79 @@ class MetadataSettings(BaseSiteSetting):
     ]
 
 
-class ContentPage(Page):
+def _is_markdown(request):
+    content_type = request.get_preferred_type(["text/html", "text/markdown"])
+    return content_type == "text/markdown"
+
+
+class MarkdownRoutablePageMixin:
+    markdown_template = None
+
+    @path("")
+    def index_route(self, request, *args, **kwargs):
+        request.is_preview = getattr(request, "is_preview", False)
+        return self.render(request, *args, **kwargs)
+
+    def render(self, request, *args, template=None, context_overrides=None, **kwargs):
+        if _is_markdown(request):
+            response = self.render_markdown(
+                request,
+                *args,
+                template=template,
+                context_overrides=context_overrides,
+                **kwargs,
+            )
+        else:
+            response = super().render(
+                request,
+                *args,
+                template=template,
+                context_overrides=context_overrides,
+                **kwargs,
+            )
+        patch_vary_headers(response, ["Accept"])
+        return response
+
+    def render_markdown(
+        self, request, *args, template=None, context_overrides=None, **kwargs
+    ):
+        if template is None:
+            template = self.get_markdown_template(request, *args, **kwargs)
+        context = self.get_context(request, *args, **kwargs)
+        context.update(context_overrides or {})
+        return render(
+            request, template, context, content_type="text/markdown; charset=utf-8"
+        )
+
+    def get_markdown_template(self, request, *args, **kwargs):
+        return self.markdown_template
+
+
+class MarkdownPageMixin:
+    markdown_template = None
+
+    def serve(self, request, *args, **kwargs):
+        if _is_markdown(request):
+            response = self.serve_markdown(request, *args, **kwargs)
+        else:
+            response = super().serve(request, *args, **kwargs)
+        patch_vary_headers(response, ["Accept"])
+        return response
+
+    def serve_markdown(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
+        template = self.get_markdown_template(request, *args, **kwargs)
+        return render(
+            request, template, context, content_type="text/markdown; charset=utf-8"
+        )
+
+    def get_markdown_template(self, request, *args, **kwargs):
+        return self.markdown_template
+
+
+class ContentPage(MarkdownPageMixin, Page):
     template = "patterns/pages/core/content.html"
+    markdown_template = "non_patterns/pages/core/content.md"
 
     body = RichTextField(help_text="The content for this page.")
 
