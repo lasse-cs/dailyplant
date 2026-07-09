@@ -2,6 +2,8 @@ from django import template
 from django.utils.safestring import mark_safe
 from markdownify import markdownify as html_to_markdown
 
+from core.models import markdown_page_url
+
 
 register = template.Library()
 
@@ -15,7 +17,4 @@ def markdownify(value):
 
 @register.simple_tag(takes_context=True)
 def markdownpageurl(context, page):
-    url = page.get_full_url(request=context.get("request"))
-    if not getattr(page, "supports_md_suffix", False):
-        return url
-    return url.rstrip("/") + ".md"
+    return markdown_page_url(page, request=context.get("request"))

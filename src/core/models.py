@@ -55,6 +55,13 @@ def _is_markdown(request):
     return is_markdown
 
 
+def markdown_page_url(page, request=None):
+    url = page.get_full_url(request)
+    if not getattr(page, "supports_md_suffix", False):
+        return url
+    return url.rstrip("/") + ".md"
+
+
 class MarkdownRoutablePageMixin:
     markdown_template = None
     supports_md_suffix = True
@@ -95,9 +102,14 @@ class MarkdownRoutablePageMixin:
             template = self.get_markdown_template(request, *args, **kwargs)
         context = self.get_context(request, *args, **kwargs)
         context.update(context_overrides or {})
-        return render(
+        response = render(
             request, template, context, content_type="text/markdown; charset=utf-8"
         )
+        markdown_url = markdown_page_url(self, request)
+        if markdown_url.endswith(".md"):
+            response.headers["Content-Location"] = markdown_url
+
+        return response
 
     def get_markdown_template(self, request, *args, **kwargs):
         return self.markdown_template
@@ -128,9 +140,13 @@ class MarkdownPageMixin:
     def serve_markdown(self, request, *args, **kwargs):
         context = self.get_context(request, *args, **kwargs)
         template = self.get_markdown_template(request, *args, **kwargs)
-        return render(
+        response = render(
             request, template, context, content_type="text/markdown; charset=utf-8"
         )
+        markdown_url = markdown_page_url(self, request)
+        if markdown_url.endswith(".md"):
+            response.headers["Content-Location"] = markdown_url
+        return response
 
     def get_markdown_template(self, request, *args, **kwargs):
         return self.markdown_template
