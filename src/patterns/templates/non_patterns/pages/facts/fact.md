@@ -18,3 +18,5 @@ Date: {{ page.date|date:'Y-m-d' }}
 - [{{ related_fact.title }}]({% markdownpageurl related_fact %})
 {% endfor %}
 {% endif %}
+
+{% render_markdown_json_ld %}

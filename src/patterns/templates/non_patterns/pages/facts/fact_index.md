@@ -23,3 +23,5 @@ Page {{ facts.number }}
 {% if facts.has_previous %}
 [Previous Page]({{ index_url }}{% querystring page=facts.previous_page_number %})
 {% endif %}
+
+{% render_markdown_json_ld %}

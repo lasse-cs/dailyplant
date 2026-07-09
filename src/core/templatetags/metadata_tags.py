@@ -107,6 +107,16 @@ def build_structured_data(page, request, metadata):
     return schemas
 
 
+def build_json_ld(page, request, indent=None, **overrides):
+    metadata = build_metadata(page, request, **overrides)
+    json_ld = json.dumps(
+        build_structured_data(page, request, metadata),
+        cls=DjangoJSONEncoder,
+        indent=indent,
+    )
+    return json_ld
+
+
 def get_metadata_template(page):
     return getattr(
         page, "metadata_template", "patterns/components/metadata/default.html"
@@ -132,10 +142,7 @@ def render_metadata(context, **overrides):
 def render_json_ld(context, **overrides):
     request = context.get("request")
     page = context.get("page")
-    metadata = build_metadata(page, request, **overrides)
-    json_ld = json.dumps(
-        build_structured_data(page, request, metadata), cls=DjangoJSONEncoder
-    ).translate(JSON_LD_ESCAPE)
+    json_ld = build_json_ld(page, request, **overrides).translate(JSON_LD_ESCAPE)
     return format_html(
         '<script type="application/ld+json">{}</script>',
         mark_safe(json_ld),

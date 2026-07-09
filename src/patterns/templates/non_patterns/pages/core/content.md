@@ -7,3 +7,5 @@ url: {% fullpageurl page %}
 # {{ page.title }}
 
 {{ page.body|richtext|markdownify }}
+
+{% render_markdown_json_ld %}

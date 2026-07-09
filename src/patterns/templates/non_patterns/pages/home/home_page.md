@@ -26,3 +26,5 @@ Date: {{ fact.date|date:'Y-m-d' }}
 ### References
 {% include "non_patterns/facts/fact_references.md" with fact=fact %}
 {% endif %}
+
+{% render_markdown_json_ld %}
