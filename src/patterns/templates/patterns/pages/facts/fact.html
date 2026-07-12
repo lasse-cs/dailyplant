@@ -5,7 +5,9 @@
 {% block page_content %}
     <main id="main" class="fact__page" tabindex="-1">
         <div class="centered-card">
-            {% include "patterns/components/facts/card.html" with fact=page index_page=page.get_parent.specific include_footer=True %}
+            <div class="card__stack">
+                {% include "patterns/components/facts/card.html" with fact=page index_page=page.get_parent.specific include_footer=True %}
+            </div>
         </div>
 
         {% if related_facts %}

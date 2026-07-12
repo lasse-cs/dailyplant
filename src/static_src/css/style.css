@@ -97,14 +97,15 @@
         --font-heading: "Cormorant Garamond", serif;
         --font-body: "Source Sans 3", sans-serif;
         --color-bg: #f7f4ec;
-        --color-surface: rgba(255, 252, 245, 0.82);
+        --color-surface: rgba(255, 252, 245);
         --color-text: #22211d;
         --color-text-muted: #5f5b50;
-        --color-border: #8e9184;
+        --color-border: rgba(92,80,60,.13);
         --color-accent: #3e4638;
         --color-shadow: rgba(34, 33, 29, 0.12);
-        --radius-card: 20px;
-        --radius-image: 15px;
+        --color-shadow-subtle: rgba(34, 33, 29, 0.03);
+        --radius-card: 5px;
+        --radius-image: 5px;
         --radius-button: 5px;
         --shadow-card: 0 12px 30px var(--color-shadow);
     }
@@ -456,12 +457,64 @@
     }
   }
 
+  .card__stack {
+    position: relative;
+    isolation: isolate;
+
+    &::after, &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+
+      border-radius: var(--radius-card);
+      border: 1px solid var(--color-border);
+
+      background: var(--color-surface);
+      box-shadow: var(--shadow-card);
+      pointer-events:none;
+    }
+
+    &::before {
+      transform: translate(11px, -14px) rotate(1.5deg);
+      z-index: -2;
+    }
+
+    &::after {
+      transform: translate(8px, -8px) rotate(-0.75deg);
+      z-index: -1;
+    }
+  }
+
   .card {
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-card);
-    background: var(--color-surface);
+    background:
+      radial-gradient(
+        circle at 18% 14%,
+        rgba(255,255,255,.32),
+        transparent 36%
+      ),
+      radial-gradient(
+        circle at 82% 88%,
+        rgba(120,100,70,.05),
+        transparent 15%
+      ),
+      var(--color-surface);
     box-shadow: var(--shadow-card);
     backdrop-filter: blur(3px);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+
+      pointer-events: none;
+      border-radius: inherit;
+      box-shadow:
+          inset 0 0 18px var(--color-shadow-subtle),
+          inset 0 -1px 0 var(--color-shadow-subtle);
+      }
   }
 
   .fact__card {
