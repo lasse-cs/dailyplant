@@ -14,7 +14,6 @@
         <p class="fact__date">
             <span class="fact__date__line" aria-hidden="true"></span>
             <time datetime="{{ fact.date|date:'Y-m-d'}}">
-                {% include "svgs/calendar.html" with icon_class="fact-date__icon" %}
                 <span>
                     {{ fact.date|date:'M d, Y' }}
                 </span>

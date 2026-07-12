@@ -199,10 +199,39 @@
   }
 
   .brand-link {
+    position: relative;
+    display: inline-block;
     font-family: var(--font-heading);
     font-size: clamp(2rem, 2.5rem, 3rem);
     font-weight: 600;
     letter-spacing: 0.02em;
+
+    &::after {
+      position: absolute;
+      inset: auto 0 0.08em;
+      block-size: 0.08em;
+      background: currentcolor;
+      clip-path: polygon(0 35%, 18% 18%, 41% 42%, 64% 12%, 82% 34%, 100% 20%, 100% 82%, 78% 68%, 57% 88%, 34% 65%, 13% 84%, 0 70%);
+      content: "";
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 180ms ease-out;
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-text);
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::after {
+        transition: none;
+      }
+    }
   }
 
   #main-nav {
@@ -543,20 +572,12 @@
     
     .fact__date__line {
       background: linear-gradient(to right, transparent, var(--color-accent));
-      height: 1px;
+      block-size: 0.18rem;
+      clip-path: polygon(0 35%, 18% 18%, 41% 42%, 64% 12%, 82% 34%, 100% 20%, 100% 82%, 78% 68%, 57% 88%, 34% 65%, 13% 84%, 0 70%);
     }
 
     & .fact__date__line:last-child {
       background: linear-gradient(to left, transparent, var(--color-accent));
-    }
-
-    & time {
-      display: flex;
-      gap: 0.3rem;
-    }
-    & svg {
-      height: 1.5rem;
-      width: 1.5rem;
     }
   }
 
