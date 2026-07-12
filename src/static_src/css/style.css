@@ -460,6 +460,7 @@
   .card__stack {
     position: relative;
     isolation: isolate;
+    margin: 1rem;
 
     &::after, &::before {
       content: "";
@@ -504,7 +505,7 @@
     backdrop-filter: blur(3px);
     position: relative;
 
-    &::before {
+    &::after {
       content: "";
       position: absolute;
       inset: 0;
