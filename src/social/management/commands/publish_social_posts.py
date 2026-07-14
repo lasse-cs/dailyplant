@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 from wagtail.images.models import SourceImageIOError
 
+from social.bluesky import BLUESKY_FORMATTERS
 from social.models import BlueskyPost, BlueskyPostStatus
 
 
@@ -39,18 +40,26 @@ class Command(BaseCommand):
         posts = BlueskyPost.objects.filter(status=BlueskyPostStatus.PENDING)
 
         for post in posts:
-            if not post.page.live:
+            page = post.page.specific
+            if not page.live:
                 self.stdout.write(
                     self.style.NOTICE(
-                        f"Deleted entry for {post.page.title} because no longer live."
+                        f"Deleted entry for {page.title} because no longer live."
                     )
                 )
                 post.delete()
                 continue
 
             try:
+                formatter = BLUESKY_FORMATTERS.get(page.specific_class)
+                if not formatter:
+                    raise ValueError(
+                        f"No Bluesky formatter is registered for {page._meta.label}."
+                    )
+                content = formatter(page)
+
                 thumb_blob = None
-                if thumbnail_image := post.get_thumbnail_image():
+                if thumbnail_image := content.thumbnail_image:
                     rendition = thumbnail_image.get_rendition("fill-1200x630")
                     with rendition.file.open("rb") as f:
                         thumb_data = f.read()
@@ -64,20 +73,20 @@ class Command(BaseCommand):
 
                 embed = models.AppBskyEmbedExternal.Main(
                     external=models.AppBskyEmbedExternal.External(
-                        uri=post.get_url(),
-                        title=post.get_title(),
-                        description=post.get_description(),
+                        uri=content.url,
+                        title=content.title,
+                        description=content.description,
                         thumb=thumb_blob,
                     )
                 )
 
-                response = client.send_post(post.format_post(), embed=embed)
+                response = client.send_post(content.text, embed=embed)
                 post.bluesky_uri = response.uri
                 post.bluesky_cid = response.cid
                 error = ""
                 status = BlueskyPostStatus.POSTED
                 self.stdout.write(
-                    self.style.SUCCESS(f"Successfully posted {post.page.title}")
+                    self.style.SUCCESS(f"Successfully posted {page.title}")
                 )
             except (
                 AtProtocolError,
@@ -88,9 +97,7 @@ class Command(BaseCommand):
             ) as e:
                 status = BlueskyPostStatus.FAILED
                 error = str(e)
-                self.stdout.write(
-                    self.style.ERROR(f"Failed to post {post.page.title}: {e}")
-                )
+                self.stdout.write(self.style.ERROR(f"Failed to post {page.title}: {e}"))
             post.status = status
             post.error = error
             post.save()

@@ -1,15 +1,14 @@
 from wagtail.signals import page_published
-from facts.models import FactPage
+
+from social.bluesky import BLUESKY_FORMATTERS
 from social.models import BlueskyPost
 
 
 def auto_bluesky_posting(sender, **kwargs):
-    instance = kwargs["instance"]
-    if not issubclass(instance.specific_class, FactPage):
+    page = kwargs["instance"]
+    if not page.live or page.specific_class not in BLUESKY_FORMATTERS:
         return
-    if not instance.live:
-        return
-    BlueskyPost.objects.get_or_create(page=instance)
+    BlueskyPost.objects.get_or_create(page=page)
 
 
 page_published.connect(auto_bluesky_posting)
