@@ -23,6 +23,7 @@ class StatusWithActionsColumn(ButtonsColumnMixin, StatusTagColumn):
 
     def get_cell_context_data(self, instance, parent_context):
         context = super().get_cell_context_data(instance, parent_context)
+        context["post_url"] = instance.get_post_url()
         if instance.status == BlueskyPostStatus.FAILED:
             context["retry_url"] = reverse("bluesky-posts:retry", args=(instance.pk,))
             context["csrf_token"] = get_token(context["request"])
@@ -70,8 +71,9 @@ class BlueskyPostListingView(BaseListingView):
         TitleColumn(
             "page.title",
             label="Title",
-            get_url=lambda post: post.get_post_url(),
-            link_attrs={"target": "_blank", "rel": "noopener noreferrer"},
+            get_url=lambda post: reverse(
+                "wagtailadmin_pages:edit", args=(post.page_id,)
+            ),
         ),
         DateColumn("created_at", label="Created"),
         DateColumn("updated_at", label="Updated"),

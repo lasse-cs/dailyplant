@@ -1,6 +1,6 @@
 {% load wagtailadmin_tags %}
 <td {% if column.classname %}class="{{ column.classname }} "{% endif %}>
-    {% status value classname=primary|yesno:"w-status--primary," %}
+    {% status value classname=primary|yesno:"w-status--primary," url=post_url attrs='target="_blank" rel="noopener noreferrer"' %}
     {% if retry_url %}
         <form method="post" action="{{ retry_url }}" class="actions">
             {% csrf_token %}
