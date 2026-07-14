@@ -68,7 +68,10 @@ class BlueskyPostListingView(BaseListingView):
 
     columns = [
         TitleColumn(
-            "page.title", label="Title", get_url=lambda post: post.get_post_url()
+            "page.title",
+            label="Title",
+            get_url=lambda post: post.get_post_url(),
+            link_attrs={"target": "_blank", "rel": "noopener noreferrer"},
         ),
         DateColumn("created_at", label="Created"),
         DateColumn("updated_at", label="Updated"),
