@@ -12,10 +12,10 @@ Date: {{ page.date|date:'Y-m-d' }}
 ## References:
 {% include "non_patterns/facts/fact_references.md" with fact=page %}
 
-{% if related_facts %}
-## Related Facts
-{% for related_fact in related_facts %}
-- [{{ related_fact.title }}]({% markdownpageurl related_fact %})
+{% if related_pages %}
+## Related Pages
+{% for related_page in related_pages %}
+- [{{ related_page.title }}]({% markdownpageurl related_page %})
 {% endfor %}
 {% endif %}
 

@@ -10,14 +10,14 @@
             </div>
         </div>
 
-        {% if related_facts %}
+        {% if related_pages %}
             <div class="centered-card">
                 <section class="related__card card">
-                    <h2 class="related__header">Related Facts</h2>
+                    <h2 class="related__header">Related Pages</h2>
                     <ul role="list" class="related__listing">
-                        {% for related_fact in related_facts %}
+                        {% for related_page in related_pages %}
                             <li>
-                                <a href="{% pageurl related_fact %}" class="link-unstyled">{{ related_fact.title }}</a>
+                                <a href="{% pageurl related_page %}" class="link-unstyled">{{ related_page.title }}</a>
                             </li>
                         {% endfor %}
                     </ul>

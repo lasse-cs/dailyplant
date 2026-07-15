@@ -17,7 +17,6 @@ from wagtail.admin.panels import (
     FieldPanel,
     MultiFieldPanel,
     MultipleChooserPanel,
-    Panel,
 )
 from wagtail.contrib.routable_page.models import RoutablePage, path
 from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import (
@@ -33,7 +32,13 @@ from taggit.models import ItemBase, TagBase
 
 from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
 
-from core.models import MarkdownPageMixin, MarkdownRoutablePageMixin, MetadataMixin
+from core.models import (
+    MarkdownPageMixin,
+    MarkdownRoutablePageMixin,
+    MetadataMixin,
+    RelatedPagesMixin,
+)
+from core.panels import IncomingRelatedPagesPanel
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from facts.blocks import ReferenceStreamBlock
@@ -155,17 +160,13 @@ class FactPageForm(WagtailAdminPageForm):
     )
 
 
-class IncomingRelatedFactsPanel(Panel):
-    class BoundPanel(Panel.BoundPanel):
-        template_name = "non_patterns/facts/admin/incoming_related_facts.html"
-
-        def get_context_data(self, parent_context=None):
-            context = super().get_context_data(parent_context)
-            context["incoming"] = self.instance.get_incoming_related_facts()
-            return context
-
-
-class FactPage(SearchablePageMixin, MetadataMixin, MarkdownPageMixin, Page):
+class FactPage(
+    SearchablePageMixin,
+    MetadataMixin,
+    RelatedPagesMixin,
+    MarkdownPageMixin,
+    Page,
+):
     search_result_template = "patterns/components/search/results/fact.html"
 
     parent_page_types = ["facts.FactIndexPage"]
@@ -247,25 +248,6 @@ class FactPage(SearchablePageMixin, MetadataMixin, MarkdownPageMixin, Page):
             FactPage.objects.live().order_by("date").filter(date__gt=self.date).first()
         )
 
-    def get_incoming_related_facts(self):
-        # If the fact is not saved, it can not have incoming facts
-        # and can not be used in a filter
-        if not self.id:
-            return FactPage.objects.none()
-        return FactPage.objects.live().filter(related_facts__fact=self)
-
-    def get_outgoing_related_facts(self):
-        return FactPage.objects.live().filter(
-            id__in=self.related_facts.values_list("fact_id", flat=True)
-        )
-
-    def get_related_facts(self):
-        return (
-            (self.get_outgoing_related_facts() | self.get_incoming_related_facts())
-            .exclude(id=self.id)
-            .distinct()
-        )
-
     def get_schema_graph(self, request, metadata):
         article = {
             "@context": "https://schema.org",
@@ -302,7 +284,7 @@ class FactPage(SearchablePageMixin, MetadataMixin, MarkdownPageMixin, Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["share"] = self.get_full_url(request)
-        context["related_facts"] = self.get_related_facts()
+        context["related_pages"] = self.get_related_pages()
         return context
 
     content_panels = Page.content_panels + [
@@ -326,9 +308,11 @@ class FactPage(SearchablePageMixin, MetadataMixin, MarkdownPageMixin, Page):
         "references",
         "tags",
         MultipleChooserPanel(
-            "related_facts", label="Related Facts", chooser_field_name="fact"
+            "outgoing_page_relationships",
+            label="Related Pages",
+            chooser_field_name="target",
         ),
-        IncomingRelatedFactsPanel(),
+        IncomingRelatedPagesPanel(),
     ]
 
     promote_panels = [
@@ -344,15 +328,4 @@ class FactPage(SearchablePageMixin, MetadataMixin, MarkdownPageMixin, Page):
                 index.SearchField("name"),
             ],
         ),
-    ]
-
-
-class FactPageRelatedFact(models.Model):
-    owner = ParentalKey(
-        FactPage, on_delete=models.CASCADE, related_name="related_facts"
-    )
-    fact = models.ForeignKey(FactPage, on_delete=models.CASCADE, related_name="+")
-
-    panels = [
-        "fact",
     ]

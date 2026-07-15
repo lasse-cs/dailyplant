@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.shortcuts import render
 from django.utils.cache import patch_vary_headers
 
@@ -12,6 +13,8 @@ from wagtail.models import Orderable, Page
 from wagtail.contrib.routable_page.models import path
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
+from core.panels import RelatedPageChooserPanel
+
 
 class MetadataMixin:
     metadata_template = "patterns/components/metadata/default.html"
@@ -23,6 +26,57 @@ class MetadataMixin:
     @property
     def metadata_image(self):
         return None
+
+
+class RelatedPagesMixin:
+    def get_incoming_related_pages(self):
+        if not self.pk:
+            return Page.objects.none()
+        return (
+            Page.objects.live()
+            .filter(outgoing_page_relationships__target=self)
+            .distinct()
+            .specific()
+        )
+
+    def get_outgoing_related_pages(self):
+        if not self.pk:
+            return Page.objects.none()
+        return (
+            Page.objects.live()
+            .filter(incoming_page_relationships__source=self)
+            .distinct()
+            .specific()
+        )
+
+    def get_related_pages(self):
+        if not self.pk:
+            return Page.objects.none()
+        return (
+            Page.objects.live()
+            .filter(
+                Q(outgoing_page_relationships__target=self)
+                | Q(incoming_page_relationships__source=self)
+            )
+            .exclude(pk=self.pk)
+            .distinct()
+            .specific()
+        )
+
+
+class PageRelationship(models.Model):
+    source = ParentalKey(
+        Page,
+        related_name="outgoing_page_relationships",
+        on_delete=models.CASCADE,
+    )
+    target = models.ForeignKey(
+        Page,
+        related_name="incoming_page_relationships",
+        on_delete=models.CASCADE,
+    )
+
+    panels = [RelatedPageChooserPanel("target")]
 
 
 @register_setting

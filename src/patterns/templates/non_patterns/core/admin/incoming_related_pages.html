@@ -9,7 +9,7 @@
             {% icon name="placeholder" classname="w-panel__icon" %}
         </button>
         <h2 class="w-panel__heading w-panel__heading--label" id="incoming-heading" data-panel-heading>
-            <span data-panel-heading-text>Incoming facts</span>
+            <span data-panel-heading-text>Incoming related pages</span>
         </h2>
         <a class="w-panel__anchor w-panel__anchor--suffix" href="#incoming-section" aria-labelledby="incoming-heading">
             {% icon name="link" classname="w-panel__icon" %}
@@ -17,15 +17,15 @@
     </div>
     <div id="incoming-content" class="w-panel__content">
         <ul class="listing">
-            {% for fact in incoming %}
+            {% for page in incoming %}
                 <li>
-                    <a href="{% url 'wagtailadmin_pages:edit' fact.id %}" class="title">
-                        {{ fact.title }}
+                    <a href="{% url 'wagtailadmin_pages:edit' page.id %}" class="title">
+                        {{ page.title }}
                     </a>
                 </li>
             {% empty %}
                 <li>
-                    No incoming related facts.
+                    No incoming related pages.
                 </li>
             {% endfor %}
         </ul>
