@@ -1,18 +1,15 @@
 from datetime import datetime, time
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
-from django import forms
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.cache import patch_vary_headers
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
 
-from modelcluster.contrib.taggit import ClusterTaggableManager
-from modelcluster.fields import ParentalKey
-
-from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.admin.panels import (
     FieldPanel,
     MultiFieldPanel,
@@ -28,38 +25,21 @@ from wagtail.images import get_image_model
 from wagtail.rich_text import expand_db_html
 from wagtail.search import index
 
-from taggit.models import ItemBase, TagBase
-
 from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
 
 from core.models import (
     MarkdownPageMixin,
     MarkdownRoutablePageMixin,
     MetadataMixin,
+    PageTag,
     RelatedPagesMixin,
+    Tag,
+    TaggedPageMixin,
 )
 from core.panels import IncomingRelatedPagesPanel
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from facts.blocks import ReferenceStreamBlock
 from search.models import SearchablePageMixin
-
-
-class FactTag(TagBase):
-    free_tagging = False
-
-    class Meta:
-        verbose_name = "fact tag"
-        verbose_name_plural = "fact tags"
-
-
-class TaggedFact(ItemBase):
-    tag = models.ForeignKey(
-        FactTag, related_name="tagged_facts", on_delete=models.CASCADE
-    )
-    content_object = ParentalKey(
-        to="facts.FactPage", related_name="tagged_items", on_delete=models.CASCADE
-    )
 
 
 class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
@@ -81,7 +61,7 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
 
     @path("tags/<slug:slug>/", name="tag")
     def tag(self, request, slug):
-        get_object_or_404(FactTag, slug=slug)
+        get_object_or_404(self.get_tags(), slug=slug)
         return self.render(request, slug=slug)
 
     def get_template(self, request, *args, **kwargs):
@@ -93,16 +73,23 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
         facts = (
             FactPage.objects.live()
             .child_of(self)
-            .prefetch_related("tags")
+            .prefetch_related(
+                Prefetch(
+                    "tag_assignments",
+                    queryset=PageTag.objects.select_related("tag"),
+                )
+            )
             .order_by("-date")
             .annotate(heading_level=models.Value("h2"))
         )
         if slug:
-            facts = facts.filter(tags__slug=slug)
+            facts = facts.filter(tag_assignments__tag__slug=slug)
         return facts
 
     def get_tags(self):
-        return FactTag.objects.all()
+        return Tag.objects.filter(
+            page_assignments__page__in=self.get_facts()
+        ).distinct()
 
     def get_index_url(self, request):
         resolver_match = getattr(request, "routable_resolver_match", None)
@@ -152,18 +139,11 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
     ]
 
 
-class FactPageForm(WagtailAdminPageForm):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=FactTag.objects.all(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-
 class FactPage(
     SearchablePageMixin,
     MetadataMixin,
     RelatedPagesMixin,
+    TaggedPageMixin,
     MarkdownPageMixin,
     Page,
 ):
@@ -174,7 +154,6 @@ class FactPage(
     template = "patterns/pages/facts/fact.html"
     markdown_template = "non_patterns/pages/facts/fact.md"
     metadata_type = "article"
-    base_form_class = FactPageForm
 
     date = models.DateField(help_text="The date this fact is for.", unique=True)
     content = RichTextField(
@@ -197,7 +176,6 @@ class FactPage(
     references = StreamField(
         ReferenceStreamBlock, help_text="The references for this fact"
     )
-    tags = ClusterTaggableManager(through="facts.TaggedFact", blank=True)
 
     @property
     def image_alt_text(self):
@@ -264,7 +242,7 @@ class FactPage(
                 "name": metadata["site"].site_name,
             }
 
-        keywords = [tag.name for tag in self.tags.all()]
+        keywords = [tag.name for tag in self.get_tags()]
         if keywords:
             article["keywords"] = keywords
 
@@ -287,6 +265,19 @@ class FactPage(
         context["related_pages"] = self.get_related_pages()
         return context
 
+    @classmethod
+    def get_indexed_objects(cls):
+        return (
+            super()
+            .get_indexed_objects()
+            .prefetch_related(
+                Prefetch(
+                    "tag_assignments",
+                    queryset=PageTag.objects.select_related("tag"),
+                )
+            )
+        )
+
     content_panels = Page.content_panels + [
         "date",
         "content",
@@ -306,7 +297,11 @@ class FactPage(
             heading="Fact Image",
         ),
         "references",
-        "tags",
+        MultipleChooserPanel(
+            "tag_assignments",
+            label="Tags",
+            chooser_field_name="tag",
+        ),
         MultipleChooserPanel(
             "outgoing_page_relationships",
             label="Related Pages",
@@ -322,10 +317,4 @@ class FactPage(
     search_fields = Page.search_fields + [
         index.SearchField("content"),
         index.FilterField("date"),
-        index.RelatedFields(
-            "tags",
-            [
-                index.SearchField("name"),
-            ],
-        ),
     ]

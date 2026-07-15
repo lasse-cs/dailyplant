@@ -49,7 +49,7 @@
                 {% endfor %}
             </ol>
         </div>
-        {% with tags=fact.tags.all %}
+        {% with tags=fact.get_tags %}
             {% if tags %}
                 {% include "patterns/components/tags/tag_list.html" %}
             {% endif %}

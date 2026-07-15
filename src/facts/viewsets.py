@@ -14,9 +14,7 @@ from wagtail.admin.views.generic import WagtailAdminTemplateMixin
 from wagtail.admin.ui.tables import Column
 from wagtail.admin.viewsets.base import ViewSet
 from wagtail.admin.viewsets.pages import PageViewSet
-from wagtail.snippets.views.snippets import SnippetViewSet
-
-from facts.models import FactIndexPage, FactPage, FactTag
+from facts.models import FactIndexPage, FactPage
 
 
 class FactPageFilterSet(PageViewSet.filterset_class):
@@ -52,17 +50,6 @@ class FactPageViewSet(PageViewSet):
 
 
 fact_page_viewset = FactPageViewSet()
-
-
-class FactTagSnippetViewSet(SnippetViewSet):
-    panels = ["name"]
-    model = FactTag
-    icon = "tag"
-    add_to_admin_menu = True
-    menu_label = "Tags"
-    menu_order = 200
-    list_display = ["name", "slug"]
-    search_fields = ("name",)
 
 
 class FactCalendarIndexView(WagtailAdminTemplateMixin, TemplateView):

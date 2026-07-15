@@ -24,7 +24,7 @@ def format_fact_page(page: FactPage) -> BlueskyPostContent:
     full_url = page.get_full_url()
     text.link(full_url, full_url)
     text.text("\n\n")
-    for index, tag in enumerate(page.tags.all()):
+    for index, tag in enumerate(page.get_tags()):
         hashtag = "#" + "".join(word.capitalize() for word in tag.slug.split("-"))
         if index:
             text.text(" ")

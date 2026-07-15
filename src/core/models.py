@@ -1,7 +1,9 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.shortcuts import render
 from django.utils.cache import patch_vary_headers
+from django.utils.text import slugify
 
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -77,6 +79,74 @@ class PageRelationship(models.Model):
     )
 
     panels = [RelatedPageChooserPanel("target")]
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(
+        max_length=100,
+        unique=True,
+        editable=False,
+    )
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def _slug_from_name(self):
+        slug = slugify(self.name)[:100]
+        if not slug:
+            raise ValidationError(
+                {"name": "The name must contain characters that can form a URL slug."}
+            )
+        return slug
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = self._slug_from_name()
+            slug = base_slug
+            index = 1
+            while Tag.objects.exclude(pk=self.pk).filter(slug=slug).exists():
+                index += 1
+                suffix = f"-{index}"
+                slug = f"{base_slug[: 100 - len(suffix)]}{suffix}"
+            self.slug = slug
+        return super().save(*args, **kwargs)
+
+    def get_pages(self):
+        return (
+            Page.objects.live().filter(tag_assignments__tag=self).distinct().specific()
+        )
+
+
+class TaggedPageMixin:
+    def get_tags(self):
+        return [assignment.tag for assignment in self.tag_assignments.all()]
+
+
+class PageTag(models.Model):
+    page = ParentalKey(
+        Page,
+        related_name="tag_assignments",
+        on_delete=models.CASCADE,
+    )
+    tag = models.ForeignKey(
+        Tag,
+        related_name="page_assignments",
+        on_delete=models.CASCADE,
+    )
+
+    panels = ["tag"]
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["page", "tag"],
+                name="unique_page_tag",
+            )
+        ]
 
 
 @register_setting
