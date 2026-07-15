@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "core",
     "users",
     "social",
+    "search",
     "django_vite_tags",
     "patterns",
     "wagtail_umami_analytics",

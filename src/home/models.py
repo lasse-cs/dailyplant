@@ -12,7 +12,7 @@ class HomePage(MarkdownPageMixin, Page):
     supports_md_suffix = False
 
     def get_fact(self):
-        return FactPage.objects.live().released().order_by("-date").first()
+        return FactPage.objects.live().order_by("-date").first()
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

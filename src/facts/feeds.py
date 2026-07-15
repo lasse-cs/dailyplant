@@ -39,9 +39,7 @@ class FactsRssFeed(Feed):
         return object.full_url
 
     def items(self, object):
-        return (
-            FactPage.objects.live().child_of(object).released().order_by("-date")[:20]
-        )
+        return FactPage.objects.live().child_of(object).order_by("-date")[:20]
 
     def item_title(self, item):
         return item.title

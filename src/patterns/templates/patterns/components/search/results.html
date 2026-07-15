@@ -1,17 +1,8 @@
-{% load wagtailcore_tags %}
-
 {% if query and results %}
     <ul class="command-search__list" role="list">
         {% for result in results %}
             <li>
-                <a
-                    class="command-search__result"
-                    href="{% pageurl result %}"
-                >
-                    <span class="command-search__result-title">{{ result.title }}</span>
-                    <span class="command-search__result-date"><time datetime="{{ result.date|date:'Y-m-d'}}">{{ result.date|date:'M d, Y' }}</time></span>
-                    <span class="command-search__result-description">{{ result.metadata_description }}</span>
-                </a>
+                {% include result.search_result_template with result=result %}
             </li>
         {% endfor %}
     </ul>

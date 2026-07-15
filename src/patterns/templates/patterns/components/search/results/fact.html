@@ -1,0 +1,10 @@
+{% load wagtailcore_tags %}
+
+<a
+    class="command-search__result"
+    href="{% pageurl result %}"
+>
+    <span class="command-search__result-title">{{ result.title }}</span>
+    <span class="command-search__result-date"><time datetime="{{ result.date|date:'Y-m-d'}}">{{ result.date|date:'M d, Y' }}</time></span>
+    <span class="command-search__result-description">{{ result.metadata_description }}</span>
+</a>

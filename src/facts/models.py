@@ -24,9 +24,8 @@ from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import 
     routablefullpageurl,
 )
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
-from wagtail.models import Page, PageManager
+from wagtail.models import Page
 from wagtail.images import get_image_model
-from wagtail.query import PageQuerySet
 from wagtail.rich_text import expand_db_html
 from wagtail.search import index
 
@@ -38,6 +37,7 @@ from core.models import MarkdownPageMixin, MarkdownRoutablePageMixin, MetadataMi
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from facts.blocks import ReferenceStreamBlock
+from search.models import SearchablePageMixin
 
 
 class FactTag(TagBase):
@@ -88,7 +88,6 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
         facts = (
             FactPage.objects.live()
             .child_of(self)
-            .released()
             .prefetch_related("tags")
             .order_by("-date")
             .annotate(heading_level=models.Value("h2"))
@@ -148,11 +147,6 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
     ]
 
 
-class FactPageQuerySet(PageQuerySet):
-    def released(self):
-        return self.filter(date__lte=timezone.localdate())
-
-
 class FactPageForm(WagtailAdminPageForm):
     tags = forms.ModelMultipleChoiceField(
         queryset=FactTag.objects.all(),
@@ -171,8 +165,8 @@ class IncomingRelatedFactsPanel(Panel):
             return context
 
 
-class FactPage(MetadataMixin, MarkdownPageMixin, Page):
-    objects = PageManager.from_queryset(FactPageQuerySet)()
+class FactPage(SearchablePageMixin, MetadataMixin, MarkdownPageMixin, Page):
+    search_result_template = "patterns/components/search/results/fact.html"
 
     parent_page_types = ["facts.FactIndexPage"]
     subpage_types = []
@@ -233,32 +227,24 @@ class FactPage(MetadataMixin, MarkdownPageMixin, Page):
 
     def get_older_fact(self):
         """
-        Returns the released fact which is the "next older", or None
+        Returns the fact which is the "next older", or None
         if this is the oldest fact.
         """
         if not self.date:
             return None
         return (
-            FactPage.objects.live()
-            .released()
-            .order_by("-date")
-            .filter(date__lt=self.date)
-            .first()
+            FactPage.objects.live().order_by("-date").filter(date__lt=self.date).first()
         )
 
     def get_newer_fact(self):
         """
-        Returns the released fact with the "next newer", or None
+        Returns the fact with the "next newer", or None
         if this is the newest fact.
         """
         if not self.date:
             return None
         return (
-            FactPage.objects.live()
-            .released()
-            .order_by("date")
-            .filter(date__gt=self.date)
-            .first()
+            FactPage.objects.live().order_by("date").filter(date__gt=self.date).first()
         )
 
     def get_incoming_related_facts(self):
@@ -266,13 +252,11 @@ class FactPage(MetadataMixin, MarkdownPageMixin, Page):
         # and can not be used in a filter
         if not self.id:
             return FactPage.objects.none()
-        return FactPage.objects.live().released().filter(related_facts__fact=self)
+        return FactPage.objects.live().filter(related_facts__fact=self)
 
     def get_outgoing_related_facts(self):
-        return (
-            FactPage.objects.live()
-            .released()
-            .filter(id__in=self.related_facts.values_list("fact_id", flat=True))
+        return FactPage.objects.live().filter(
+            id__in=self.related_facts.values_list("fact_id", flat=True)
         )
 
     def get_related_facts(self):

@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.utils.cache import patch_vary_headers
 from django.views.decorators.http import require_GET
 
-from facts.models import FactPage
+from wagtail.models import Page
+
+from search.models import SearchablePageMixin
 
 
 MAX_SEARCH_RESULTS = 5
@@ -15,9 +17,10 @@ def search(request):
 
     if query:
         results = (
-            FactPage.objects.live()
+            Page.objects.live()
             .public()
-            .released()
+            .type(SearchablePageMixin)
+            .specific()
             .search(query)[:MAX_SEARCH_RESULTS]
         )
 
