@@ -122,7 +122,7 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
     def get_context(self, request, slug=None):
         context = super().get_context(request)
         page_number = request.GET.get("page", 1)
-        paginator = Paginator(self.get_facts(slug), 20, orphans=2)
+        paginator = Paginator(self.get_facts(slug), 18, orphans=2)
         try:
             facts = paginator.page(page_number)
         except PageNotAnInteger, EmptyPage:
