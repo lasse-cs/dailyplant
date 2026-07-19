@@ -28,6 +28,9 @@ DATABASES = {
     }
 }
 
+INSTALLED_APPS += ["core.testapp"]
+MIGRATION_MODULES = {"core_testapp": None}
+
 try:
     from .local import *
 except ImportError:

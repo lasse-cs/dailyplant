@@ -1,3 +1,5 @@
+from dataclasses import dataclass, field
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -9,13 +11,80 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 
 from wagtail.admin.panels import InlinePanel
+from wagtail.blocks import ListBlock, StreamBlock, StructBlock
 from wagtail.fields import RichTextField
 from wagtail.images import get_image_model_string
 from wagtail.models import Orderable, Page
 from wagtail.contrib.routable_page.models import path
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
+from core.blocks import HeadingBlock
 from core.panels import RelatedPageChooserPanel
+
+
+@dataclass
+class TocItem:
+    label: str
+    anchor: str
+    level: int
+    children: list["TocItem"] = field(default_factory=list)
+
+
+def collect_toc_items(block, value):
+    """Return heading items in document order without nesting."""
+    if isinstance(block, HeadingBlock):
+        return [
+            TocItem(
+                label=value["text"],
+                anchor=value.anchor,
+                level=int(value["level"]),
+            )
+        ]
+
+    if isinstance(block, StreamBlock):
+        items = []
+        for child in value:
+            items.extend(collect_toc_items(child.block, child.value))
+        return items
+
+    if isinstance(block, StructBlock):
+        items = []
+        for name, child_block in block.child_blocks.items():
+            items.extend(collect_toc_items(child_block, value[name]))
+        return items
+
+    if isinstance(block, ListBlock):
+        items = []
+        for child_value in value:
+            items.extend(collect_toc_items(block.child_block, child_value))
+        return items
+
+    return []
+
+
+def build_toc_tree(items):
+    """Return copies of flat items nested according to their heading levels."""
+    roots = []
+    stack = []
+
+    for item in items:
+        node = TocItem(
+            label=item.label,
+            anchor=item.anchor,
+            level=item.level,
+        )
+
+        while stack and stack[-1].level >= node.level:
+            stack.pop()
+
+        if stack:
+            stack[-1].children.append(node)
+        else:
+            roots.append(node)
+
+        stack.append(node)
+
+    return roots
 
 
 class MetadataMixin:
@@ -64,6 +133,17 @@ class RelatedPagesMixin:
             .distinct()
             .specific()
         )
+
+
+class TableOfContentsPageMixin:
+    table_of_contents_field = "body"
+
+    def get_toc_items(self):
+        body = getattr(self, self.table_of_contents_field)
+        return collect_toc_items(body.stream_block, body)
+
+    def get_table_of_contents(self):
+        return build_toc_tree(self.get_toc_items())
 
 
 class PageRelationship(models.Model):
