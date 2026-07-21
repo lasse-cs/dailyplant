@@ -1,0 +1,54 @@
+{% extends "patterns/base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block page_content %}
+    <main id="main" class="article__page" tabindex="-1">
+        <article class="card wide__card">
+            <header>
+                <h1 class="title">{{ page.title }}</h1>
+                <div class="article__introduction">{{ page.introduction|richtext }}</div>
+                {% if page.image %}
+                    <figure>
+                        {% picture page.image format-{webp,jpeg} fill-1120x630-c90 alt=page.image_alt_text %}
+                        {% if page.image_description %}<figcaption>{{ page.image_description }}</figcaption>{% endif %}
+                    </figure>
+                {% endif %}
+            </header>
+
+            {% with toc=page.get_table_of_contents %}
+                {% if toc %}
+                    <nav aria-labelledby="article-table-of-contents">
+                        <h2 id="article-table-of-contents">Table of contents</h2>
+                        {% include "patterns/components/articles/table_of_contents.html" with items=toc only %}
+                    </nav>
+                {% endif %}
+            {% endwith %}
+
+            <div class="article__body">
+                {% for block in page.body %}{% include_block block %}{% endfor %}
+            </div>
+
+            {% with tags=page.get_tags %}
+                {% if tags %}
+                    <ul role="list" aria-label="Tags">
+                        {% for tag in tags %}<li>{{ tag.name }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </article>
+
+        {% if related_pages %}
+            <section class="related__card card wide__card">
+                <h2 class="related__header">Related Pages</h2>
+                <ul role="list" class="related__listing">
+                    {% for related_page in related_pages %}
+                        <li>
+                            <a href="{% pageurl related_page %}" class="link-unstyled">{{ related_page.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+    </main>
+{% endblock page_content %}

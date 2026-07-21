@@ -28,3 +28,8 @@ class HeadingBlock(blocks.StructBlock):
         label_format = "{text}"
         template = "patterns/components/core/heading.html"
         value_class = HeadingValue
+
+
+class ContentStreamBlock(blocks.StreamBlock):
+    heading = HeadingBlock()
+    paragraph = blocks.RichTextBlock()

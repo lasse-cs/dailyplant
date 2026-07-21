@@ -1,0 +1,26 @@
+{% extends "patterns/base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block page_content %}
+    <main id="main" class="article__index" tabindex="-1">
+        <header class="card wide__card">
+            <h1 class="title">{{ page.title }}</h1>
+            {{ page.introduction|richtext }}
+        </header>
+
+        <div class="article__archive">
+            {% for article in articles %}
+                <article class="card wide__card">
+                    <h2><a href="{% pageurl article %}" class="link-unstyled">{{ article.title }}</a></h2>
+                    {% if article.image %}
+                        {% picture article.image format-{webp,jpeg} fill-560x315-c90 alt=article.image_alt_text %}
+                    {% endif %}
+                    {{ article.introduction|richtext }}
+                </article>
+            {% empty %}
+                <div class="card wide__card">No articles found.</div>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock page_content %}

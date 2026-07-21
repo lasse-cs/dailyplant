@@ -1,0 +1,10 @@
+<ol>
+    {% for item in items %}
+        <li>
+            <a href="#{{ item.anchor }}">{{ item.label }}</a>
+            {% if item.children %}
+                {% include "patterns/components/articles/table_of_contents.html" with items=item.children only %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ol>

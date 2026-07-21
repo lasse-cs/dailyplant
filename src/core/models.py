@@ -99,6 +99,24 @@ class MetadataMixin:
         return None
 
 
+class FeedPageMixin:
+    @property
+    def feed_title(self):
+        return self.title
+
+    @property
+    def feed_description(self):
+        return getattr(self, "metadata_description", None) or self.search_description
+
+    @property
+    def feed_published_at(self):
+        return self.first_published_at
+
+    @property
+    def feed_updated_at(self):
+        return self.last_published_at or self.first_published_at
+
+
 class RelatedPagesMixin:
     def get_incoming_related_pages(self):
         if not self.pk:

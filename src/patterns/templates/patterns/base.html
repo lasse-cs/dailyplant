@@ -11,8 +11,8 @@
         {% endblock metadata %}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {% wagtail_site as current_site %}
-        <link rel="alternate" type="application/rss+xml" title="{% if current_site %}{{ current_site.site_name }} {% endif %}RSS" href="{% url 'facts_rss_feed' %}">
-        <link rel="alternate" type="application/atom+xml" title="{% if current_site %}{{ current_site.site_name }} {% endif %}Atom" href="{% url 'facts_atom_feed' %}">
+        <link rel="alternate" type="application/rss+xml" title="{% if current_site %}{{ current_site.site_name }} {% endif %}RSS" href="{% url 'rss_feed' %}">
+        <link rel="alternate" type="application/atom+xml" title="{% if current_site %}{{ current_site.site_name }} {% endif %}Atom" href="{% url 'atom_feed' %}">
         {% if page and page.supports_md_suffix %}
             <link rel="alternate" type="text/markdown" href="{% markdownpageurl page %}" title="{{ page.title }} - Markdown">
         {% endif %}

@@ -10,8 +10,8 @@ from wagtail.images.views.serve import ServeView
 
 from sesame.views import LoginView
 
+from core.feeds import AtomFeed, RSSFeed
 from dailyplant.views import error_500_test, markdown_suffix_page, robots_txt
-from facts.feeds import FactsAtomFeed, FactsRssFeed
 from users.views import EmailLoginView
 from search.views import search
 
@@ -23,8 +23,8 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search, name="search"),
     path("error-500-test/", error_500_test, name="server_error"),
-    path("rss.xml", FactsRssFeed(), name="facts_rss_feed"),
-    path("atom.xml", FactsAtomFeed(), name="facts_atom_feed"),
+    path("rss.xml", RSSFeed(), name="rss_feed"),
+    path("atom.xml", AtomFeed(), name="atom_feed"),
     path("sitemap.xml", sitemap, name="sitemap"),
     path("robots.txt", robots_txt, name="robots_txt"),
     re_path(

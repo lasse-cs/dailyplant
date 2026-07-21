@@ -28,6 +28,7 @@ from wagtail.search import index
 from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
 
 from core.models import (
+    FeedPageMixin,
     MarkdownPageMixin,
     MarkdownRoutablePageMixin,
     MetadataMixin,
@@ -141,6 +142,7 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
 
 class FactPage(
     SearchablePageMixin,
+    FeedPageMixin,
     MetadataMixin,
     RelatedPagesMixin,
     TaggedPageMixin,
@@ -197,6 +199,14 @@ class FactPage(
     @property
     def metadata_image_alt(self):
         return self.image_alt_text
+
+    @property
+    def feed_published_at(self):
+        return timezone.make_aware(datetime.combine(self.date, time.min))
+
+    @property
+    def feed_updated_at(self):
+        return self.feed_published_at()
 
     def clean(self):
         super().clean()
