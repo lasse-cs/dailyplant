@@ -218,7 +218,7 @@ class FactPage(
 
     @property
     def feed_updated_at(self):
-        return self.feed_published_at()
+        return self.feed_published_at
 
     def clean(self):
         super().clean()
