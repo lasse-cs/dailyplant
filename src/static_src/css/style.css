@@ -730,9 +730,17 @@
     }
   }
 
-  .article__publication-date {
+  .article__metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     color: var(--color-text-muted);
     font-size: 0.9rem;
+
+    & > * + *::before {
+      margin-inline-end: 0.75rem;
+      content: "\00b7";
+    }
   }
 
   .article__introduction + .article__tags {

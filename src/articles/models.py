@@ -129,8 +129,17 @@ class ArticlePage(
 
         return [article]
 
+    def get_reading_time(self, request):
+        introduction = expand_db_html(self.introduction)
+        body = self.body.render_as_block(context={"request": request})
+        word_count = len(strip_tags(f"{introduction} {body}").split())
+
+        # Match Wagtail's English reading speed and JavaScript rounding.
+        return max(1, int(word_count / 238 + 0.5))
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        context["reading_time"] = self.get_reading_time(request)
         context["share"] = self.get_full_url(request)
         context["related_pages"] = self.get_related_pages()
         return context

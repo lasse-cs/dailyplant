@@ -23,6 +23,19 @@ def test_article_introduction_is_used_for_metadata_description():
     )
 
 
+def test_article_reading_time_uses_rendered_introduction_and_body(rf):
+    article = ArticlePage(
+        title="Growing herbs",
+        introduction="<p>Short introduction.</p>",
+        body=[
+            ("heading", {"text": "Choose a pot", "level": "2"}),
+            ("paragraph", f"<p>{'plant ' * 352}</p>"),
+        ],
+    )
+
+    assert article.get_reading_time(rf.get("/")) == 2
+
+
 @pytest.mark.django_db
 def test_article_supports_tags_and_related_pages(root_page):
     home_page = HomePageFactory(parent=root_page)
@@ -97,3 +110,6 @@ def test_article_pages_render_markdown(client, root_page):
         "author": {"@type": "Organization", "name": article.get_site().site_name},
         "keywords": ["Herbs"],
     }
+
+    html_response = client.get(article.url)
+    assert "1 min read" in html_response.text

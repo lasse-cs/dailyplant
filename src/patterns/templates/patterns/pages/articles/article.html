@@ -9,11 +9,12 @@
                 <header>
                     <div class="article__heading">
                         <h1 class="title">{{ page.title }}</h1>
-                        {% if page.first_published_at %}
-                            <p class="article__publication-date">
-                                Published <time datetime="{{ page.first_published_at|date:'Y-m-d' }}">{{ page.first_published_at|date:"M d, Y" }}</time>
-                            </p>
-                        {% endif %}
+                        <p class="article__metadata">
+                            {% if page.first_published_at %}
+                                <time datetime="{{ page.first_published_at|date:'Y-m-d' }}">{{ page.first_published_at|date:"M d, Y" }}</time>
+                            {% endif %}
+                            <span>{{ reading_time }} minute read</span>
+                        </p>
                     </div>
                     <div class="article__introduction">{{ page.introduction|richtext }}</div>
                     {% with tags=page.get_tags %}
