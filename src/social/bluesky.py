@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
+from articles.models import ArticlePage
 from core.models import MetadataSettings
 from facts.models import FactPage
 
@@ -14,7 +15,7 @@ class BlueskyPostContent:
     thumbnail_image: Any | None
 
 
-def format_fact_page(page: FactPage) -> BlueskyPostContent:
+def format_page(page: ArticlePage | FactPage) -> BlueskyPostContent:
     # Lazily import the Bluesky client dependency.
     from atproto_client.utils.text_builder import TextBuilder
 
@@ -44,5 +45,6 @@ def format_fact_page(page: FactPage) -> BlueskyPostContent:
 
 
 BLUESKY_FORMATTERS = {
-    FactPage: format_fact_page,
+    ArticlePage: format_page,
+    FactPage: format_page,
 }
