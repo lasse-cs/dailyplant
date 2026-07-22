@@ -11,6 +11,7 @@ from wagtail.search import index
 from core.blocks import ContentStreamBlock
 from core.models import (
     FeedPageMixin,
+    MarkdownPageMixin,
     MetadataMixin,
     RelatedPagesMixin,
     TableOfContentsPageMixin,
@@ -20,11 +21,12 @@ from core.panels import IncomingRelatedPagesPanel
 from search.models import SearchablePageMixin
 
 
-class ArticleIndexPage(MetadataMixin, Page):
+class ArticleIndexPage(MetadataMixin, MarkdownPageMixin, Page):
     parent_page_types = ["home.HomePage"]
     subpage_types = ["articles.ArticlePage"]
     max_count = 1
     template = "patterns/pages/articles/article_index.html"
+    markdown_template = "non_patterns/pages/articles/article_index.md"
 
     introduction = RichTextField(
         blank=True,
@@ -49,6 +51,7 @@ class ArticlePage(
     RelatedPagesMixin,
     TaggedPageMixin,
     TableOfContentsPageMixin,
+    MarkdownPageMixin,
     Page,
 ):
     search_result_template = "patterns/components/search/results/article.html"
@@ -56,6 +59,7 @@ class ArticlePage(
     parent_page_types = ["articles.ArticleIndexPage"]
     subpage_types = []
     template = "patterns/pages/articles/article.html"
+    markdown_template = "non_patterns/pages/articles/article.md"
     metadata_type = "article"
 
     introduction = RichTextField(
@@ -98,6 +102,32 @@ class ArticlePage(
     @property
     def metadata_image_alt(self):
         return self.image_alt_text
+
+    def get_schema_graph(self, request, metadata):
+        article = {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": metadata["title"],
+            "description": metadata["description"],
+            "url": metadata["url"],
+        }
+
+        if self.first_published_at:
+            article["datePublished"] = self.first_published_at
+        if self.last_published_at:
+            article["dateModified"] = self.last_published_at
+
+        if metadata["site"].site_name:
+            article["author"] = {
+                "@type": "Organization",
+                "name": metadata["site"].site_name,
+            }
+
+        keywords = [tag.name for tag in self.get_tags()]
+        if keywords:
+            article["keywords"] = keywords
+
+        return [article]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
