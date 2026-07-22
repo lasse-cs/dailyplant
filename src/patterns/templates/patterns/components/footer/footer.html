@@ -11,7 +11,7 @@
                 {% endfor %}
                 {% if share %}
                     <li>
-                        <button class="fact__share"
+                        <button class="share-button"
                                 type="button"
                                 data-controller="clipboard"
                                 data-action="click->clipboard#copy"
@@ -19,12 +19,12 @@
                                 data-clipboard-text-value="{{ share }}"
                                 aria-label="Share"
                         >
-                            <span class="fact__share-state fact__share-state--copy" aria-hidden="true">
-                                {% include "svgs/share.html" with icon_class="fact__share-icon" %}
+                            <span class="share-button__state share-button__state--copy" aria-hidden="true">
+                                {% include "svgs/share.html" with icon_class="share-button__icon" %}
                                 <span>Share</span>
                             </span>
-                            <span class="fact__share-state fact__share-state--copied" aria-hidden="true">
-                                {% include "svgs/tick.html" with icon_class="fact__share-icon" %}
+                            <span class="share-button__state share-button__state--copied" aria-hidden="true">
+                                {% include "svgs/tick.html" with icon_class="share-button__icon" %}
                                 <span>Copied</span>
                             </span>
                         </button>

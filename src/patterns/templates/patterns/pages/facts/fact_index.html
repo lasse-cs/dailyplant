@@ -25,8 +25,8 @@
                     <div class="fact__filters">
                         {% include "patterns/components/tags/tag_list.html" with index_page=page %}
                         {% if active_slug %}
-                            <div class="fact__tag">
-                                <a href="{% pageurl page %}" class="link-unstyled">
+                            <div>
+                                <a href="{% pageurl page %}" class="tag-pill link-unstyled">
                                     Clear
                                 </a>
                             </div>
@@ -49,15 +49,15 @@
                 <nav aria-label="Pagination" data-controller="replace-template">
                     <ul role="list" class="pagination" id="fact-navigation">
                         {% if facts.has_previous %}
-                            <li class="fact__tag">
-                                <a href="{% querystring page=facts.previous_page_number %}" class="link-unstyled">
+                            <li>
+                                <a href="{% querystring page=facts.previous_page_number %}" class="tag-pill link-unstyled">
                                     ← Newer Facts
                                 </a>
                             </li>
                         {% endif %}
                         {% if facts.has_next %}
-                            <li class="fact__tag">
-                                <a href="{% querystring page=facts.next_page_number %}" class="link-unstyled">
+                            <li>
+                                <a href="{% querystring page=facts.next_page_number %}" class="tag-pill link-unstyled">
                                     Older Facts →
                                 </a>
                             </li>

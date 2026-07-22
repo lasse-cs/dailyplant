@@ -101,6 +101,7 @@ class ArticlePage(
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        context["share"] = self.get_full_url(request)
         context["related_pages"] = self.get_related_pages()
         return context
 

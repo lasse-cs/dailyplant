@@ -592,12 +592,17 @@
     flex: 1 1 auto;
   }
 
-  .fact__figure {
+  .content-media {
     margin-block: 0.5rem;
   }
 
-  .fact__image {
+  .content-media__image {
     border-radius: var(--radius-image);
+  }
+
+  .content-media__caption {
+    text-align: end;
+    font-style: italic;
   }
 
   .fact__subtitle {
@@ -606,34 +611,31 @@
     margin-bottom: 0.3rem;
   }
 
-  .fact__caption {
-    text-align: end;
-    font-style: italic;
-  }
-
   .fact__references__list {
     list-style: decimal;
     margin-inline-start: 1rem;
   }
 
-  .fact__tag__list {
+  .tag-list {
     display: flex;
     flex-wrap: wrap;
     gap: 1.2rem 0.7rem;
   }
 
-  .fact__tag a {
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-button);
-      background: var(--color-surface);
-      color: var(--color-text-muted);
-      box-shadow: 0 1px 3px var(--color-shadow);
-      line-height: 1.2;
-      font-size: 0.9rem;
-      padding: 0.35rem 0.75rem;
-      flex-shrink: 0;
+  .tag-pill {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-button);
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    box-shadow: 0 1px 3px var(--color-shadow);
+    line-height: 1.2;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.75rem;
+    flex-shrink: 0;
+  }
 
-      transition: color 0.125s, background-color 0.125s;
+  a.tag-pill {
+    transition: color 0.125s, background-color 0.125s;
 
     &:focus-visible, &:hover, &.active {
       color: var(--color-bg);
@@ -709,6 +711,119 @@
     font-size: 1.3em;
   }
 
+  .article__page {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .article__card {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .article__heading {
+    margin-block-end: 1rem;
+
+    & .title {
+      margin-block-end: 0.25rem;
+    }
+  }
+
+  .article__publication-date {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .article__introduction + .article__tags {
+    margin-block-start: 1rem;
+  }
+
+  .article__card header .content-media {
+    margin-block-start: 1.5rem;
+  }
+
+  .article__toc {
+    padding-block: 1rem;
+    border-block: 1px solid var(--color-border);
+  }
+
+  .article__toc-title {
+    margin-block-end: 0.75rem;
+    font-family: var(--font-heading);
+    font-size: 1.3em;
+  }
+
+  .article__toc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    & .article__toc-list {
+      padding-inline-start: 0.75rem;
+    }
+
+    & a {
+      color: var(--color-text-muted);
+      text-decoration-color: transparent;
+      text-underline-offset: 0.2em;
+      transition: color 0.125s, text-decoration-color 0.125s;
+    }
+
+    & a:hover,
+    & a:focus-visible {
+      color: var(--color-accent);
+      text-decoration-color: currentcolor;
+    }
+
+    & a[aria-current="location"] {
+      color: var(--color-text);
+      font-weight: 600;
+      text-decoration-color: currentcolor;
+    }
+  }
+
+  .prose > * + * {
+    margin-block-start: 1em;
+  }
+
+  .content-heading {
+    font-family: var(--font-heading);
+    scroll-margin-block-start: 2rem;
+  }
+
+  h2.content-heading {
+    font-size: 1.75em;
+  }
+
+  h3.content-heading {
+    font-size: 1.5em;
+  }
+
+  @media (min-width: 60rem) {
+    .article__card--with-toc {
+      grid-template-columns: minmax(0, 1fr) minmax(13rem, 17rem);
+      column-gap: clamp(2rem, 4vw, 4rem);
+      align-items: start;
+    }
+
+    .article__toc {
+      position: sticky;
+      inset-block-start: 1.5rem;
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      max-block-size: calc(100vh - 3rem);
+      overflow-y: auto;
+      padding-block: 0;
+      border-block: 0;
+    }
+
+    .article__card > header,
+    .article__body {
+      grid-column: 1;
+    }
+  }
+
   .icon-link {
     display: inline-flex;
     align-items: center;
@@ -724,7 +839,7 @@
     }
   }
 
-  .fact__share {
+  .share-button {
     display: grid;
     grid-template-areas: "state";
     border: 0;
@@ -750,7 +865,7 @@
     }
   }
 
-  .fact__share-state {
+  .share-button__state {
     grid-area: state;
     display: grid;
     grid-template-columns: 1.25rem 1fr;
@@ -760,18 +875,18 @@
     transition: opacity 0.125s, visibility 0.125s;
   }
 
-  .fact__share-state--copied,
-  .fact__share.is-copied .fact__share-state--copy {
+  .share-button__state--copied,
+  .share-button.is-copied .share-button__state--copy {
     opacity: 0;
     visibility: hidden;
   }
 
-  .fact__share.is-copied .fact__share-state--copied {
+  .share-button.is-copied .share-button__state--copied {
     opacity: 1;
     visibility: visible;
   }
 
-  .fact__share-icon {
+  .share-button__icon {
     inline-size: 1.25rem;
     block-size: 1.25rem;
     flex: 0 0 auto;

@@ -1,7 +1,9 @@
-<ol>
+<ol class="article__toc-list" role="list">
     {% for item in items %}
         <li>
-            <a href="#{{ item.anchor }}">{{ item.label }}</a>
+            <a href="#{{ item.anchor }}"
+               data-toc-target="link"
+               data-toc-anchor="{{ item.anchor }}">{{ item.label }}</a>
             {% if item.children %}
                 {% include "patterns/components/articles/table_of_contents.html" with items=item.children only %}
             {% endif %}

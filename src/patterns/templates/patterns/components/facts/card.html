@@ -26,10 +26,10 @@
             {{ fact.content|richtext }}
         </div>
         {% if fact.image %}
-            <figure class="fact__figure">
-                {% picture fact.image format-{webp,jpeg} fill-560x315-c90 class="fact__image" alt=fact.image_alt_text %}
+            <figure class="content-media">
+                {% picture fact.image format-{webp,jpeg} fill-560x315-c90 class="content-media__image" alt=fact.image_alt_text %}
                 {% if fact.image_description %}
-                    <figcaption class="fact__caption">
+                    <figcaption class="content-media__caption">
                         {{ fact.image_description }}
                     </figcaption>
                 {% endif %}

@@ -4,39 +4,52 @@
 
 {% block page_content %}
     <main id="main" class="article__page" tabindex="-1">
-        <article class="card wide__card">
-            <header>
-                <h1 class="title">{{ page.title }}</h1>
-                <div class="article__introduction">{{ page.introduction|richtext }}</div>
-                {% if page.image %}
-                    <figure>
-                        {% picture page.image format-{webp,jpeg} fill-1120x630-c90 alt=page.image_alt_text %}
-                        {% if page.image_description %}<figcaption>{{ page.image_description }}</figcaption>{% endif %}
-                    </figure>
-                {% endif %}
-            </header>
+        {% with toc=page.get_table_of_contents %}
+            <article class="article__card{% if toc %} article__card--with-toc{% endif %} card wide__card">
+                <header>
+                    <div class="article__heading">
+                        <h1 class="title">{{ page.title }}</h1>
+                        {% if page.first_published_at %}
+                            <p class="article__publication-date">
+                                Published <time datetime="{{ page.first_published_at|date:'Y-m-d' }}">{{ page.first_published_at|date:"M d, Y" }}</time>
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div class="article__introduction">{{ page.introduction|richtext }}</div>
+                    {% with tags=page.get_tags %}
+                        {% if tags %}
+                            <ul class="article__tags tag-list" role="list" aria-label="Tags">
+                                {% for tag in tags %}<li><span class="tag-pill">{{ tag.name }}</span></li>{% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endwith %}
+                    {% if page.image %}
+                        <figure class="content-media">
+                            {% picture page.image format-{webp,jpeg} fill-1120x630-c90 class="content-media__image" alt=page.image_alt_text %}
+                            {% if page.image_description %}
+                                <figcaption class="content-media__caption">
+                                    {{ page.image_description }}
+                                </figcaption>
+                            {% endif %}
+                        </figure>
+                    {% endif %}
+                </header>
 
-            {% with toc=page.get_table_of_contents %}
                 {% if toc %}
-                    <nav aria-labelledby="article-table-of-contents">
-                        <h2 id="article-table-of-contents">Table of contents</h2>
+                    <nav class="article__toc"
+                         aria-labelledby="article-table-of-contents"
+                         data-controller="toc"
+                         data-action="scroll@window->toc#updateCurrentSection resize@window->toc#updateCurrentSection">
+                        <h2 class="article__toc-title" id="article-table-of-contents">On this page</h2>
                         {% include "patterns/components/articles/table_of_contents.html" with items=toc only %}
                     </nav>
                 {% endif %}
-            {% endwith %}
 
-            <div class="article__body">
-                {% for block in page.body %}{% include_block block %}{% endfor %}
-            </div>
-
-            {% with tags=page.get_tags %}
-                {% if tags %}
-                    <ul role="list" aria-label="Tags">
-                        {% for tag in tags %}<li>{{ tag.name }}</li>{% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
-        </article>
+                <div class="article__body prose">
+                    {% for block in page.body %}{% include_block block %}{% endfor %}
+                </div>
+            </article>
+        {% endwith %}
 
         {% if related_pages %}
             <section class="related__card card wide__card">
