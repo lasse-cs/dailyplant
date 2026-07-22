@@ -112,4 +112,4 @@ def test_article_pages_render_markdown(client, root_page):
     }
 
     html_response = client.get(article.url)
-    assert "1 min read" in html_response.text
+    assert "1 minute read" in html_response.text
