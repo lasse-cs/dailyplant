@@ -1,0 +1,19 @@
+<ul role="list" class="pagination" id="article-navigation" hx-swap-oob="outerHTML">
+    {% if articles.has_next %}
+        <li>
+            <a href="{% querystring page=articles.next_page_number %}"
+               hx-get="{% querystring page=articles.next_page_number %}"
+               hx-swap="beforeend"
+               hx-target="#article__archive"
+               class="tag-pill load-more link-unstyled"
+            >
+                <span class="loading-state">
+                    Loading...
+                </span>
+                <span class="normal-state">
+                    Load More
+                </span>
+            </a>
+        </li>
+    {% endif %}
+</ul>

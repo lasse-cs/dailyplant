@@ -19,9 +19,9 @@
                     <div class="article__introduction">{{ page.introduction|richtext }}</div>
                     {% with tags=page.get_tags %}
                         {% if tags %}
-                            <ul class="article__tags tag-list" role="list" aria-label="Tags">
-                                {% for tag in tags %}<li><span class="tag-pill">{{ tag.name }}</span></li>{% endfor %}
-                            </ul>
+                            <div class="article__tags">
+                                {% include "patterns/components/tags/tag_list.html" with index_page=page.get_parent.specific %}
+                            </div>
                         {% endif %}
                     {% endwith %}
                     {% if page.image %}

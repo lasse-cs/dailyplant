@@ -1,0 +1,5 @@
+{% for article in articles %}
+    {% include "patterns/components/articles/card.html" with index_page=page %}
+{% endfor %}
+
+{% include "patterns/components/articles/article_navigation.html" %}

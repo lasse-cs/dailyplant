@@ -1,0 +1,14 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<article class="card wide__card">
+    <h2><a href="{% pageurl article %}" class="link-unstyled">{{ article.title }}</a></h2>
+    {% if article.image %}
+        {% picture article.image format-{webp,jpeg} fill-560x315-c90 alt=article.image_alt_text %}
+    {% endif %}
+    {{ article.introduction|richtext }}
+    {% with tags=article.get_tags %}
+        {% if tags %}
+            {% include "patterns/components/tags/tag_list.html" with index_page=index_page %}
+        {% endif %}
+    {% endwith %}
+</article>

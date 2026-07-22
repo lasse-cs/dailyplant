@@ -1,26 +1,72 @@
 {% extends "patterns/base.html" %}
 
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load vite_tags wagtailcore_tags wagtailimages_tags %}
+
+{% block head_js %}
+    {% vite 'js/archive.js' %}
+{% endblock head_js %}
+
+{% block skiplinks %}
+    {{ block.super }}
+    <a href="#article__archive" class="skip-to-main">Skip to article list</a>
+{% endblock skiplinks %}
 
 {% block page_content %}
     <main id="main" class="article__index" tabindex="-1">
         <header class="card wide__card">
             <h1 class="title">{{ page.title }}</h1>
             {{ page.introduction|richtext }}
+            {% if tags %}
+                <div class="article__filters__container">
+                    <p>
+                        Select a tag to filter items by that tag.
+                    </p>
+                    <div class="article__filters">
+                        {% include "patterns/components/tags/tag_list.html" with index_page=page %}
+                        {% if active_slug %}
+                            <div>
+                                <a href="{% pageurl page %}" class="tag-pill link-unstyled">
+                                    Clear
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
         </header>
-
-        <div class="article__archive">
+        <div class="article__archive" id="article__archive" tabindex="-1">
             {% for article in articles %}
-                <article class="card wide__card">
-                    <h2><a href="{% pageurl article %}" class="link-unstyled">{{ article.title }}</a></h2>
-                    {% if article.image %}
-                        {% picture article.image format-{webp,jpeg} fill-560x315-c90 alt=article.image_alt_text %}
-                    {% endif %}
-                    {{ article.introduction|richtext }}
-                </article>
+                {% include "patterns/components/articles/card.html" with index_page=page %}
             {% empty %}
-                <div class="card wide__card">No articles found.</div>
+                <div class="card wide__card">
+                    No articles found.
+                </div>
             {% endfor %}
         </div>
+        {% if articles.has_previous or articles.has_next %}
+            <footer>
+                <nav aria-label="Pagination" data-controller="replace-template">
+                    <ul role="list" class="pagination" id="article-navigation">
+                        {% if articles.has_previous %}
+                            <li>
+                                <a href="{% querystring page=articles.previous_page_number %}" class="tag-pill link-unstyled">
+                                    ← Newer Articles
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if articles.has_next %}
+                            <li>
+                                <a href="{% querystring page=articles.next_page_number %}" class="tag-pill link-unstyled">
+                                    Older Articles →
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <template data-replace-template-target="template">
+                        {% include "patterns/components/articles/article_navigation.html" %}
+                    </template>
+                </nav>
+            </footer>
+        {% endif %}
     </main>
 {% endblock page_content %}
