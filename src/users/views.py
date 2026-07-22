@@ -8,12 +8,28 @@ from wagtail.models import Site
 
 from sesame.utils import get_query_string
 
+from core.breadcrumbs import Breadcrumb
 from users.forms import EmailLoginForm
 
 
 class EmailLoginView(FormView):
     template_name = "patterns/pages/users/email_login.html"
     form_class = EmailLoginForm
+
+    def get_breadcrumbs(self):
+        site = Site.find_for_request(self.request)
+        return [
+            Breadcrumb(name=site.root_page.title, url=site.root_url),
+            Breadcrumb(
+                name="Log In",
+                url=self.request.build_absolute_uri(reverse("wagtailadmin_login")),
+            ),
+        ]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["breadcrumbs"] = self.get_breadcrumbs()
+        return context
 
     def get_user(self, email):
         """Find the user with this email address."""
@@ -43,4 +59,8 @@ class EmailLoginView(FormView):
         if user:
             link = self.create_link(user)
             self.send_email(user, link, sitename)
-        return render(self.request, "patterns/pages/users/email_login_success.html")
+        return render(
+            self.request,
+            "patterns/pages/users/email_login_success.html",
+            {"breadcrumbs": self.get_breadcrumbs()},
+        )

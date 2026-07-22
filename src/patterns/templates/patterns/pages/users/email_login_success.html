@@ -1,4 +1,5 @@
 {% extends "patterns/base.html" %}
+{% load breadcrumb_tags %}
 
 {% block metadata %}
     <title>Log In</title>
@@ -6,6 +7,10 @@
 
 {% block analytics %}
 {% endblock analytics %}
+
+{% block breadcrumbs %}
+    {% render_breadcrumbs breadcrumbs %}
+{% endblock breadcrumbs %}
 
 {% block page_content %}
     <main id="main" tabindex="-1">

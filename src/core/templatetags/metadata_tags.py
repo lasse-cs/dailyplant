@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 
 from wagtail.models import Site
 
+from core.breadcrumbs import build_breadcrumbs
 from core.models import MetadataSettings, SocialMediaChoices, SocialMediaSettings
 
 register = Library()
@@ -98,19 +99,45 @@ def build_base_schema(request, metadata):
     return graph
 
 
-def build_structured_data(page, request, metadata):
+def build_structured_data(page, request, metadata, breadcrumbs):
     schemas = build_base_schema(request, metadata)
     if page and hasattr(page, "get_schema_graph"):
         schemas.extend(page.get_schema_graph(request, metadata))
+
+    if breadcrumbs:
+        schemas.append(
+            {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": position,
+                        "name": item.name,
+                        "item": item.url,
+                    }
+                    for position, item in enumerate(breadcrumbs, start=1)
+                ],
+            }
+        )
     if len(schemas) == 1:
         return schemas[0]
     return schemas
 
 
-def build_json_ld(page, request, indent=None, **overrides):
+def build_json_ld(
+    page,
+    request,
+    indent=None,
+    **overrides,
+):
+    breadcrumbs = overrides.pop("breadcrumbs", None)
+    if breadcrumbs is None:
+        breadcrumbs = build_breadcrumbs(request, page)
+
     metadata = build_metadata(page, request, **overrides)
     json_ld = json.dumps(
-        build_structured_data(page, request, metadata),
+        build_structured_data(page, request, metadata, breadcrumbs=breadcrumbs),
         cls=DjangoJSONEncoder,
         indent=indent,
     )

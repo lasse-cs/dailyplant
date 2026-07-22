@@ -27,6 +27,7 @@ from wagtail.search import index
 
 from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
 
+from core.breadcrumbs import Breadcrumb
 from core.models import (
     FeedPageMixin,
     MarkdownPageMixin,
@@ -119,6 +120,17 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
             except ValueError:
                 pass
         return metadata_url
+
+    def get_extra_breadcrumb(self, request) -> Breadcrumb | None:
+        # Wagtail does not set routable_resolver_match when serving previews.
+        resolver_match = getattr(request, "routable_resolver_match", None)
+        if not resolver_match or resolver_match.url_name != "tag":
+            return None
+
+        tag = self.get_tags().filter(slug=resolver_match.kwargs["slug"]).first()
+        if not tag:
+            return None
+        return Breadcrumb(name=tag.name, url=self.get_metadata_url(request))
 
     def get_context(self, request, slug=None):
         context = super().get_context(request)

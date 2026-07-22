@@ -14,7 +14,7 @@ from core.testapp.blocks import (
     NestedStreamBlock,
     RootStreamBlock,
 )
-from core.testapp.models import TocPage
+from core.testapp.models import BreadcrumbPage, TocPage
 
 
 class HeadingBlockFactory(StructBlockFactory):
@@ -54,3 +54,8 @@ class TocPageFactory(PageFactory):
 
     class Meta:
         model = TocPage
+
+
+class BreadcrumbPageFactory(PageFactory):
+    class Meta:
+        model = BreadcrumbPage

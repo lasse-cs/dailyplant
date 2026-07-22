@@ -1,4 +1,14 @@
 {% extends "patterns/base.html" %}
+{% load breadcrumb_tags metadata_tags %}
+
+{% block metadata %}
+    {% render_metadata %}
+    {% render_json_ld breadcrumbs=breadcrumbs %}
+{% endblock metadata %}
+
+{% block breadcrumbs %}
+    {% render_breadcrumbs breadcrumbs %}
+{% endblock breadcrumbs %}
 
 {% block skiplinks %}
     {{ block.super }}

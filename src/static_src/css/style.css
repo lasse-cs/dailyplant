@@ -126,7 +126,7 @@
         background: linear-gradient(rgba(247, 244, 236, 0.18), rgba(247, 244, 236, 0.22)), url("../assets/background.webp") left bottom / contain no-repeat;
         content: "";
         opacity: 0.6;
-        margin-top: 6rem;
+        margin-top: 12rem;
     }
 
     .body-container {
@@ -177,8 +177,8 @@
     justify-content: space-between;
     flex-wrap: wrap;
     column-gap: 4rem;
-    row-gap: 1rem;
-    padding-block: 2rem;
+    row-gap: 1.25rem;
+    padding-block: 2rem 1.25rem;
   }
 
   .site-header__actions {
@@ -192,6 +192,42 @@
     display: flex;
     justify-content: center;
     padding-block: 4rem;
+  }
+
+  .breadcrumbs {
+    color: var(--color-text-muted);
+    margin-block-end: 1.25rem;
+  }
+
+  .breadcrumbs__list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .breadcrumbs__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &:not(:first-child)::before {
+      inline-size: 0.5rem;
+      block-size: 0.5rem;
+      border-block-start: 1.5px solid currentcolor;
+      border-inline-end: 1.5px solid currentcolor;
+      content: "";
+      opacity: 0.7;
+      transform: rotate(45deg);
+    }
+
+    [aria-current="page"] {
+      color: var(--color-accent);
+    }
+  }
+
+  .breadcrumbs__link {
+    color: inherit;
   }
 
   .link-unstyled {

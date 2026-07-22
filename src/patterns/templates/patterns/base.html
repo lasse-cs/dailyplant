@@ -1,4 +1,4 @@
-{% load markdown_tags metadata_tags static umami_analytics_tags vite_tags wagtailcore_tags wagtailuserbar %}
+{% load breadcrumb_tags markdown_tags metadata_tags static umami_analytics_tags vite_tags wagtailcore_tags wagtailuserbar %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -51,6 +51,10 @@
                 {% block header %}
                     {% include "patterns/components/header/header.html" %}
                 {% endblock header %}
+
+                {% block breadcrumbs %}
+                    {% render_breadcrumbs %}
+                {% endblock breadcrumbs %}
 
                 {% block page_content %}
                 {% endblock page_content %}
