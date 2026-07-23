@@ -1,14 +1,38 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
-<article class="card wide__card">
-    <h2><a href="{% pageurl article %}" class="link-unstyled">{{ article.title }}</a></h2>
-    {% if article.image %}
-        {% picture article.image format-{webp,jpeg} fill-560x315-c90 alt=article.image_alt_text %}
-    {% endif %}
-    {{ article.introduction|richtext }}
-    {% with tags=article.get_tags %}
-        {% if tags %}
-            {% include "patterns/components/tags/tag_list.html" with index_page=index_page %}
+<article class="article__summary-card content-card card">
+    <header class="content-card__header">
+        <h2 class="content-card__title">
+            <a href="{% pageurl article %}" class="link-unstyled">{{ article.title }}</a>
+        </h2>
+        {% if article.first_published_at %}
+            <p class="content-card__date">
+                <span class="content-card__date-line" aria-hidden="true"></span>
+                <time datetime="{{ article.first_published_at|date:'Y-m-d' }}">
+                    {{ article.first_published_at|date:'M d, Y' }}
+                </time>
+                <span class="content-card__date-line" aria-hidden="true"></span>
+            </p>
         {% endif %}
-    {% endwith %}
+    </header>
+    <div class="content-card__body">
+        <div class="content-card__lead">
+            {{ article.introduction|richtext }}
+        </div>
+        {% if article.image %}
+            <figure class="content-media">
+                {% picture article.image format-{webp,jpeg} fill-560x315-c90 class="content-media__image" alt=article.image_alt_text %}
+                {% if article.image_description %}
+                    <figcaption class="content-media__caption">
+                        {{ article.image_description }}
+                    </figcaption>
+                {% endif %}
+            </figure>
+        {% endif %}
+        {% with tags=article.get_tags %}
+            {% if tags %}
+                {% include "patterns/components/tags/tag_list.html" with index_page=index_page %}
+            {% endif %}
+        {% endwith %}
+    </div>
 </article>

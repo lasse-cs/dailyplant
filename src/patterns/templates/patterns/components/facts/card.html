@@ -1,28 +1,28 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
-<article class="fact__card card">
-    <header class="fact__header">
+<article class="fact__card content-card card">
+    <header class="content-card__header">
         {% if fact.heading_level == 'h2' %}
-            <h2 class="fact__title">
+            <h2 class="content-card__title">
                 <a href="{% pageurl fact %}" class="link-unstyled">{{ fact.title }}</a>
             </h2>
         {% else %}
-            <h1 class="fact__title">
+            <h1 class="content-card__title">
                 <a href="{% pageurl fact %}" class="link-unstyled">{{ fact.title }}</a>
             </h1>
         {% endif %}
-        <p class="fact__date">
-            <span class="fact__date__line" aria-hidden="true"></span>
+        <p class="content-card__date">
+            <span class="content-card__date-line" aria-hidden="true"></span>
             <time datetime="{{ fact.date|date:'Y-m-d'}}">
                 <span>
                     {{ fact.date|date:'M d, Y' }}
                 </span>
             </time>
-            <span class="fact__date__line" aria-hidden="true"></span>
+            <span class="content-card__date-line" aria-hidden="true"></span>
         </p>
     </header>
-    <div class="fact__card__body">
-        <div class="fact__content">
+    <div class="content-card__body">
+        <div class="content-card__lead">
             {{ fact.content|richtext }}
         </div>
         {% if fact.image %}
