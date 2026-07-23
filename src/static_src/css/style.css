@@ -161,6 +161,7 @@
     position: absolute;
     padding: 1rem;
     gap: 1rem;
+    z-index: 1;
   }
 
   .skip-to-main {
