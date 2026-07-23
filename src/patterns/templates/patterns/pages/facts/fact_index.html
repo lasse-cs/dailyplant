@@ -2,6 +2,13 @@
 
 {% load vite_tags wagtailcore_tags %}
 
+{% block metadata %}
+    {{ block.super }}
+    {% if active_slug %}
+        <meta name="robots" content="noindex, follow">
+    {% endif %}
+{% endblock metadata %}
+
 {% block head_js %}
     {% vite 'js/archive.js' %}
 {% endblock head_js %}
