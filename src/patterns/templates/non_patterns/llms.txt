@@ -1,0 +1,10 @@
+# {{ site.site_name }}
+{% if description %}
+> {{ description }}
+{% endif %}
+{% for section in sections %}
+## {{ section.title }}
+
+{% for link in section.links %}- [{{ link.title }}]({{ link.url }})
+{% endfor %}
+{% endfor %}

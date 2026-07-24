@@ -30,6 +30,7 @@ from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
 from core.breadcrumbs import Breadcrumb
 from core.models import (
     FeedPageMixin,
+    LLMsTxtListingMixin,
     MarkdownPageMixin,
     MarkdownRoutablePageMixin,
     MetadataMixin,
@@ -44,7 +45,9 @@ from facts.blocks import ReferenceStreamBlock
 from search.models import SearchablePageMixin
 
 
-class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
+class FactIndexPage(
+    LLMsTxtListingMixin, MetadataMixin, MarkdownRoutablePageMixin, RoutablePage
+):
     parent_page_types = ["home.HomePage"]
     subpage_types = ["facts.FactPage"]
     max_count = 1
@@ -87,6 +90,9 @@ class FactIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
         if slug:
             facts = facts.filter(tag_assignments__tag__slug=slug)
         return facts
+
+    def get_llms_txt_pages(self):
+        return self.get_facts()
 
     def get_tags(self):
         return Tag.objects.filter(

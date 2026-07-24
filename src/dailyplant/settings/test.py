@@ -14,6 +14,13 @@ ALLOWED_HOSTS = ["*"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+# Disable caching so cached views don't leak responses between tests.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
+
 MEDIA_ROOT = tempfile.gettempdir()
 
 DATABASES = {

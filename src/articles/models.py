@@ -22,6 +22,7 @@ from core.blocks import ContentStreamBlock
 from core.breadcrumbs import Breadcrumb
 from core.models import (
     FeedPageMixin,
+    LLMsTxtListingMixin,
     MarkdownPageMixin,
     MarkdownRoutablePageMixin,
     MetadataMixin,
@@ -35,7 +36,9 @@ from core.panels import IncomingRelatedPagesPanel
 from search.models import SearchablePageMixin
 
 
-class ArticleIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
+class ArticleIndexPage(
+    LLMsTxtListingMixin, MetadataMixin, MarkdownRoutablePageMixin, RoutablePage
+):
     parent_page_types = ["home.HomePage"]
     subpage_types = ["articles.ArticlePage"]
     max_count = 1
@@ -78,6 +81,9 @@ class ArticleIndexPage(MetadataMixin, MarkdownRoutablePageMixin, RoutablePage):
         if slug:
             articles = articles.filter(tag_assignments__tag__slug=slug)
         return articles
+
+    def get_llms_txt_pages(self):
+        return self.get_articles()
 
     def get_tags(self):
         return Tag.objects.filter(

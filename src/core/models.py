@@ -12,13 +12,13 @@ from modelcluster.models import ClusterableModel
 
 from wagtail.admin.panels import InlinePanel
 from wagtail.blocks import ListBlock, StreamBlock, StructBlock
-from wagtail.fields import RichTextField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.images import get_image_model_string
-from wagtail.models import Orderable, Page
+from wagtail.models import Orderable, Page, PreviewableMixin
 from wagtail.contrib.routable_page.models import path
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
-from core.blocks import HeadingBlock
+from core.blocks import HeadingBlock, LLMsTxtSectionsBlock
 from core.panels import RelatedPageChooserPanel
 
 
@@ -97,6 +97,11 @@ class MetadataMixin:
     @property
     def metadata_image(self):
         return None
+
+
+class LLMsTxtListingMixin:
+    def get_llms_txt_pages(self):
+        raise NotImplementedError
 
 
 class FeedPageMixin:
@@ -267,6 +272,71 @@ class MetadataSettings(BaseSiteSetting):
         "description",
         "image",
     ]
+
+
+@dataclass
+class LLMsTxtLink:
+    title: str
+    url: str
+
+
+@dataclass
+class LLMsTxtSection:
+    title: str
+    links: list[LLMsTxtLink]
+
+
+@register_setting
+class LLMsTxtSettings(PreviewableMixin, BaseSiteSetting):
+    sections = StreamField(
+        LLMsTxtSectionsBlock(),
+        blank=True,
+        help_text="The ordered link sections to include in /llms.txt.",
+    )
+
+    panels = ["sections"]
+
+    class Meta:
+        verbose_name = "LLMs.txt"
+
+    def get_full_url(self):
+        return f"{self.site.root_url.rstrip('/')}/llms.txt"
+
+    def get_sections(self, request):
+        sections = []
+        for block in self.sections:
+            section = block.value.get_llms_txt_section()
+            if not section:
+                continue
+            title, pages = section
+
+            links = []
+            for page in pages:
+                if not page or not page.live:
+                    continue
+                url = markdown_page_url(page.specific, request)
+                links.append(LLMsTxtLink(title=page.title, url=url))
+
+            sections.append(LLMsTxtSection(title=title, links=links))
+        return sections
+
+    def get_context(self, request):
+        return {
+            "site": self.site,
+            "description": MetadataSettings.for_site(self.site).description,
+            "sections": self.get_sections(request),
+        }
+
+    def render(self, request):
+        return render(
+            request,
+            "non_patterns/llms.txt",
+            self.get_context(request),
+            content_type="text/markdown; charset=utf-8",
+        )
+
+    def serve_preview(self, request, mode_name):
+        return self.render(request)
 
 
 def _is_markdown(request):
