@@ -4,6 +4,7 @@ import pytest
 from pytest_django.asserts import assertTemplateUsed
 
 from articles.models import ArticleIndexPage, ArticlePage
+from core.blocks import LLMsTxtListingPageChooserBlock
 from core.models import PageTag, Tag
 from home.factories import HomePageFactory
 
@@ -24,6 +25,15 @@ def make_article(index, title, *, first_published_at=None, body=None):
             body=body or [],
         )
     )
+
+
+@pytest.mark.django_db
+def test_article_index_provides_llms_txt_listing(root_page):
+    article_index = make_index(root_page)
+    article = make_article(article_index, "Growing herbs")
+
+    assert ArticleIndexPage in LLMsTxtListingPageChooserBlock().target_models
+    assert list(article_index.get_llms_txt_pages()) == [article]
 
 
 @pytest.mark.django_db
