@@ -74,13 +74,16 @@ class LLMsTxtCuratedSectionBlock(blocks.StructBlock):
 
 
 class LLMsTxtAutomaticSectionValue(blocks.StructValue):
+    max_links = 5
+
     def get_llms_txt_section(self):
         listing_page = self["listing_page"]
         if not listing_page:
             return None
 
         listing_page = listing_page.specific
-        return listing_page.title, listing_page.get_llms_txt_pages()
+        pages = listing_page.get_llms_txt_pages()[: self.max_links]
+        return listing_page.title, pages
 
 
 class LLMsTxtAutomaticSectionBlock(blocks.StructBlock):

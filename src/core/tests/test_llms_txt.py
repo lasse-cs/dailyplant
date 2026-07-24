@@ -1,4 +1,8 @@
+from datetime import timedelta
+
 import pytest
+
+from django.utils import timezone
 
 from articles.models import ArticleIndexPage, ArticlePage
 from core.blocks import LLMsTxtListingPageChooserBlock
@@ -59,6 +63,33 @@ def test_llms_txt_automatic_section_uses_listing_page_entries(client, site):
         f"- [Choosing a pot]({article.get_full_url(response.wsgi_request).rstrip('/')}.md)"
         in response.text
     )
+
+
+@pytest.mark.django_db
+def test_llms_txt_automatic_section_limits_links(client, site):
+    home_page = HomePageFactory(parent=site.root_page)
+    article_index = home_page.add_child(instance=ArticleIndexPage(title="Articles"))
+    for i in range(7):
+        article_index.add_child(
+            instance=ArticlePage(
+                title=f"Article {i}",
+                introduction="<p>Intro.</p>",
+                body=[],
+                first_published_at=timezone.now() - timedelta(days=i),
+            )
+        )
+    llms_settings = LLMsTxtSettings.for_site(site)
+    llms_settings.sections = [
+        ("automatic", {"listing_page": article_index}),
+    ]
+    llms_settings.save()
+
+    response = client.get("/llms.txt")
+
+    for i in range(5):
+        assert f"Article {i}]" in response.text
+    assert "Article 5]" not in response.text
+    assert "Article 6]" not in response.text
 
 
 @pytest.mark.django_db
