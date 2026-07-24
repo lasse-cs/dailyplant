@@ -463,6 +463,7 @@ class SocialMediaSettings(BaseSiteSetting, ClusterableModel):
 class SocialMediaChoices(models.TextChoices):
     BLUESKY = "bluesky", "BlueSky"
     FEED = "feed", "Feed"
+    ROBOTS = "robots", "Robots"
 
 
 class SocialMediaLink(Orderable):
