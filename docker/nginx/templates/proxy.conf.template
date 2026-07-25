@@ -69,8 +69,6 @@ server {
         proxy_pass http://django;
         proxy_set_header Host $host;
         proxy_redirect off;
-
-        add_header Cache-control "no-store";
     }
 }
 
