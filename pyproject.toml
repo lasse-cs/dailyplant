@@ -48,6 +48,11 @@ wagtail-umami-analytics = { git = "https://github.com/lasse-cs/wagtail-umami-ana
 [tool.ruff]
 extend-exclude = ["**/migrations/*.py"]
 
+[tool.ruff.lint]
+# Wagtail/Django declarative class attributes (panels, parent_page_types, etc.)
+# need to review
+ignore = ["RUF012"]
+
 
 [tool.pytest]
 addopts = ["--reuse-db"]
