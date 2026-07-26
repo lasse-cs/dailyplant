@@ -1,11 +1,9 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-
 from wagtail.images.models import SourceImageIOError
 
 from social.bluesky import BLUESKY_FORMATTERS
 from social.models import BlueskyPost, BlueskyPostStatus
-
 
 BLUESKY_EXTERNAL_THUMB_MAX_BYTES = 1_000_000
 

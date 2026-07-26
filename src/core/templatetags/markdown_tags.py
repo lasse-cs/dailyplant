@@ -5,7 +5,6 @@ from markdownify import markdownify as html_to_markdown
 from core.models import markdown_page_url
 from core.templatetags.metadata_tags import build_json_ld
 
-
 register = template.Library()
 
 

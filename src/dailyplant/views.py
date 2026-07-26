@@ -7,7 +7,6 @@ from django.views.decorators.http import require_GET
 from django.views.decorators.vary import vary_on_headers
 from django.views.defaults import page_not_found as django_page_not_found
 from django.views.defaults import server_error as django_server_error
-
 from wagtail.coreutils import WAGTAIL_APPEND_SLASH
 from wagtail.models import Page
 from wagtail.views import serve

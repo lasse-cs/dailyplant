@@ -9,7 +9,6 @@ from django.utils import timezone
 from django.utils.cache import patch_vary_headers
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
-
 from wagtail.admin.panels import (
     FieldPanel,
     MultiFieldPanel,
@@ -20,11 +19,10 @@ from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import 
     routablefullpageurl,
 )
 from wagtail.fields import RichTextField, RichTextMaxLengthValidator, StreamField
-from wagtail.models import Page
 from wagtail.images import get_image_model
+from wagtail.models import Page
 from wagtail.rich_text import expand_db_html
 from wagtail.search import index
-
 from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
 
 from core.breadcrumbs import Breadcrumb
@@ -40,7 +38,6 @@ from core.models import (
     TaggedPageMixin,
 )
 from core.panels import IncomingRelatedPagesPanel
-
 from facts.blocks import ReferenceStreamBlock
 from search.models import SearchablePageMixin
 

@@ -2,7 +2,6 @@ from django import template
 
 from core.breadcrumbs import Breadcrumb, build_breadcrumbs
 
-
 register = template.Library()
 
 

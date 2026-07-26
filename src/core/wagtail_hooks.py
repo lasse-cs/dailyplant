@@ -1,18 +1,15 @@
 from django.templatetags.static import static
-
 from wagtail import hooks
 from wagtail.admin.rich_text.editors.draftail.features import ControlFeature
 from wagtail.contrib.settings.models import register_setting
 from wagtail.snippets.models import register_snippet
-
 from wagtail_umami_analytics.models import UmamiAnalyticsSetting
 from wagtail_umami_analytics.views import (
-    register_umami_page_analytics_urls,
     UmamiAnalyticsViewSet,
+    register_umami_page_analytics_urls,
 )
 
 from core.viewsets import TagSnippetViewSet
-
 
 register_setting(UmamiAnalyticsSetting)
 register_snippet(TagSnippetViewSet)

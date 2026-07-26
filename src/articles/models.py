@@ -6,7 +6,6 @@ from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 from django.utils.cache import patch_vary_headers
 from django.utils.html import strip_tags
-
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, MultipleChooserPanel
 from wagtail.contrib.routable_page.models import RoutablePage, path
 from wagtail.contrib.routable_page.templatetags.wagtailroutablepage_tags import (

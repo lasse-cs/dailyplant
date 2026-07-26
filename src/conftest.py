@@ -1,7 +1,5 @@
 import pytest
-
 from wagtail.models import Site
-
 from wagtail_factories import SiteFactory
 
 

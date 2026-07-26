@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 
 from django.http import HttpRequest
-
-from wagtail.models import Page
-from wagtail.models import Site
+from wagtail.models import Page, Site
 
 
 @dataclass(frozen=True, slots=True)

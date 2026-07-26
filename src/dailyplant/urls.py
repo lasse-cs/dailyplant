@@ -1,21 +1,18 @@
 from django.apps import apps
 from django.conf import settings
 from django.urls import include, path, re_path
-
-from wagtail.admin import urls as wagtailadmin_urls
+from sesame.views import LoginView
 from wagtail import urls as wagtail_urls
+from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.images.views.serve import ServeView
 
-from sesame.views import LoginView
-
 from core.feeds import AtomFeed, RSSFeed
 from core.views import llms_txt
 from dailyplant.views import error_500_test, markdown_suffix_page, robots_txt
-from users.views import EmailLoginView
 from search.views import search
-
+from users.views import EmailLoginView
 
 urlpatterns = [
     path("sesame/login/", LoginView.as_view(), name="sesame-login"),

@@ -2,12 +2,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils.cache import patch_vary_headers
 from django.views.decorators.http import require_GET
-
 from wagtail.models import Page, Site
 
 from core.breadcrumbs import Breadcrumb
 from search.models import SearchablePageMixin
-
 
 MAX_SEARCH_RESULTS = 5
 

@@ -1,7 +1,6 @@
 from django.contrib.syndication.views import Feed
 from django.http import Http404
 from django.utils.feedgenerator import Atom1Feed
-
 from wagtail.models import Page, Site, get_page_models
 
 from core.models import FeedPageMixin, MetadataSettings

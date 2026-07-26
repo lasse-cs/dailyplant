@@ -6,17 +6,15 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.utils.cache import patch_vary_headers
 from django.utils.text import slugify
-
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-
 from wagtail.admin.panels import InlinePanel
 from wagtail.blocks import ListBlock, StreamBlock, StructBlock
+from wagtail.contrib.routable_page.models import path
+from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.fields import RichTextField, StreamField
 from wagtail.images import get_image_model_string
 from wagtail.models import Orderable, Page, PreviewableMixin
-from wagtail.contrib.routable_page.models import path
-from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
 from core.blocks import HeadingBlock, LLMsTxtSectionsBlock
 from core.panels import RelatedPageChooserPanel
@@ -27,7 +25,7 @@ class TocItem:
     label: str
     anchor: str
     level: int
-    children: list["TocItem"] = field(default_factory=list)
+    children: list[TocItem] = field(default_factory=list)
 
 
 def collect_toc_items(block, value):

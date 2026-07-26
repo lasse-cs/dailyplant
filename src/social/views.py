@@ -1,8 +1,6 @@
 from django.middleware.csrf import get_token
 from django.urls import path, reverse
-
 from django_filters import DateFromToRangeFilter, FilterSet
-
 from wagtail.admin.filters import DateRangePickerWidget
 from wagtail.admin.ui.tables import (
     ButtonsColumnMixin,

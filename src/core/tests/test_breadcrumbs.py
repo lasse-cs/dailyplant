@@ -1,7 +1,6 @@
 import json
 
 import pytest
-
 from django.template.loader import render_to_string
 
 from core.breadcrumbs import Breadcrumb, build_breadcrumbs

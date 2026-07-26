@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.text import slugify
-
 from wagtail import blocks
 from wagtail.models import get_page_models
 

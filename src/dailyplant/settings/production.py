@@ -1,6 +1,5 @@
-# ruff: noqa: F403, F405
-from pathlib import Path
 import os
+from pathlib import Path
 
 import sentry_sdk
 

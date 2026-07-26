@@ -5,15 +5,14 @@ from django.http import Http404
 from django.urls import path, reverse_lazy
 from django.utils import timezone
 from django.views.generic import TemplateView
-
 from django_filters.filters import DateFromToRangeFilter
-
 from wagtail.admin.filters import DateRangePickerWidget
-from wagtail.admin.views.pages.create import CreateView
-from wagtail.admin.views.generic import WagtailAdminTemplateMixin
 from wagtail.admin.ui.tables import Column
+from wagtail.admin.views.generic import WagtailAdminTemplateMixin
+from wagtail.admin.views.pages.create import CreateView
 from wagtail.admin.viewsets.base import ViewSet
 from wagtail.admin.viewsets.pages import PageViewSet
+
 from facts.models import FactIndexPage, FactPage
 
 

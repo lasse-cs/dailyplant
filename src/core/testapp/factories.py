@@ -1,5 +1,4 @@
 import factory
-
 from wagtail_factories import (
     ListBlockFactory,
     PageFactory,

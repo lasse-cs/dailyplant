@@ -3,7 +3,7 @@ from wagtail.admin.auth import user_has_any_page_permission
 from wagtail.admin.site_summary import SummaryItem
 
 from facts.models import FactPage
-from facts.viewsets import fact_page_viewset, FactCalendarViewSet
+from facts.viewsets import FactCalendarViewSet, fact_page_viewset
 
 
 @hooks.register("register_admin_viewset")

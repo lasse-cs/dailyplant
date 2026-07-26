@@ -3,10 +3,8 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic import FormView
-
-from wagtail.models import Site
-
 from sesame.utils import get_query_string
+from wagtail.models import Site
 
 from core.breadcrumbs import Breadcrumb
 from users.forms import EmailLoginForm
