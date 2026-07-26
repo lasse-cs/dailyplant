@@ -37,7 +37,7 @@ def markdown_suffix_page(request, path):
 
 @user_passes_test(lambda u: u.is_superuser)
 def error_500_test(request):
-    raise Exception("This is a test exception")
+    raise RuntimeError("This is a test exception")
 
 
 @cache_page(60 * 60)
