@@ -2,6 +2,10 @@
 default:
 	just --list
 
+# Run the linters on all files
+lint:
+	uv run pre-commit run --all-files
+
 # Run the Django dev server and Vite via Honcho
 dev:
 	uv run honcho start
