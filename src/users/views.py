@@ -8,6 +8,7 @@ from wagtail.models import Site
 
 from core.breadcrumbs import Breadcrumb
 from users.forms import EmailLoginForm
+from users.ratelimit import is_ratelimited
 
 
 class EmailLoginView(FormView):
@@ -51,12 +52,14 @@ class EmailLoginView(FormView):
 
     def form_valid(self, form):
         email = form.cleaned_data["email"]
-        user = self.get_user(email)
-        site = Site.find_for_request(self.request)
-        sitename = site.site_name or str(site)
-        if user:
-            link = self.create_link(user)
-            self.send_email(user, link, sitename)
+        limited = is_ratelimited("login", email, 3, 5 * 60)
+        if not limited:
+            user = self.get_user(email)
+            site = Site.find_for_request(self.request)
+            sitename = site.site_name or str(site)
+            if user:
+                link = self.create_link(user)
+                self.send_email(user, link, sitename)
         return render(
             self.request,
             "patterns/pages/users/email_login_success.html",

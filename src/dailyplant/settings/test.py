@@ -17,8 +17,13 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-    }
+    },
+    "ratelimit": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    },
 }
+
+RATELIMIT_CACHE = "ratelimit"
 
 MEDIA_ROOT = tempfile.gettempdir()
 
