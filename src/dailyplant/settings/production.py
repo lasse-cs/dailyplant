@@ -47,6 +47,13 @@ EMAIL_HOST_PASSWORD = os.environ.get("DJANGO_EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        "LOCATION": os.environ["MEMCACHED_LOCATIONS"].split(","),
+    },
+}
+
 if os.environ.get("SENTRY_DSN_FILE"):
     sentry_sdk.init(
         dsn=Path(os.environ["SENTRY_DSN_FILE"]).read_text().strip(),

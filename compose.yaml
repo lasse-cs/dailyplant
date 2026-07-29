@@ -56,6 +56,7 @@ services:
       - SENTRY_DSN_FILE=/run/secrets/sentry_dsn_file
       - BLUESKY_USERNAME=${BLUESKY_USERNAME}
       - BLUESKY_PASSWORD_FILE=/run/secrets/bluesky_password_file
+      - MEMCACHED_LOCATIONS=memcached:11211
     volumes:
       - media_files:/app/media/:rw
     secrets:
@@ -66,6 +67,7 @@ services:
     networks:
       - web-network
       - db-network
+      - cache-network
     labels:
       ofelia.enabled: "true"
       ofelia.job-exec.publish_scheduled.schedule: "@hourly"
@@ -84,11 +86,19 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
+  memcached:
+    image: memcached:1.6.45-trixie
+    restart: unless-stopped
+    networks:
+      - cache-network
+
 networks:
   web-network:
     name: plants-web-network
   db-network:
     name: plants-db-network
+  cache-network:
+    name: plants-cache-network
   
 secrets:
   postgres_password_file:

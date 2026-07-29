@@ -911,6 +911,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pymemcache"
+version = "4.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/b6/4541b664aeaad025dfb8e851dcddf8e25ab22607e674dd2b562ea3e3586f/pymemcache-4.0.0.tar.gz", hash = "sha256:27bf9bd1bbc1e20f83633208620d56de50f14185055e49504f4f5e94e94aff94", size = 70176, upload-time = "2022-10-17T16:53:07.726Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/41/ba/2f7b22d8135b51c4fefb041461f8431e1908778e6539ff5af6eeaaee367a/pymemcache-4.0.0-py2.py3-none-any.whl", hash = "sha256:f507bc20e0dc8d562f8df9d872107a278df049fa496805c1431b926f3ddd0eab", size = 60772, upload-time = "2022-10-17T16:53:04.388Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "9.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1175,6 +1184,7 @@ dependencies = [
     { name = "honcho" },
     { name = "markdownify" },
     { name = "psycopg" },
+    { name = "pymemcache" },
     { name = "sentry-sdk" },
     { name = "wagtail" },
     { name = "wagtail-umami-analytics" },
@@ -1204,6 +1214,7 @@ requires-dist = [
     { name = "honcho", specifier = ">=2.0.0" },
     { name = "markdownify", specifier = ">=1.2.3" },
     { name = "psycopg", specifier = ">=3.3.4" },
+    { name = "pymemcache", specifier = ">=4.0.0" },
     { name = "sentry-sdk", specifier = ">=2.61.0" },
     { name = "wagtail", specifier = ">=7.4,<8.0" },
     { name = "wagtail-umami-analytics", git = "https://github.com/lasse-cs/wagtail-umami-analytics.git?rev=b3f39616d9ec2a120f5ab33cbac979244e13da60" },
