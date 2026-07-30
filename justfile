@@ -30,4 +30,7 @@ makemigrations *args:
 test *args:
   uv run pytest {{args}}
 
+e2e *args:
+	uv run pytest --ds dailyplant.settings.e2e -m e2e {{args}}
+
 import? ".justfile.local"

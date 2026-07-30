@@ -32,6 +32,9 @@ dev = [
     "ruff>=0.16.0",
     "wagtail-factories>=4.4.0",
 ]
+playwright = [
+    "pytest-playwright>=0.8.0",
+]
 
 
 [tool.uv]
@@ -56,7 +59,8 @@ ignore = ["RUF012"]
 
 
 [tool.pytest]
-addopts = ["--reuse-db"]
+addopts = ["--reuse-db", "-m not e2e"]
 DJANGO_SETTINGS_MODULE = "dailyplant.settings.test"
+markers = ["e2e: end-to-end tests",]
 pythonpath = ["src"]
 python_files = ["**/tests/test_*.py"]
