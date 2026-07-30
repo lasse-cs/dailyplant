@@ -7,6 +7,7 @@ from wagtail.coreutils import get_supported_content_language_variant
 from wagtail.models import Locale, Page, Site
 from wagtail_factories.factories import SiteFactory
 
+from facts.factories import FactIndexPageFactory
 from home.factories import HomePageFactory
 
 
@@ -62,3 +63,15 @@ def home_page_and_site(live_site_server):
         root_page=home_page,
     )
     yield home_page, site
+
+
+@pytest.fixture
+def fact_index_page(home_page_and_site):
+    home, _ = home_page_and_site
+    fact_index_page = FactIndexPageFactory(
+        title="Fact Archive",
+        show_in_menus=True,
+        parent=home,
+    )
+    fact_index_page.save_revision().publish()
+    yield fact_index_page
