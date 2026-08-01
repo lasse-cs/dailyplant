@@ -1,7 +1,34 @@
 import factory
-from wagtail_factories import PageFactory
+from wagtail_factories import PageFactory, SiteFactory
 
-from core.models import PageRelationship, PageTag, Tag
+from core.models import (
+    PageRelationship,
+    PageTag,
+    SocialMediaChoices,
+    SocialMediaLink,
+    SocialMediaSettings,
+    Tag,
+)
+
+
+class SocialMediaSettingsFactory(factory.django.DjangoModelFactory):
+    site = factory.SubFactory(SiteFactory)
+
+    class Meta:
+        model = SocialMediaSettings
+
+
+class SocialMediaLinkFactory(factory.django.DjangoModelFactory):
+    social_settings = factory.SubFactory(SocialMediaSettingsFactory)
+    display = factory.Sequence(lambda index: f"Social link {index}")
+    url = factory.Sequence(lambda index: f"https://example.com/social/{index}")
+    type = factory.Faker(
+        "random_element",
+        elements=[choice.value for choice in SocialMediaChoices],
+    )
+
+    class Meta:
+        model = SocialMediaLink
 
 
 class RelatedPagesFactoryMixin(PageFactory):
