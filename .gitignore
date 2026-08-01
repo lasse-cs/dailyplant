@@ -6,6 +6,9 @@ dist/
 wheels/
 *.egg-info
 
+# pytestdebuglog
+pytestdebug.log
+
 # Node packages
 node_modules/
 
