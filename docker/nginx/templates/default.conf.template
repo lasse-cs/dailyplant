@@ -25,6 +25,11 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()" always;
 
+    add_header Link '</llms.txt>; rel="describedby"; type="text/markdown"; title="Site index for LLMs"' always;
+    add_header Link '</sitemap.xml>; rel="sitemap"; type="application/xml"; title="Sitemap"' always;
+    add_header Link '</rss.xml>; rel="alternate"; type="application/rss+xml"; title="RSS feed"' always;
+    add_header Link '</atom.xml>; rel="alternate"; type="application/atom+xml"; title="Atom feed"' always;
+
     real_ip_header X-Forwarded-For;
 
     location / {
