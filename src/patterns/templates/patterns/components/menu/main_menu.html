@@ -4,7 +4,8 @@
     <ol role="list">
         {% for menu_item in menu_items %}
             <li>
-                <a href="{% pageurl menu_item %}" class="link-unstyled">{{ menu_item.title }}</a>
+                {% pageurl menu_item as menu_item_url %}
+                <a href="{{ menu_item_url }}" class="link-unstyled"{% if request and request.path == menu_item_url %}aria-current="page"{% endif %}>{{ menu_item.title }}</a>
             </li>
         {% endfor %}
     </ol>
