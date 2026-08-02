@@ -344,16 +344,16 @@ wheels = [
 
 [[package]]
 name = "django-pattern-library"
-version = "1.5.0"
+version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "markdown" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/27/2f/eac9fb7ed72462174558936a19de6f9f7763c3460be7ba3c47f0231c5059/django_pattern_library-1.5.0.tar.gz", hash = "sha256:ce84a2d8c7e35eda58d86714d76da7850250db7fdde07160669739585b7ea7f3", size = 31191, upload-time = "2025-04-08T16:28:06.06Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1b/ea/5cffde46cdce8160b8c6662c857a75103e73a2474c42aae5f6e8a9f1d4a2/django_pattern_library-1.6.0.tar.gz", hash = "sha256:90106acfc3c9820f9c1d64c2719be882aaf47079dff172253a7f3a7a31e26142", size = 31343, upload-time = "2026-07-24T17:04:21.619Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/87/2000cb4112f342f043aabe24d6e23a2d79255a074f11735d95ee6ec831e6/django_pattern_library-1.5.0-py3-none-any.whl", hash = "sha256:7d133eca05b06bc7097f5709d967d503a09e0dc6aa37aea68dc29dc934400b01", size = 34582, upload-time = "2025-04-08T16:28:04.885Z" },
+    { url = "https://files.pythonhosted.org/packages/52/8d/561e314eace85e99e7049bf5c2cb75d25f09ca353fbbc48a01e62c4b6ac0/django_pattern_library-1.6.0-py3-none-any.whl", hash = "sha256:066fdcd9cbd38b3d691362007677f58711484dc246ce514142a967a353033fa6", size = 34782, upload-time = "2026-07-24T17:04:22.766Z" },
 ]
 
 [[package]]
@@ -1355,7 +1355,7 @@ dev = [
     { name = "debugpy", specifier = ">=1.8.20" },
     { name = "django-browser-reload", specifier = ">=1.21.0" },
     { name = "django-debug-toolbar", specifier = ">=7.0" },
-    { name = "django-pattern-library", specifier = ">=1.5.0" },
+    { name = "django-pattern-library", specifier = ">=1.6.0" },
     { name = "djhtml", specifier = ">=3.0.11" },
     { name = "pre-commit", specifier = ">=4.5.1" },
     { name = "pytest", specifier = ">=9.0.3" },
