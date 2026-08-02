@@ -19,7 +19,8 @@ export default class extends Controller {
         let currentSection = null;
 
         for (const section of this.sections) {
-            if (section.heading.getBoundingClientRect().top > readingLine) break;
+            if (section.heading.getBoundingClientRect().top > readingLine)
+                break;
             currentSection = section;
         }
 

@@ -8,3 +8,8 @@ repos:
     rev: 3.0.11
     hooks:
       - id: djhtml
+  - repo: https://github.com/biomejs/pre-commit
+    rev: "cd5d6ed44598e228e214b704d673541d9675f8e4"
+    hooks:
+    -   id: biome-check
+        additional_dependencies: ["@biomejs/biome@2.5.6"]

@@ -10,7 +10,8 @@ export default class extends Controller {
     }
 
     isMac() {
-        const platform = navigator.userAgentData?.platform || navigator.platform || "";
+        const platform =
+            navigator.userAgentData?.platform || navigator.platform || "";
 
         return platform.toLowerCase().includes("mac");
     }
