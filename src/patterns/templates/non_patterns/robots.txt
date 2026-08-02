@@ -2,5 +2,6 @@ User-agent: *
 Disallow: /search/
 Disallow: /admin/
 Allow: /
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 
 Sitemap: {{ sitemap }}
