@@ -2,11 +2,12 @@ from django.contrib.auth.decorators import user_passes_test
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_control, cache_page
 from django.views.decorators.http import require_GET
 from django.views.decorators.vary import vary_on_headers
 from django.views.defaults import page_not_found as django_page_not_found
 from django.views.defaults import server_error as django_server_error
+from wagtail.contrib.sitemaps.views import sitemap as wagtail_sitemap
 from wagtail.coreutils import WAGTAIL_APPEND_SLASH
 from wagtail.models import Page
 from wagtail.views import serve
@@ -18,6 +19,12 @@ def page_not_found(request, exception, template_name="patterns/pages/error/404.h
 
 def server_error(request, template_name="patterns/pages/error/500.html"):
     return django_server_error(request, template_name)
+
+
+@cache_page(60 * 60)
+@cache_control(public=True, stale_if_error=24 * 60 * 60)
+def sitemap(request):
+    return wagtail_sitemap(request)
 
 
 def markdown_suffix_page(request, path):
