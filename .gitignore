@@ -38,3 +38,6 @@ docker/.secrets
 
 # Local justfile
 .justfile.local
+
+# Local opencode configuration
+opencode.jsonc
