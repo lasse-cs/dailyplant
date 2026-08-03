@@ -53,3 +53,11 @@ compose.yaml
 .pytest_cache/
 .github/
 Procfile
+backups/
+biome.json
+justfile
+.justfile.local
+AGENTS.md
+opencode.jsonc
+pytestdebug.log
+scripts/
