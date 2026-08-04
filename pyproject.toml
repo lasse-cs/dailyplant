@@ -23,13 +23,13 @@ dev = [
     "debugpy>=1.8.20",
     "django-browser-reload>=1.21.0",
     "django-debug-toolbar>=7.0",
-    "django-pattern-library>=1.5.0",
+    "django-pattern-library>=1.6.0",
     "djhtml>=3.0.11",
     "honcho>=2.0.0",
     "pre-commit>=4.5.1",
     "pytest>=9.0.3",
     "pytest-django>=4.11.1",
-    "ruff>=0.16.0",
+    "ruff>=0.16.1",
     "wagtail-factories>=4.4.0",
 ]
 playwright = [
