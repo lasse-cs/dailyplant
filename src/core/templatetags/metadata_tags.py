@@ -23,7 +23,7 @@ JSON_LD_ESCAPE = {
 
 def build_metadata(page, request, **overrides):
     site = Site.find_for_request(request)
-    settings = MetadataSettings.for_site(site)
+    settings = MetadataSettings.for_request(request)
 
     title = (
         overrides.get("title")
@@ -86,7 +86,7 @@ def build_base_schema(request, metadata):
         },
     }
 
-    social_settings = SocialMediaSettings.for_site(site)
+    social_settings = SocialMediaSettings.for_request(request)
     same_as = [
         link.url
         for link in social_settings.social_links.all()
