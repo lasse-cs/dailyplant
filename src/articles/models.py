@@ -69,11 +69,13 @@ class ArticleIndexPage(
         articles = (
             ArticlePage.objects.live()
             .child_of(self)
+            .select_related("image")
             .prefetch_related(
                 Prefetch(
                     "tag_assignments",
                     queryset=PageTag.objects.select_related("tag"),
-                )
+                ),
+                "image__renditions",
             )
             .order_by("-first_published_at")
         )

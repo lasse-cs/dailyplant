@@ -37,11 +37,18 @@ def test_article_index_provides_llms_txt_listing(root_page):
 
 
 @pytest.mark.django_db
-def test_article_index_prefetches_tag_assignments(root_page):
+def test_article_index_provides_tags_without_additional_queries(
+    django_assert_num_queries, root_page
+):
     article_index = make_index(root_page)
+    article = make_article(article_index, "Growing herbs")
+    tag = Tag.objects.create(name="Herbs")
+    PageTag.objects.create(page=article, tag=tag)
 
-    prefetch = article_index.get_articles()._prefetch_related_lookups[0]
-    assert prefetch.prefetch_to == "tag_assignments"
+    articles = list(article_index.get_articles())
+
+    with django_assert_num_queries(0):
+        assert articles[0].get_tags() == [tag]
 
 
 @pytest.mark.django_db
