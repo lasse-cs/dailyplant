@@ -85,6 +85,17 @@ def build_toc_tree(items):
     return roots
 
 
+class TableOfContentsPageMixin:
+    table_of_contents_field = "body"
+
+    def get_toc_items(self):
+        body = getattr(self, self.table_of_contents_field)
+        return collect_toc_items(body.stream_block, body)
+
+    def get_table_of_contents(self):
+        return build_toc_tree(self.get_toc_items())
+
+
 class MetadataMixin:
     metadata_template = "patterns/components/metadata/default.html"
     metadata_type = "website"
@@ -154,17 +165,6 @@ class RelatedPagesMixin:
             .distinct()
             .specific()
         )
-
-
-class TableOfContentsPageMixin:
-    table_of_contents_field = "body"
-
-    def get_toc_items(self):
-        body = getattr(self, self.table_of_contents_field)
-        return collect_toc_items(body.stream_block, body)
-
-    def get_table_of_contents(self):
-        return build_toc_tree(self.get_toc_items())
 
 
 class PageRelationship(models.Model):
