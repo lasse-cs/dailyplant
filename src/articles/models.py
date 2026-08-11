@@ -164,7 +164,11 @@ class ArticlePage(
     subpage_types = []
     template = "patterns/pages/articles/article.html"
     markdown_template = "non_patterns/pages/articles/article.md"
+    related_page_details_template = (
+        "non_patterns/articles/partials/related_page_details.html"
+    )
     metadata_type = "article"
+    related_type = "article"
 
     introduction = RichTextField(
         validators=[RichTextMaxLengthValidator(500)],

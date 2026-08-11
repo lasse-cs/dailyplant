@@ -172,7 +172,11 @@ class FactPage(
     subpage_types = []
     template = "patterns/pages/facts/fact.html"
     markdown_template = "non_patterns/pages/facts/fact.md"
+    related_page_details_template = (
+        "non_patterns/facts/partials/related_page_details.html"
+    )
     metadata_type = "article"
+    related_type = "fact"
 
     date = models.DateField(help_text="The date this fact is for.", unique=True)
     content = RichTextField(

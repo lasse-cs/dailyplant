@@ -1,0 +1,76 @@
+{% extends "patterns/base.html" %}
+
+{% load vite_tags wagtailcore_tags %}
+
+{% block head_js %}
+    {% vite 'js/explorer.js' %}
+{% endblock head_js %}
+
+{% block page_content %}
+    <main id="main" tabindex="-1">
+        <div class="card wide__card">
+            <h1 class="title">{{ page.title }}</h1>
+            <div>
+                {{ page.intro|richtext }}
+            </div>
+            <div>
+                <div
+                    data-controller="explorer-chart"
+                    data-explorer-chart-data-value="explorer-data"
+                    data-explorer-chart-width-value="800"
+                    data-explorer-chart-height-value="600"
+                    data-action="resize@window->explorer-chart#handleResize scroll@window->explorer-chart#handleScroll:passive htmx:afterRequest->explorer-chart#finishDetailsRequest"
+                >
+                    <section class="explorer-legend" aria-labelledby="explorer-legend-title">
+                        <h2 id="explorer-legend-title" class="explorer-legend__title">Legend</h2>
+                        <div class="explorer-legend__group">
+                            <h3 class="explorer-legend__group-title">Color: Type</h3>
+                            <ul role="list" class="explorer-legend__list">
+                                {% for type in data.types %}
+                                    <li class="explorer-legend__item">
+                                        <svg class="explorer-legend__swatch" width="32" height="32" aria-hidden="true" focusable="false">
+                                            <circle class="node {{ type.id }}" cx="16" cy="16" r="15" />
+                                        </svg>
+                                        <span>
+                                            {{ type.name }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="explorer-legend__group">
+                            <h3 class="explorer-legend__group-title" data-level="3">Area: Number of Connections</h3>
+                            <svg class="explorer-legend__sizes" data-explorer-chart-target="sizeLegend" role="img">
+
+                            </svg>
+                        </div>
+                    </section>
+
+                    <aside class="explorer-guide" aria-labelledby="explorer-guide-title">
+                        <div>
+                            <h2 id="explorer-guide-title" class="explorer-guide__title">Explore the chart</h2>
+                            <p>Tab once to enter, then use the arrow keys to move between nearby pages. Hover or focus a circle for its title. Click it, or press Enter or Space, for details.</p>
+                        </div>
+                    </aside>
+
+                    {{ data|json_script:"explorer-data" }}
+                    <svg data-explorer-chart-target="chart" data-action="keydown->explorer-chart#handleKeydown" role="group" aria-label="Related pages chart. Use the arrow keys to move between pages. Press Enter or Space for details."></svg>
+                    <div data-explorer-chart-target="tooltipAnchor" class="anchor tooltip-anchor"></div>
+                    <div data-explorer-chart-target="detailsAnchor" class="anchor details-anchor"></div>
+                    <div data-explorer-chart-target="popover" popover="hint" class="popover tooltip-popover" role="tooltip"></div>
+                    <section id="explorer-details-popover" data-explorer-chart-target="detailsPopover" data-action="beforetoggle->explorer-chart#prepareDetailsClose toggle->explorer-chart#syncDetailsState" popover="auto" class="popover details-popover" role="dialog" aria-labelledby="explorer-details-title">
+                        <div class="details-popover__header">
+                            <h2 id="explorer-details-title" data-explorer-chart-target="detailsTitle" class="details-popover__title"></h2>
+                            <button type="button" class="details-popover__close" data-explorer-chart-target="detailsClose" data-action="explorer-chart#closeDetails" aria-label="Close">
+                                <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                                    <path d="m5 5 10 10M15 5 5 15" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="explorer-details-content" class="explorer-details" data-explorer-chart-target="detailsContent" hx-sync="this:replace"></div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock page_content %}

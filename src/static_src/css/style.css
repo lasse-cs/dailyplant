@@ -240,6 +240,27 @@
         text-decoration: none;
     }
 
+    .link-muted {
+        color: var(--color-text-muted);
+        text-decoration: none;
+
+        &:focus-visible,
+        &:hover {
+            color: var(--color-text-muted);
+            text-decoration: underline;
+        }
+    }
+
+    .link-forward::after {
+        margin-inline-start: 0.35rem;
+        content: "→";
+    }
+
+    .link-backward::before {
+        margin-inline-end: 0.35rem;
+        content: "←";
+    }
+
     .brand-link {
         position: relative;
         display: inline-block;
@@ -608,7 +629,6 @@
             ),
             var(--color-surface);
         box-shadow: var(--shadow-card);
-        backdrop-filter: blur(3px);
         position: relative;
 
         &::after {
@@ -757,15 +777,6 @@
         grid-template: "newer older" auto / 1fr 1fr;
         gap: 1rem;
         margin-block-start: 1rem;
-
-        & .link-unstyled {
-            color: var(--color-text-muted);
-        }
-
-        & .link-unstyled:focus-visible,
-        & .link-unstyled:hover {
-            text-decoration: underline;
-        }
 
         & .older {
             text-align: end;

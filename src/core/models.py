@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.db.models import Q
 from django.shortcuts import render
@@ -132,6 +132,24 @@ class FeedPageMixin:
 
 
 class RelatedPagesMixin:
+    def serve(self, request, *args, **kwargs):
+        response = super().serve(request, *args, **kwargs)
+        patch_vary_headers(response, ["HX-Request", "HX-Target"])
+        return response
+
+    def get_template(self, request, *args, **kwargs):
+        if (
+            request.headers.get("HX-Request") == "true"
+            and request.headers.get("HX-Target") == "explorer-details-content"
+        ):
+            try:
+                return self.related_page_details_template
+            except AttributeError as error:
+                raise ImproperlyConfigured(
+                    f"{type(self).__name__} must declare related_page_details_template."
+                ) from error
+        return super().get_template(request, *args, **kwargs)
+
     def get_incoming_related_pages(self):
         if not self.pk:
             return Page.objects.none()
@@ -179,7 +197,61 @@ class PageRelationship(models.Model):
         on_delete=models.CASCADE,
     )
 
+    def __str__(self):
+        return f"PageRelationship: '{self.source.title}' - '{self.target.title}'"
+
     panels = [RelatedPageChooserPanel("target")]
+
+
+class RelatedPagesExplorerPage(Page):
+    parent_page_types = ["home.HomePage"]
+    subpage_types = []
+    max_count = 1
+    template = "patterns/pages/core/related_pages_explorer.html"
+
+    intro = RichTextField(help_text="The introductory content for this page.")
+
+    content_panels = Page.content_panels + [
+        "intro",
+    ]
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        pages = Page.objects.type(RelatedPagesMixin).live().specific(defer=True)
+        page_relationships = PageRelationship.objects.filter(
+            source__in=pages, target__in=pages
+        )
+        degrees = {page.pk: 0 for page in pages}
+        edges = []
+        for page_relationship in page_relationships:
+            to_page = page_relationship.source.pk
+            from_page = page_relationship.target.pk
+            degrees[to_page] += 1
+            degrees[from_page] += 1
+            edges.append((to_page, from_page))
+        nodes = [
+            {
+                "id": page.pk,
+                "title": page.title,
+                "type": page.related_type,
+                "degree": degrees[page.pk],
+                "url": page.get_url(request=request),
+            }
+            for page in pages
+        ]
+        types = {
+            page.related_type: {
+                "id": page.related_type,
+                "name": page.get_verbose_name(),
+            }
+            for page in pages
+        }
+        context["data"] = {
+            "nodes": nodes,
+            "edges": edges,
+            "types": list(types.values()),
+        }
+        return context
 
 
 class Tag(models.Model):

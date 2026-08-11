@@ -1,6 +1,6 @@
 {% extends "patterns/base.html" %}
 
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags %}
 
 {% block page_content %}
     <main id="main" class="article__page" tabindex="-1">
@@ -24,16 +24,7 @@
                             </div>
                         {% endif %}
                     {% endwith %}
-                    {% if page.image %}
-                        <figure class="content-media">
-                            {% picture page.image format-{webp,jpeg} fill-1120x630-c90 class="content-media__image" alt=page.image_alt_text %}
-                            {% if page.image_description %}
-                                <figcaption class="content-media__caption">
-                                    {{ page.image_description }}
-                                </figcaption>
-                            {% endif %}
-                        </figure>
-                    {% endif %}
+                    {% include "patterns/components/core/content_media.html" with image=page.image alt=page.image_alt_text caption=page.image_description rendition="full" only %}
                 </header>
 
                 {% if toc %}

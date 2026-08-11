@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@hotwired/stimulus": "^3.2.2",
+        "d3": "^7.9.0",
         "htmx.org": "^2.0.10"
     }
 }

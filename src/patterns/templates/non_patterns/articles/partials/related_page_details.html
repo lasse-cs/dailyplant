@@ -1,0 +1,11 @@
+{% load wagtailcore_tags %}
+
+<div class="article__metadata">
+    {% if page.first_published_at %}
+        <time datetime="{{ page.first_published_at|date:'Y-m-d' }}">{{ page.first_published_at|date:"M d, Y" }}</time>
+    {% endif %}
+    <span>{{ reading_time }} minute read</span>
+</div>
+<div class="content-card__lead">{{ page.introduction|richtext }}</div>
+{% include "patterns/components/core/content_media.html" with image=page.image alt=page.image_alt_text caption=page.image_description rendition="compact" only %}
+<a href="{% pageurl page %}" class="link-muted link-forward">Read full article<span class="visually-hidden">: {{ page.title }}</span></a>

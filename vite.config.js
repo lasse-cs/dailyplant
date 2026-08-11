@@ -26,6 +26,7 @@ export default defineConfig({
             input: {
                 main: resolve(__dirname, "src/static_src/js/main.js"),
                 archive: resolve(__dirname, "src/static_src/js/archive.js"),
+                explorer: resolve(__dirname, "src/static_src/js/explorer.js"),
             },
             output: {
                 entryFileNames: `js/[name].js`,

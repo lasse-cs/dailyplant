@@ -4,11 +4,19 @@ from wagtail_factories import PageFactory, SiteFactory
 from core.models import (
     PageRelationship,
     PageTag,
+    RelatedPagesExplorerPage,
     SocialMediaChoices,
     SocialMediaLink,
     SocialMediaSettings,
     Tag,
 )
+
+
+class RelatedPagesExplorerPageFactory(PageFactory):
+    intro = "<p>Explore related pages.</p>"
+
+    class Meta:
+        model = RelatedPagesExplorerPage
 
 
 class SocialMediaSettingsFactory(factory.django.DjangoModelFactory):

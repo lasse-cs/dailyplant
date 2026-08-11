@@ -1,0 +1,8 @@
+{% load wagtailcore_tags %}
+
+<p class="explorer-details__metadata">
+    <time datetime="{{ page.date|date:'Y-m-d' }}">{{ page.date|date:"M d, Y" }}</time>
+</p>
+<div class="content-card__lead">{{ page.content|richtext }}</div>
+{% include "patterns/components/core/content_media.html" with image=page.image alt=page.image_alt_text caption=page.image_description rendition="compact" only %}
+<a href="{% pageurl page %}" class="link-muted link-forward">View full fact<span class="visually-hidden">: {{ page.title }}</span></a>
