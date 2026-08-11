@@ -1,5 +1,0 @@
-name: Main Menu
-context:
-  menu_items:
-    - title: Archive
-    - title: About

@@ -57,11 +57,6 @@ if settings.DEBUG:
 
         urlpatterns += debug_toolbar_urls()
 
-    if apps.is_installed("pattern_library"):
-        urlpatterns += [
-            path("patterns/", include("pattern_library.urls")),
-        ]
-
 urlpatterns = urlpatterns + [
     re_path(
         r"^(?P<path>(?:[\w-]+/)*[\w-]+)\.md$",
