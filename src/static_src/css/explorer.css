@@ -1,6 +1,6 @@
 .article {
-    --color-node-fill: hsl(262, 57%, 88%);
-    --color-node-stroke: hsl(262, 57%, 66%);
+    --color-node-fill: hsl(214, 47%, 83%);
+    --color-node-stroke: hsl(214, 47%, 63%);
 }
 
 .fact {
@@ -9,8 +9,8 @@
 }
 
 .legend-node {
-    --color-node-fill: hsl(94, 11%, 33%);
-    --color-node-stroke: hsl(94, 11%, 10%);
+    --color-node-fill: hsl(38, 12%, 77%);
+    --color-node-stroke: hsl(38, 12%, 47%);
     opacity: 0.8;
 }
 
