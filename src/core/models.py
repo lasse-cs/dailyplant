@@ -224,8 +224,8 @@ class RelatedPagesExplorerPage(Page):
         degrees = {page.pk: 0 for page in pages}
         edges = []
         for page_relationship in page_relationships:
-            to_page = page_relationship.source.pk
-            from_page = page_relationship.target.pk
+            to_page = page_relationship.source_id
+            from_page = page_relationship.target_id
             degrees[to_page] += 1
             degrees[from_page] += 1
             edges.append((to_page, from_page))
