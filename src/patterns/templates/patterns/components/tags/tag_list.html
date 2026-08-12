@@ -3,7 +3,7 @@
 <ul class="tag-list" role="list" aria-label="Tags">
     {% for tag in tags %}
         <li>
-            <a href="{% routablepageurl index_page 'tag' tag.slug %}" class="tag-pill link-unstyled{% if active_slug and tag.slug == active_slug %} active{% endif %}"{% if active_slug and tag.slug == active_slug %} aria-current="page"{% endif %}>{{ tag.name }}</a>
+            <a href="{% routablepageurl index_page 'tag' tag.slug %}" class="button link-unstyled{% if active_slug and tag.slug == active_slug %} active{% endif %}"{% if active_slug and tag.slug == active_slug %} aria-current="page"{% endif %}>{{ tag.name }}</a>
         </li>
     {% endfor %}
 </ul>

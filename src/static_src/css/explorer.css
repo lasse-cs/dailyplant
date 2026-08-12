@@ -19,6 +19,13 @@
     --color-edge: #22211d;
 }
 
+.explorer-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-block: 1rem;
+}
+
 .anchor {
     position: fixed;
     width: 1px;
@@ -172,7 +179,6 @@
     gap: 1rem clamp(1.5rem, 5vw, 4rem);
     align-items: start;
     justify-content: start;
-    margin-block-start: clamp(1.5rem, 4vw, 2.5rem);
 }
 
 .explorer-legend__title {

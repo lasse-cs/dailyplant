@@ -222,34 +222,29 @@ class RelatedPagesExplorerPage(Page):
             source__in=pages, target__in=pages
         )
         degrees = {page.pk: 0 for page in pages}
-        edges = []
+        edges = {page.pk: [] for page in pages}
         for page_relationship in page_relationships:
             to_page = page_relationship.source_id
             from_page = page_relationship.target_id
             degrees[to_page] += 1
             degrees[from_page] += 1
-            edges.append((to_page, from_page))
-        nodes = [
-            {
+            edges[to_page].append(from_page)
+            edges[from_page].append(to_page)
+        nodes = {
+            page.pk: {
                 "id": page.pk,
                 "title": page.title,
                 "type": page.related_type,
                 "degree": degrees[page.pk],
                 "url": page.get_url(request=request),
-            }
-            for page in pages
-        ]
-        types = {
-            page.related_type: {
-                "id": page.related_type,
-                "name": page.get_verbose_name(),
+                "edges": edges[page.pk],
             }
             for page in pages
         }
+        types = {page.related_type: page.get_verbose_name() for page in pages}
         context["data"] = {
             "nodes": nodes,
-            "edges": edges,
-            "types": list(types.values()),
+            "types": types,
         }
         return context
 

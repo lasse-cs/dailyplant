@@ -741,7 +741,7 @@
         gap: 1.2rem 0.7rem;
     }
 
-    .tag-pill {
+    .button {
         border: 1px solid var(--color-border);
         border-radius: var(--radius-button);
         background: var(--color-surface);
@@ -753,14 +753,22 @@
         flex-shrink: 0;
     }
 
-    a.tag-pill {
+    .button[data-size="large"] {
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+    }
+
+    a.button,
+    button.button {
+        cursor: pointer;
         transition:
             color 0.125s,
             background-color 0.125s;
 
         &:focus-visible,
         &:hover,
-        &.active {
+        &.active,
+        &[aria-selected="true"] {
             color: var(--color-bg);
             background-color: var(--color-text-muted);
         }
@@ -1163,5 +1171,9 @@
 
     .htmx-request .loading-state {
         display: inline;
+    }
+
+    [role="tabpanel"].hidden {
+        display: none;
     }
 }

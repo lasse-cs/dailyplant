@@ -32,7 +32,7 @@
                         {% include "patterns/components/tags/tag_list.html" with index_page=page %}
                         {% if active_slug %}
                             <div>
-                                <a href="{% pageurl page %}" class="tag-pill link-unstyled">
+                                <a href="{% pageurl page %}" class="button link-unstyled">
                                     Clear
                                 </a>
                             </div>
@@ -56,14 +56,14 @@
                     <ul role="list" class="pagination" id="article-navigation">
                         {% if articles.has_previous %}
                             <li>
-                                <a href="{% querystring page=articles.previous_page_number %}" class="tag-pill link-unstyled">
+                                <a href="{% querystring page=articles.previous_page_number %}" class="button link-unstyled">
                                     ← Newer Articles
                                 </a>
                             </li>
                         {% endif %}
                         {% if articles.has_next %}
                             <li>
-                                <a href="{% querystring page=articles.next_page_number %}" class="tag-pill link-unstyled">
+                                <a href="{% querystring page=articles.next_page_number %}" class="button link-unstyled">
                                     Older Articles →
                                 </a>
                             </li>

@@ -3,6 +3,7 @@ from django.core.exceptions import ImproperlyConfigured
 from pytest_django.asserts import assertTemplateUsed
 
 from core.factories import RelatedPagesExplorerPageFactory
+from core.models import PageRelationship
 from core.testapp.factories import (
     MissingDetailsTemplatePageFactory,
     RelatedPagesTestPageFactory,
@@ -64,8 +65,23 @@ def test_explorer_nodes_include_page_urls(client, root_page):
     )
 
     response = client.get(explorer.url)
-    node = next(
-        node for node in response.context["data"]["nodes"] if node["id"] == page.pk
-    )
+    node = response.context["data"]["nodes"][page.pk]
 
     assert node["url"] == page.get_url(response.wsgi_request)
+
+
+@pytest.mark.django_db
+def test_explorer_nodes_include_neighbours(client, root_page):
+    source = RelatedPagesTestPageFactory(parent=root_page, title="Source")
+    target = RelatedPagesTestPageFactory(parent=root_page, title="Target")
+    PageRelationship.objects.create(source=source, target=target)
+    explorer = RelatedPagesExplorerPageFactory(
+        parent=root_page,
+        title="Related pages",
+    )
+
+    response = client.get(explorer.url)
+    nodes = response.context["data"]["nodes"]
+
+    assert nodes[source.pk]["edges"] == [target.pk]
+    assert nodes[target.pk]["edges"] == [source.pk]

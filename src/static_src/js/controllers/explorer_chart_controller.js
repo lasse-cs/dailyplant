@@ -38,16 +38,17 @@ export default class extends Controller {
         const chartData = JSON.parse(
             this.element.querySelector(`#${this.dataValue}`).textContent,
         );
-        this.nodes = chartData.nodes;
-        this.typeNames = new Map(
-            chartData.types.map((type) => [type.id, type.name]),
-        );
-        const nodeHash = {};
+        const nodeHash = chartData.nodes;
+        this.typeNames = chartData.types;
+        this.nodes = Object.values(nodeHash);
+        this.edges = [];
         this.nodes.forEach((node) => {
-            nodeHash[node.id] = node;
-        });
-        this.edges = chartData.edges.map((edge) => {
-            return { source: nodeHash[edge[0]], target: nodeHash[edge[1]] };
+            node.edges.forEach((edge) => {
+                if (edge <= node.id) {
+                    return;
+                }
+                this.edges.push({ source: node, target: nodeHash[edge] });
+            });
         });
     }
 
@@ -196,7 +197,7 @@ export default class extends Controller {
             .attr("aria-expanded", "false")
             .attr("aria-label", (node) => {
                 const connections = `${node.degree} connection${node.degree === 1 ? "" : "s"}`;
-                return [node.title, this.typeNames.get(node.type), connections]
+                return [node.title, this.typeNames[node.type], connections]
                     .filter(Boolean)
                     .join(", ");
             });
