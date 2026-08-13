@@ -14,6 +14,18 @@
                 {{ page.intro|richtext }}
             </div>
             {% if data.nodes %}
+                <svg width="0" height="0" aria-hidden="true" focusable="false">
+                    <defs>
+                        <pattern id="pattern-lines" width="4" height="4" patternUnits="userSpaceOnUse">
+                            <rect width="4" height="4" />
+                            <line x1="0" y1="4" x2="4" y2="0" />
+                        </pattern>
+                        <pattern id="pattern-circles" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="translate(2) rotate(45)">
+                            <rect width="5" height="5" />
+                            <circle cx="2" cy="2" r="1.5" />
+                        </pattern>
+                    </defs>
+                </svg>
                 <div data-controller="tab" data-tab-hidden-class="hidden">
                     <div class="explorer-tabs" role="tablist" data-tab-target="tablist">
                         <button id="tab-chart" class="button" type="button" role="tab" aria-controls="tabpanel-chart" aria-selected="true" data-size="large" data-action="tab#select keydown->tab#move">
@@ -48,9 +60,9 @@
                                 </div>
                                 <div class="explorer-legend__group">
                                     <h3 class="explorer-legend__group-title" data-level="3">Area: Number of Connections</h3>
-                                    <svg class="explorer-legend__sizes" data-explorer-chart-target="sizeLegend" role="img">
-                                        <title>Compare pages by number of connections</title>
-                                        <desc></desc>
+                                    <svg class="explorer-legend__sizes" data-explorer-chart-target="sizeLegend" role="img" aria-labelledby="explorer-size-legend-title explorer-size-legend-description">
+                                        <title id="explorer-size-legend-title">Compare pages by number of connections</title>
+                                        <desc id="explorer-size-legend-description"></desc>
                                     </svg>
                                 </div>
                             </section>
@@ -63,9 +75,9 @@
                             </aside>
 
                             {{ data|json_script:"explorer-data" }}
-                            <svg data-explorer-chart-target="chart" data-action="keydown->explorer-chart#handleKeydown" role="group">
-                                <title>Explore {{ current_site.site_name }}</title>
-                                <desc>Use the arrow keys to move between pages. Press Enter or Space for details.</desc>
+                            <svg data-explorer-chart-target="chart" data-action="keydown->explorer-chart#handleKeydown" role="group" aria-labelledby="explorer-chart-title explorer-chart-description">
+                                <title id="explorer-chart-title">Explore {{ current_site.site_name }}</title>
+                                <desc id="explorer-chart-description">Use the arrow keys to move between pages. Press Enter or Space for details.</desc>
                             </svg>
                             <div data-explorer-chart-target="tooltipAnchor" class="anchor tooltip-anchor"></div>
                             <div data-explorer-chart-target="detailsAnchor" class="anchor details-anchor"></div>

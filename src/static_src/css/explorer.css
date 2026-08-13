@@ -1,19 +1,43 @@
 @layer reset, base, components;
 
 @layer components {
-    .article {
+    .article,
+    #pattern-lines {
         --color-node-fill: hsl(214, 47%, 83%);
         --color-node-stroke: hsl(214, 47%, 63%);
     }
 
-    .fact {
+    .article {
+        --pattern: url(#pattern-lines);
+    }
+
+    .fact,
+    #pattern-circles {
         --color-node-fill: hsl(90, 39%, 75%);
         --color-node-stroke: hsl(90, 39%, 53%);
+    }
+
+    .fact {
+        --pattern: url(#pattern-circles);
+    }
+
+    #pattern-lines rect,
+    #pattern-circles rect {
+        fill: var(--color-node-fill);
+    }
+
+    #pattern-lines line {
+        stroke: var(--color-node-stroke);
+    }
+
+    #pattern-circles circle {
+        fill: var(--color-node-stroke);
     }
 
     .legend-node {
         --color-node-fill: hsl(38, 12%, 77%);
         --color-node-stroke: hsl(38, 12%, 47%);
+        --pattern: var(--color-node-fill);
         opacity: 0.8;
     }
 
@@ -262,7 +286,7 @@
     }
 
     .node {
-        fill: var(--color-node-fill);
+        fill: var(--pattern, var(--color-node-fill));
         stroke: var(--color-node-stroke);
         stroke-width: 1;
     }
