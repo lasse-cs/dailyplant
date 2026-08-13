@@ -29,6 +29,13 @@
         margin-block: 1rem;
     }
 
+    .explorer-empty {
+        margin-block-start: 1.5rem;
+        padding: 1rem 1.25rem;
+        background: var(--color-info-bg);
+        color: var(--color-text-muted);
+    }
+
     .explorer-table-wrap {
         overflow-x: auto;
         border: 1px solid var(--color-border);

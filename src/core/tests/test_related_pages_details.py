@@ -85,3 +85,16 @@ def test_explorer_nodes_include_neighbours(client, root_page):
 
     assert nodes[source.pk]["edges"] == [target.pk]
     assert nodes[target.pk]["edges"] == [source.pk]
+
+
+@pytest.mark.django_db
+def test_explorer_shows_empty_state_without_pages(client, root_page):
+    explorer = RelatedPagesExplorerPageFactory(
+        parent=root_page,
+        title="Related pages",
+    )
+
+    response = client.get(explorer.url)
+
+    assert "There are no pages to explore yet." in response.text
+    assert 'data-controller="explorer-chart"' not in response.text
