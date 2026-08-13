@@ -2,6 +2,7 @@ import factory
 from wagtail_factories import PageFactory, SiteFactory
 
 from core.models import (
+    ContentPage,
     PageRelationship,
     PageTag,
     RelatedPagesExplorerPage,
@@ -67,3 +68,10 @@ class TaggedPageFactoryMixin(PageFactory):
 
     class Meta:
         abstract = True
+
+
+class ContentPageFactory(PageFactory):
+    body = factory.Faker("paragraph")
+
+    class Meta:
+        model = ContentPage

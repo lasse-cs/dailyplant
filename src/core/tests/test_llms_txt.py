@@ -3,29 +3,22 @@ from datetime import timedelta
 import pytest
 from django.utils import timezone
 
-from core.blocks import LLMsTxtListingPageChooserBlock
-from core.models import ContentPage, LLMsTxtSettings, MetadataSettings
-from core.testapp.models import LLMsTxtListingPage
+from core.factories import ContentPageFactory
+from core.models import LLMsTxtSettings, MetadataSettings
+from core.testapp.factories import LLMsTxtListingPageFactory
 
 
-def make_content_page(parent, title, **kwargs):
-    return parent.add_child(instance=ContentPage(title=title, body="Content", **kwargs))
-
-
-def make_listing_page(parent, title="Listing"):
-    return parent.add_child(instance=LLMsTxtListingPage(title=title))
-
-
-def make_llms_txt_settings(site, sections):
+def make_llms_txt_settings(site, sections, information=""):
     llms_settings = LLMsTxtSettings.for_site(site)
     llms_settings.sections = sections
+    llms_settings.information = information
     llms_settings.save()
     return llms_settings
 
 
 @pytest.mark.django_db
 def test_llms_txt_renders_site_metadata_and_curated_markdown_links(client, site):
-    guide = make_content_page(site.root_page, "Growing guide")
+    guide = ContentPageFactory(parent=site.root_page, title="Growing guide")
     MetadataSettings.objects.create(site=site, description="Practical plant advice.")
     make_llms_txt_settings(site, [("curated", {"title": "Guides", "pages": [guide]})])
 
@@ -44,8 +37,8 @@ def test_llms_txt_renders_site_metadata_and_curated_markdown_links(client, site)
 
 @pytest.mark.django_db
 def test_llms_txt_automatic_section_uses_listing_page_entries(client, site):
-    listing = make_listing_page(site.root_page)
-    page = make_content_page(listing, "Choosing a pot")
+    listing = LLMsTxtListingPageFactory(parent=site.root_page, title="Listing")
+    page = ContentPageFactory(parent=listing, title="Choosing a pot")
     make_llms_txt_settings(site, [("automatic", {"listing_page": listing})])
 
     response = client.get("/llms.txt")
@@ -59,11 +52,11 @@ def test_llms_txt_automatic_section_uses_listing_page_entries(client, site):
 
 @pytest.mark.django_db
 def test_llms_txt_automatic_section_limits_links(client, site):
-    listing = make_listing_page(site.root_page)
+    listing = LLMsTxtListingPageFactory(parent=site.root_page)
     for i in range(7):
-        make_content_page(
-            listing,
-            f"Page {i}",
+        ContentPageFactory(
+            parent=listing,
+            title=f"Page {i}",
             first_published_at=timezone.now() - timedelta(days=i),
         )
     make_llms_txt_settings(site, [("automatic", {"listing_page": listing})])
@@ -78,7 +71,7 @@ def test_llms_txt_automatic_section_limits_links(client, site):
 
 @pytest.mark.django_db
 def test_llms_txt_omits_unpublished_curated_pages(client, site):
-    hidden_page = make_content_page(site.root_page, "Hidden guide")
+    hidden_page = ContentPageFactory(parent=site.root_page, title="Hidden guide")
     hidden_page.unpublish()
     make_llms_txt_settings(
         site, [("curated", {"title": "Guides", "pages": [hidden_page]})]
@@ -92,7 +85,7 @@ def test_llms_txt_omits_unpublished_curated_pages(client, site):
 
 @pytest.mark.django_db
 def test_llms_txt_setting_preview_renders_markdown(site):
-    guide = make_content_page(site.root_page, "Preview guide")
+    guide = ContentPageFactory(parent=site.root_page, title="Preview guide")
     llms_settings = LLMsTxtSettings.for_site(site)
     llms_settings.sections = [("curated", {"title": "Preview", "pages": [guide]})]
 
@@ -103,8 +96,22 @@ def test_llms_txt_setting_preview_renders_markdown(site):
     assert "Preview guide" in response.text
 
 
-def test_llms_txt_listing_chooser_only_targets_implementing_page_types():
-    target_models = LLMsTxtListingPageChooserBlock().target_models
+@pytest.mark.django_db
+def test_llms_txt_includes_search_description(client, site):
+    guide = ContentPageFactory(
+        parent=site.root_page,
+        title="Guide",
+        search_description="First line\n\nSecond\tline",
+    )
+    make_llms_txt_settings(site, [("curated", {"title": "Preview", "pages": [guide]})])
 
-    assert LLMsTxtListingPage in target_models
-    assert ContentPage not in target_models
+    response = client.get("/llms.txt")
+    assert "): First line Second line" in response.text
+
+
+@pytest.mark.django_db
+def test_llms_txt_includes_information(client, site):
+    make_llms_txt_settings(site, [], "SomeInformation")
+
+    response = client.get("/llms.txt")
+    assert "SomeInformation" in response.text

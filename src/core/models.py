@@ -297,6 +297,7 @@ class MetadataSettings(BaseSiteSetting):
 class LLMsTxtLink:
     title: str
     url: str
+    description: str
 
 
 @dataclass
@@ -307,13 +308,15 @@ class LLMsTxtSection:
 
 @register_setting
 class LLMsTxtSettings(PreviewableMixin, BaseSiteSetting):
+    information = RichTextField(blank=True, help_text="Information about the site")
+
     sections = StreamField(
         LLMsTxtSectionsBlock(),
         blank=True,
         help_text="The ordered link sections to include in /llms.txt.",
     )
 
-    panels = ["sections"]
+    panels = ["information", "sections"]
 
     class Meta:
         verbose_name = "LLMs.txt"
@@ -334,7 +337,10 @@ class LLMsTxtSettings(PreviewableMixin, BaseSiteSetting):
                 if not page or not page.live:
                     continue
                 url = markdown_page_url(page.specific, request)
-                links.append(LLMsTxtLink(title=page.title, url=url))
+                description = " ".join((page.search_description or "").split())
+                links.append(
+                    LLMsTxtLink(title=page.title, url=url, description=description)
+                )
 
             sections.append(LLMsTxtSection(title=title, links=links))
         return sections
@@ -342,6 +348,7 @@ class LLMsTxtSettings(PreviewableMixin, BaseSiteSetting):
     def get_context(self, request):
         return {
             "site": self.site,
+            "information": self.information,
             "description": MetadataSettings.for_site(self.site).description,
             "sections": self.get_sections(request),
         }

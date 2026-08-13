@@ -1,10 +1,13 @@
-# {{ site.site_name }}
+{% load markdown_tags wagtailcore_tags %}# {{ site.site_name }}
 {% if description %}
 > {{ description }}
+{% endif %}
+{% if information %}
+{{ information|richtext|markdownify }}
 {% endif %}
 {% for section in sections %}
 ## {{ section.title }}
 
-{% for link in section.links %}- [{{ link.title }}]({{ link.url }})
+{% for link in section.links %}- [{{ link.title }}]({{ link.url }}){% if link.description %}: {{ link.description }}{% endif %}
 {% endfor %}
 {% endfor %}

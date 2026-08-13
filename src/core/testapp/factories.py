@@ -15,6 +15,7 @@ from core.testapp.blocks import (
 )
 from core.testapp.models import (
     BreadcrumbPage,
+    LLMsTxtListingPage,
     MissingDetailsTemplatePage,
     RelatedPagesTestPage,
     TocPage,
@@ -73,3 +74,8 @@ class RelatedPagesTestPageFactory(PageFactory):
 class MissingDetailsTemplatePageFactory(PageFactory):
     class Meta:
         model = MissingDetailsTemplatePage
+
+
+class LLMsTxtListingPageFactory(PageFactory):
+    class Meta:
+        model = LLMsTxtListingPage
