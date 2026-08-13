@@ -193,6 +193,10 @@ class ArticlePage(
     )
     body = StreamField(ContentStreamBlock())
 
+    class Meta:
+        verbose_name = "article"
+        verbose_name_plural = "articles"
+
     @property
     def image_alt_text(self):
         if not self.image:

@@ -200,6 +200,10 @@ class FactPage(
         ReferenceStreamBlock, help_text="The references for this fact"
     )
 
+    class Meta:
+        verbose_name = "fact"
+        verbose_name_plural = "facts"
+
     @property
     def image_alt_text(self):
         if not self.image:
