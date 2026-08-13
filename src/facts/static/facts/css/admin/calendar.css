@@ -27,7 +27,7 @@
     border-bottom: 1px solid var(--w-color-border-field-default);
     border-right: 1px solid var(--w-color-border-field-default);
     vertical-align: top;
-    width: 14.285%;
+    width: calc(100% / 7);
 }
 
 .fact-calendar th:last-child,

@@ -19,16 +19,16 @@
 {% endblock skiplinks %}
 
 {% block page_content %}
-    <main id="main" class="article__index" tabindex="-1">
+    <main id="main" class="index-stack" tabindex="-1">
         <header class="card wide__card">
             <h1 class="title">{{ page.title }}</h1>
             {{ page.introduction|richtext }}
             {% if tags %}
-                <div class="article__filters__container">
+                <div class="filters-container">
                     <p>
                         Select a tag to filter items by that tag.
                     </p>
-                    <div class="article__filters">
+                    <div class="filters-bar">
                         {% include "patterns/components/tags/tag_list.html" with index_page=page %}
                         {% if active_slug %}
                             <div>
@@ -41,7 +41,7 @@
                 </div>
             {% endif %}
         </header>
-        <div class="article__archive" id="article__archive" tabindex="-1">
+        <div class="archive-grid" id="article__archive" tabindex="-1">
             {% for article in articles %}
                 {% include "patterns/components/articles/card.html" with index_page=page %}
             {% empty %}
