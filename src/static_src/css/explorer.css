@@ -339,6 +339,20 @@
         margin: 0;
     }
 
+    .explorer-guide kbd {
+        border: 1px solid color-mix(in srgb, var(--color-border), white 35%);
+        border-radius: var(--radius-button);
+        background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+        color: var(--color-text-muted);
+        padding: 0.1rem 0.45rem;
+    }
+
+    .explorer-guide__keys {
+        display: inline-flex;
+        gap: 0.15em;
+        white-space: nowrap;
+    }
+
     @media (max-width: 35rem) {
         .explorer-table {
             --explorer-table-cell-padding: 0.65rem 0.75rem;

@@ -85,10 +85,11 @@ export default class extends Controller {
         const [minDegree, maxDegree] = this.radialScale.domain();
         const minSize = legendRadius(minDegree);
         const maxSize = legendRadius(maxDegree);
-        select(this.sizeLegendTarget).attr(
-            "aria-label",
-            `Circle area represents connection counts from ${minDegree} to ${maxDegree}.`,
-        );
+        select(this.sizeLegendTarget)
+            .select("desc")
+            .text(
+                `Circle area represents connection counts from ${minDegree} to ${maxDegree}.`,
+            );
 
         const sizes = select(this.sizeLegendTarget).append("g");
         this.sizeLegend = sizes;

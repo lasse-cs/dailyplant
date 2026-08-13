@@ -48,20 +48,24 @@
                             <div class="explorer-legend__group">
                                 <h3 class="explorer-legend__group-title" data-level="3">Area: Number of Connections</h3>
                                 <svg class="explorer-legend__sizes" data-explorer-chart-target="sizeLegend" role="img">
-
+                                    <title>Compare pages by number of connections</title>
+                                    <desc></desc>
                                 </svg>
                             </div>
                         </section>
 
                         <aside class="explorer-guide" aria-labelledby="explorer-guide-title">
                             <div>
-                                <h2 id="explorer-guide-title" class="explorer-guide__title">Explore the chart</h2>
-                                <p>Tab once to enter, then use the arrow keys to move between nearby pages. Hover or focus a circle for its title. Click it, or press Enter or Space, for details.</p>
+                                <h2 id="explorer-guide-title" class="explorer-guide__title">Explore connections on {{ current_site.site_name }}</h2>
+                                <p>Each circle represents a page on {{ current_site.site_name }}. A line connects two related pages. Press <kbd>Tab</kbd> to enter the chart, then use <span class="explorer-guide__keys"><span class="visually-hidden">arrow keys</span><kbd aria-hidden="true">&larr;</kbd><kbd aria-hidden="true">&uarr;</kbd><kbd aria-hidden="true">&darr;</kbd><kbd aria-hidden="true">&rarr;</kbd></span> to move between circles. Hover over or focus a circle to see its title. Click a circle, or press <kbd>Enter</kbd> or <kbd>Space</kbd>, to view its details.</p>
                             </div>
                         </aside>
 
                         {{ data|json_script:"explorer-data" }}
-                        <svg data-explorer-chart-target="chart" data-action="keydown->explorer-chart#handleKeydown" role="group" aria-label="Related pages chart. Use the arrow keys to move between pages. Press Enter or Space for details."></svg>
+                        <svg data-explorer-chart-target="chart" data-action="keydown->explorer-chart#handleKeydown" role="group">
+                            <title>Explore {{ current_site.site_name }}</title>
+                            <desc>Use the arrow keys to move between pages. Press Enter or Space for details.</desc>
+                        </svg>
                         <div data-explorer-chart-target="tooltipAnchor" class="anchor tooltip-anchor"></div>
                         <div data-explorer-chart-target="detailsAnchor" class="anchor details-anchor"></div>
                         <div data-explorer-chart-target="popover" popover="hint" class="popover tooltip-popover" role="tooltip"></div>
