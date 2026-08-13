@@ -1,0 +1,7 @@
+{% load core_tags %}
+<td class="explorer-table__type">
+    <span class="explorer-table__type-label">
+        {% include "patterns/components/explorer/node_marker.html" with type=type marker_class="explorer-table__type-marker" size=24 radius=10 only %}
+        {{ types|get_item:type }}
+    </span>
+</td>

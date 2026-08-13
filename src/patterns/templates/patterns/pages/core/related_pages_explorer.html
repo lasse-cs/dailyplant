@@ -37,9 +37,7 @@
                                 <ul role="list" class="explorer-legend__list">
                                     {% for type, name in data.types.items %}
                                         <li class="explorer-legend__item">
-                                            <svg class="explorer-legend__swatch" width="32" height="32" aria-hidden="true" focusable="false">
-                                                <circle class="node {{ type }}" cx="16" cy="16" r="15" />
-                                            </svg>
+                                            {% include "patterns/components/explorer/node_marker.html" with type=type marker_class="explorer-legend__swatch" size=32 radius=15 only %}
                                             <span>
                                                 {{ name }}
                                             </span>
@@ -80,29 +78,27 @@
                         </section>
                     </div>
                 </div>
-                <div id="tabpanel-table" role="tabpanel" aria-labelledby="tab-table">
-                    <table>
+                <div id="tabpanel-table" class="explorer-table-wrap" role="tabpanel" aria-labelledby="tab-table">
+                    <table class="explorer-table">
                         <thead>
                             <tr>
                                 <th scope="col">Title</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Connections</th>
+                                <th scope="col" class="explorer-table__type">Type</th>
+                                <th scope="col" class="numeric">Connections</th>
                                 <th scope="col">Details</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {% for id, node in data.nodes.items %}
+                        {% for id, node in data.nodes.items %}
+                            <tbody>
                                 <tr>
                                     <th scope="row">
                                         <a href="{{ node.url }}">{{ node.title }}</a>
                                     </th>
-                                    <td>
-                                        {{ data.types|get_item:node.type }}
-                                    </td>
-                                    <td>
+                                    {% include "patterns/components/explorer/node_type_cell.html" with type=node.type types=data.types only %}
+                                    <td class="tight numeric">
                                         {{ node.degree }}
                                     </td>
-                                    <td>
+                                    <td class="tight">
                                         {% if node.degree %}
                                             <button
                                                 id="connection-trigger-{{ id }}"
@@ -112,7 +108,6 @@
                                                 aria-controls="connection-details-{{ id }}"
                                                 data-controller="accordion"
                                                 data-action="accordion#toggle"
-                                                data-accordion-active-class="active"
                                             >
                                                 Connections<span class="visually-hidden"> for {{ node.title }}</span>
                                             </button>
@@ -120,14 +115,15 @@
                                     </td>
                                 </tr>
                                 {% if node.degree %}
-                                    <tr id="connection-details-{{ id }}" aria-labelledby="connection-trigger-{{ id }}" hidden>
+                                    <tr id="connection-details-{{ id }}" class="explorer-table__details" aria-labelledby="connection-trigger-{{ id }}" hidden>
                                         <td colspan="4">
-                                            <table>
+                                            <table class="explorer-table__nested">
+                                                <caption>Pages connected to {{ node.title }}</caption>
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Title</th>
-                                                        <th scope="col">Type</th>
-                                                        <th scope="col">Connections</th>
+                                                        <th scope="col" class="explorer-table__type">Type</th>
+                                                        <th scope="col" class="numeric">Connections</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -135,8 +131,8 @@
                                                         {% with neighbour_node=data.nodes|get_item:neighbour %}
                                                             <tr>
                                                                 <th scope="row"><a href="{{ neighbour_node.url }}">{{ neighbour_node.title }}</a></th>
-                                                                <td>{{ data.types|get_item:neighbour_node.type }}</td>
-                                                                <td>{{ neighbour_node.degree }}</td>
+                                                                {% include "patterns/components/explorer/node_type_cell.html" with type=neighbour_node.type types=data.types only %}
+                                                                <td class="numeric">{{ neighbour_node.degree }}</td>
                                                             </tr>
                                                         {% endwith %}
                                                     {% endfor %}
@@ -145,8 +141,8 @@
                                         </td>
                                     </tr>
                                 {% endif %}
-                            {% endfor %}
-                        </tbody>
+                            </tbody>
+                        {% endfor %}
                     </table>
                 </div>
             </div>

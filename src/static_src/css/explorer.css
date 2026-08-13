@@ -26,6 +26,100 @@
     margin-block: 1rem;
 }
 
+.explorer-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: 0 4px 14px var(--color-shadow-subtle);
+}
+
+.explorer-table,
+.explorer-table__nested {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.explorer-table {
+    --explorer-table-cell-padding: 0.75rem 1rem;
+    --explorer-table-border-color: var(--color-border);
+}
+
+.explorer-table th,
+.explorer-table td,
+.explorer-table__nested th,
+.explorer-table__nested td {
+    padding: var(--explorer-table-cell-padding);
+    text-align: start;
+}
+
+.explorer-table > thead th,
+.explorer-table__nested > thead th {
+    border-block-end: 1px solid var(--explorer-table-border-color);
+}
+
+.explorer-table > tbody > tr > :is(th, td),
+.explorer-table__nested > tbody > tr > :is(th, td) {
+    border-block-start: 1px solid var(--explorer-table-border-color);
+}
+
+.explorer-table > thead th {
+    color: var(--color-text-muted);
+    background: color-mix(in srgb, var(--color-line) 5%, transparent);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.explorer-table > tbody > tr > th {
+    font-weight: 600;
+}
+
+.explorer-table__type-label {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.explorer-table__type-marker {
+    flex: 0 0 auto;
+}
+
+.tight {
+    inline-size: 1%;
+    white-space: nowrap;
+}
+
+th.numeric,
+td.numeric {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+}
+
+.explorer-table__details > td {
+    padding: 0.5rem 1rem 1rem 2rem;
+    background: color-mix(in srgb, var(--color-accent) 5%, transparent);
+}
+
+.explorer-table__nested {
+    --explorer-table-cell-padding: 0.45rem 0.75rem;
+    --explorer-table-border-color: rgba(92, 80, 60, 0.09);
+}
+
+.explorer-table__nested caption {
+    padding-block: 0.25rem 0.5rem;
+    text-align: start;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.explorer-table__nested thead th {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
 .anchor {
     position: fixed;
     width: 1px;
@@ -238,6 +332,18 @@
 }
 
 @media (max-width: 35rem) {
+    .explorer-table {
+        --explorer-table-cell-padding: 0.65rem 0.75rem;
+    }
+
+    .explorer-table__details > td {
+        padding-inline-start: 1rem;
+    }
+
+    .explorer-table__nested {
+        --explorer-table-cell-padding: 0.45rem 0.25rem;
+    }
+
     .explorer-legend {
         grid-template-columns: minmax(0, 1fr);
         gap: 1.5rem;

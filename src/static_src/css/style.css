@@ -98,6 +98,7 @@
         --color-surface: rgba(255, 252, 245);
         --color-text: #22211d;
         --color-text-muted: #5f5b50;
+        --color-line: #5c503c;
         --color-border: rgba(92, 80, 60, 0.13);
         --color-accent: #3e4638;
         --color-shadow: rgba(34, 33, 29, 0.12);
@@ -758,6 +759,22 @@
         font-size: 1rem;
     }
 
+    .button[aria-expanded]::after {
+        display: inline-block;
+        inline-size: 0.45rem;
+        block-size: 0.45rem;
+        margin-inline-start: 0.5rem;
+        border-inline-end: 1.5px solid currentcolor;
+        border-block-end: 1.5px solid currentcolor;
+        content: "";
+        transform: translateY(-0.15rem) rotate(45deg);
+        transition: transform 0.125s;
+    }
+
+    .button[aria-expanded="true"]::after {
+        transform: translateY(0.1rem) rotate(225deg);
+    }
+
     a.button,
     button.button {
         cursor: pointer;
@@ -768,13 +785,16 @@
         &:focus-visible,
         &:hover,
         &.active,
-        &[aria-selected="true"] {
+        &[aria-selected="true"],
+        &[aria-expanded="true"] {
             color: var(--color-bg);
             background-color: var(--color-text-muted);
         }
 
         &.active:focus-visible,
-        &.active:hover {
+        &.active:hover,
+        &[aria-expanded="true"]:focus-visible,
+        &[aria-expanded="true"]:hover {
             background: var(--color-surface);
             color: var(--color-text-muted);
         }
