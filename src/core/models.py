@@ -203,52 +203,6 @@ class PageRelationship(models.Model):
     panels = [RelatedPageChooserPanel("target")]
 
 
-class RelatedPagesExplorerPage(Page):
-    parent_page_types = ["home.HomePage"]
-    subpage_types = []
-    max_count = 1
-    template = "patterns/pages/core/related_pages_explorer.html"
-
-    intro = RichTextField(help_text="The introductory content for this page.")
-
-    content_panels = Page.content_panels + [
-        "intro",
-    ]
-
-    def get_context(self, request):
-        context = super().get_context(request)
-        pages = Page.objects.type(RelatedPagesMixin).live().specific(defer=True)
-        page_relationships = PageRelationship.objects.filter(
-            source__in=pages, target__in=pages
-        )
-        degrees = {page.pk: 0 for page in pages}
-        edges = {page.pk: [] for page in pages}
-        for page_relationship in page_relationships:
-            to_page = page_relationship.source_id
-            from_page = page_relationship.target_id
-            degrees[to_page] += 1
-            degrees[from_page] += 1
-            edges[to_page].append(from_page)
-            edges[from_page].append(to_page)
-        nodes = {
-            page.pk: {
-                "id": page.pk,
-                "title": page.title,
-                "type": page.related_type,
-                "degree": degrees[page.pk],
-                "url": page.get_url(request=request),
-                "edges": edges[page.pk],
-            }
-            for page in pages
-        }
-        types = {page.related_type: page.get_verbose_name() for page in pages}
-        context["data"] = {
-            "nodes": nodes,
-            "types": types,
-        }
-        return context
-
-
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(
@@ -507,6 +461,54 @@ class MarkdownPageMixin:
 
     def get_markdown_template(self, request, *args, **kwargs):
         return self.markdown_template
+
+
+class RelatedPagesExplorerPage(MarkdownPageMixin, Page):
+    parent_page_types = ["home.HomePage"]
+    subpage_types = []
+    max_count = 1
+    template = "patterns/pages/core/related_pages_explorer.html"
+    markdown_template = "non_patterns/pages/core/related_pages_explorer.md"
+
+    intro = RichTextField(help_text="The introductory content for this page.")
+
+    content_panels = Page.content_panels + [
+        "intro",
+    ]
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        pages = Page.objects.type(RelatedPagesMixin).live().specific(defer=True)
+        page_relationships = PageRelationship.objects.filter(
+            source__in=pages, target__in=pages
+        )
+        degrees = {page.pk: 0 for page in pages}
+        edges = {page.pk: [] for page in pages}
+        for page_relationship in page_relationships:
+            to_page = page_relationship.source_id
+            from_page = page_relationship.target_id
+            degrees[to_page] += 1
+            degrees[from_page] += 1
+            edges[to_page].append(from_page)
+            edges[from_page].append(to_page)
+        nodes = {
+            page.pk: {
+                "id": page.pk,
+                "title": page.title,
+                "type": page.related_type,
+                "degree": degrees[page.pk],
+                "url": page.get_url(request=request),
+                "markdown_url": markdown_page_url(page, request),
+                "edges": edges[page.pk],
+            }
+            for page in pages
+        }
+        types = {page.related_type: page.get_verbose_name() for page in pages}
+        context["data"] = {
+            "nodes": nodes,
+            "types": types,
+        }
+        return context
 
 
 class ContentPage(MarkdownPageMixin, Page):

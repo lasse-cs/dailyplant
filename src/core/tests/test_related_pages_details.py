@@ -88,6 +88,15 @@ def test_explorer_nodes_include_neighbours(client, root_page):
 
 
 @pytest.mark.django_db
+def test_explorer_uses_markdown_template(client, root_page):
+    explorer = RelatedPagesExplorerPageFactory(parent=root_page)
+
+    response = client.get(explorer.url.rstrip("/") + ".md")
+
+    assertTemplateUsed(response, "non_patterns/pages/core/related_pages_explorer.md")
+
+
+@pytest.mark.django_db
 def test_explorer_shows_empty_state_without_pages(client, root_page):
     explorer = RelatedPagesExplorerPageFactory(
         parent=root_page,
