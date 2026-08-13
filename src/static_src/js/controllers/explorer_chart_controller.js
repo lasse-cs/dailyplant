@@ -26,6 +26,10 @@ export default class extends Controller {
         "tooltipAnchor",
     ];
 
+    initialize() {
+        this.detailsCache = new Map();
+    }
+
     connect() {
         this.loadData();
         this.scales();
@@ -354,8 +358,6 @@ export default class extends Controller {
         this.chart.selectAll(".node").attr("aria-expanded", "false");
         this.positionAnchor(target, this.detailsAnchorTarget);
         this.detailsTitleTarget.textContent = node.title;
-        this.detailsContentTarget.textContent = "Loading details...";
-        this.detailsContentTarget.setAttribute("aria-busy", "true");
         this.detailsPopoverTarget.dataset.nodeId = node.id;
         this.detailsNode = node;
         this.detailsTrigger = target;
@@ -365,6 +367,17 @@ export default class extends Controller {
             this.detailsPopoverTarget.showPopover();
         }
         this.detailsCloseTarget.focus({ preventScroll: true });
+
+        const cachedDetails = this.detailsCache.get(node.url);
+        if (cachedDetails !== undefined) {
+            htmx.trigger(this.detailsContentTarget, "htmx:abort");
+            this.detailsContentTarget.innerHTML = cachedDetails;
+            this.detailsContentTarget.setAttribute("aria-busy", "false");
+            return;
+        }
+
+        this.detailsContentTarget.textContent = "Loading details...";
+        this.detailsContentTarget.setAttribute("aria-busy", "true");
         htmx.ajax("get", node.url, {
             source: this.detailsContentTarget,
             target: this.detailsContentTarget,
@@ -380,6 +393,10 @@ export default class extends Controller {
 
         this.detailsContentTarget.setAttribute("aria-busy", "false");
         if (event.detail.successful) {
+            this.detailsCache.set(
+                node.url,
+                this.detailsContentTarget.innerHTML,
+            );
             return;
         }
 
