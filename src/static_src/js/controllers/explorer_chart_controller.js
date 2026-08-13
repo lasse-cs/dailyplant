@@ -181,6 +181,8 @@ export default class extends Controller {
                 node.radius = this.radialScale(node.degree);
                 return node.radius;
             })
+            .attr("cx", 2 * this.widthValue)
+            .attr("cy", 2 * this.heightValue)
             .attr(
                 "data-action",
                 `mouseenter->explorer-chart#showTooltip
@@ -215,9 +217,18 @@ export default class extends Controller {
                 forceLink().id((d) => d.id),
             )
             .nodes(this.nodes)
-            .on("tick", () => this.update());
+            .stop();
 
         simulation.force("link").links(this.edges);
+
+        // Run the simulation to its end, then draw.
+        const iterations = Math.ceil(
+            Math.log(simulation.alphaMin()) /
+                Math.log(1 - simulation.alphaDecay()),
+        );
+
+        simulation.tick(iterations);
+        this.update();
     }
 
     activateNode({ currentTarget }) {
