@@ -1,3 +1,5 @@
+@layer reset, base, components;
+
 @layer components {
     .article {
         --color-node-fill: hsl(214, 47%, 83%);
