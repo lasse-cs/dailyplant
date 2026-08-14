@@ -61,3 +61,13 @@ AGENTS.md
 opencode.jsonc
 pytestdebug.log
 scripts/
+
+# Test files
+src/core/testapp
+src/**/tests/
+src/**/factories.py
+src/**/e2e/
+src/dailyplant/settings/test.py
+src/dailyplant/settings/e2e.py
+src/dailyplant/settings/dev.py
+src/conftest.py
