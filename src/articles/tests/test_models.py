@@ -4,13 +4,13 @@ from datetime import UTC, datetime
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
-from articles.models import ArticleIndexPage, ArticlePage
-from core.models import PageRelationship, PageTag, Tag
+from articles.factories import ArticleIndexPageFactory, ArticlePageFactory
+from core.models import Tag
 from home.factories import HomePageFactory
 
 
 def test_article_introduction_is_used_for_metadata_description():
-    article = ArticlePage(
+    article = ArticlePageFactory.build(
         title="Growing herbs",
         introduction="<p>A <strong>short</strong> introduction.</p>",
         body=[],
@@ -24,7 +24,7 @@ def test_article_introduction_is_used_for_metadata_description():
 
 
 def test_article_reading_time_uses_rendered_introduction_and_body(rf):
-    article = ArticlePage(
+    article = ArticlePageFactory.build(
         title="Growing herbs",
         introduction="<p>Short introduction.</p>",
         body=[
@@ -39,18 +39,26 @@ def test_article_reading_time_uses_rendered_introduction_and_body(rf):
 @pytest.mark.django_db
 def test_article_supports_tags_and_related_pages(root_page):
     home_page = HomePageFactory(parent=root_page)
-    article_index = home_page.add_child(
-        instance=ArticleIndexPage(title="Articles", introduction="")
+    article_index = ArticleIndexPageFactory(
+        parent=home_page,
+        title="Articles",
+        introduction="",
     )
-    article = article_index.add_child(
-        instance=ArticlePage(title="Growing herbs", introduction="Herbs", body=[])
-    )
-    related = article_index.add_child(
-        instance=ArticlePage(title="Choosing pots", introduction="Pots", body=[])
+    related = ArticlePageFactory(
+        parent=article_index,
+        title="Choosing pots",
+        introduction="Pots",
+        body=[],
     )
     tag = Tag.objects.create(name="Herbs")
-    PageTag.objects.create(page=article, tag=tag)
-    PageRelationship.objects.create(source=article, target=related)
+    article = ArticlePageFactory(
+        parent=article_index,
+        title="Growing herbs",
+        introduction="Herbs",
+        body=[],
+        tags=[tag],
+        related_pages=[related],
+    )
 
     assert article.get_tags() == [tag]
     assert list(article.get_related_pages()) == [related]
@@ -61,25 +69,24 @@ def test_article_pages_render_markdown(client, root_page):
     published_at = datetime(2026, 1, 2, 10, tzinfo=UTC)
     modified_at = datetime(2026, 1, 3, 11, tzinfo=UTC)
     home_page = HomePageFactory(parent=root_page)
-    article_index = home_page.add_child(
-        instance=ArticleIndexPage(
-            title="Articles", introduction="<p>Practical growing guides.</p>"
-        )
-    )
-    article = article_index.add_child(
-        instance=ArticlePage(
-            title="Growing herbs",
-            introduction="<p>A <strong>short</strong> introduction.</p>",
-            first_published_at=published_at,
-            last_published_at=modified_at,
-            body=[
-                ("heading", {"text": "Choose a pot", "level": "2"}),
-                ("paragraph", "<p>Give the roots enough room.</p>"),
-            ],
-        )
+    article_index = ArticleIndexPageFactory(
+        parent=home_page,
+        title="Articles",
+        introduction="<p>Practical growing guides.</p>",
     )
     tag = Tag.objects.create(name="Herbs")
-    PageTag.objects.create(page=article, tag=tag)
+    article = ArticlePageFactory(
+        parent=article_index,
+        title="Growing herbs",
+        introduction="<p>A <strong>short</strong> introduction.</p>",
+        first_published_at=published_at,
+        last_published_at=modified_at,
+        body=[
+            ("heading", {"text": "Choose a pot", "level": "2"}),
+            ("paragraph", "<p>Give the roots enough room.</p>"),
+        ],
+        tags=[tag],
+    )
 
     index_response = client.get(article_index.url, headers={"accept": "text/markdown"})
     article_response = client.get(article.url.rstrip("/") + ".md")

@@ -1,17 +1,16 @@
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
-from articles.models import ArticlePage
+from articles.factories import ArticlePageFactory
 
 
 @pytest.mark.django_db
 def test_article_page_returns_details_for_explorer_htmx_target(client, root_page):
-    article = root_page.add_child(
-        instance=ArticlePage(
-            title="Growing herbs",
-            introduction="<p>A practical introduction.</p>",
-            body=[],
-        )
+    article = ArticlePageFactory(
+        parent=root_page,
+        title="Growing herbs",
+        introduction="<p>A practical introduction.</p>",
+        body=[],
     )
 
     response = client.get(

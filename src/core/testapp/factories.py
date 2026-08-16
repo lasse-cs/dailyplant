@@ -7,7 +7,7 @@ from wagtail_factories import (
     StructBlockFactory,
 )
 
-from core.blocks import HeadingBlock, HeadingLevel
+from core.factories import HeadingBlockFactory
 from core.testapp.blocks import (
     GroupedContentBlock,
     NestedStreamBlock,
@@ -20,14 +20,6 @@ from core.testapp.models import (
     RelatedPagesTestPage,
     TocPage,
 )
-
-
-class HeadingBlockFactory(StructBlockFactory):
-    text = factory.Sequence(lambda index: f"Heading {index}")
-    level = HeadingLevel.H2
-
-    class Meta:
-        model = HeadingBlock
 
 
 class NestedStreamBlockFactory(StreamBlockFactory):

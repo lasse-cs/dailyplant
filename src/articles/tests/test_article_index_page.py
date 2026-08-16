@@ -3,34 +3,26 @@ from datetime import UTC, datetime, timedelta
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
-from articles.models import ArticleIndexPage, ArticlePage
+from articles.factories import ArticleIndexPageFactory, ArticlePageFactory
+from articles.models import ArticleIndexPage
 from core.blocks import LLMsTxtListingPageChooserBlock
-from core.models import PageTag, Tag
+from core.models import Tag
 from home.factories import HomePageFactory
 
 
 def make_index(root_page, title="Articles", introduction=""):
     home_page = HomePageFactory(parent=root_page)
-    return home_page.add_child(
-        instance=ArticleIndexPage(title=title, introduction=introduction)
-    )
-
-
-def make_article(index, title, *, first_published_at=None, body=None):
-    return index.add_child(
-        instance=ArticlePage(
-            title=title,
-            introduction=f"<p>{title}</p>",
-            first_published_at=first_published_at,
-            body=body or [],
-        )
+    return ArticleIndexPageFactory(
+        parent=home_page,
+        title=title,
+        introduction=introduction,
     )
 
 
 @pytest.mark.django_db
 def test_article_index_provides_llms_txt_listing(root_page):
     article_index = make_index(root_page)
-    article = make_article(article_index, "Growing herbs")
+    article = ArticlePageFactory(parent=article_index, title="Growing herbs")
 
     assert ArticleIndexPage in LLMsTxtListingPageChooserBlock().target_models
     assert list(article_index.get_llms_txt_pages()) == [article]
@@ -41,9 +33,8 @@ def test_article_index_provides_tags_without_additional_queries(
     django_assert_num_queries, root_page
 ):
     article_index = make_index(root_page)
-    article = make_article(article_index, "Growing herbs")
     tag = Tag.objects.create(name="Herbs")
-    PageTag.objects.create(page=article, tag=tag)
+    ArticlePageFactory(parent=article_index, title="Growing herbs", tags=[tag])
 
     articles = list(article_index.get_articles())
 
@@ -54,9 +45,8 @@ def test_article_index_provides_tags_without_additional_queries(
 @pytest.mark.django_db
 def test_article_index_only_exposes_tags_used_by_live_articles(root_page):
     article_index = make_index(root_page)
-    article = make_article(article_index, "Growing herbs")
     used = Tag.objects.create(name="Herbs")
-    PageTag.objects.create(page=article, tag=used)
+    ArticlePageFactory(parent=article_index, title="Growing herbs", tags=[used])
     Tag.objects.create(name="Unused")
 
     tags = list(article_index.get_tags())
@@ -67,10 +57,9 @@ def test_article_index_only_exposes_tags_used_by_live_articles(root_page):
 @pytest.mark.django_db
 def test_article_index_tag_route_filters_articles(client, root_page):
     article_index = make_index(root_page)
-    herbs = make_article(article_index, "Growing herbs")
-    make_article(article_index, "Choosing pots")
     tag = Tag.objects.create(name="Herbs")
-    PageTag.objects.create(page=herbs, tag=tag)
+    ArticlePageFactory(parent=article_index, title="Growing herbs", tags=[tag])
+    ArticlePageFactory(parent=article_index, title="Choosing pots")
 
     tag_url = f"{article_index.url}tags/{tag.slug}/"
     response = client.get(tag_url)
@@ -95,9 +84,9 @@ def test_article_index_paginates_eighteen_per_page(client, root_page):
     article_index = make_index(root_page)
     base = datetime(2026, 1, 1, 10, tzinfo=UTC)
     for i in range(22):
-        make_article(
-            article_index,
-            f"Article {i:02d}",
+        ArticlePageFactory(
+            parent=article_index,
+            title=f"Article {i:02d}",
             first_published_at=base + timedelta(days=i),
         )
 
@@ -120,9 +109,8 @@ def test_article_index_paginates_eighteen_per_page(client, root_page):
 @pytest.mark.django_db
 def test_article_index_metadata_url_includes_tag_route_and_page(client, root_page):
     article_index = make_index(root_page)
-    article = make_article(article_index, "Growing herbs")
     tag = Tag.objects.create(name="Herbs")
-    PageTag.objects.create(page=article, tag=tag)
+    ArticlePageFactory(parent=article_index, title="Growing herbs", tags=[tag])
 
     tag_url = f"{article_index.url}tags/{tag.slug}/"
     response = client.get(f"{tag_url}?page=2")
@@ -135,7 +123,7 @@ def test_article_index_metadata_url_includes_tag_route_and_page(client, root_pag
 @pytest.mark.django_db
 def test_article_index_htmx_returns_partial(client, root_page):
     article_index = make_index(root_page)
-    make_article(article_index, "Growing herbs")
+    ArticlePageFactory(parent=article_index, title="Growing herbs")
 
     response = client.get(article_index.url, headers={"HX-Request": "true"})
 
@@ -150,16 +138,18 @@ def test_article_index_markdown_renders_filter_and_pagination(client, root_page)
     article_index = make_index(root_page, introduction="<p>Practical guides.</p>")
     base = datetime(2026, 1, 1, 10, tzinfo=UTC)
     for i in range(20):
-        make_article(
-            article_index,
-            f"Article {i:02d}",
+        ArticlePageFactory(
+            parent=article_index,
+            title=f"Article {i:02d}",
             first_published_at=base + timedelta(days=i),
         )
-    article = make_article(
-        article_index, "Growing herbs", first_published_at=base + timedelta(days=30)
-    )
     tag = Tag.objects.create(name="Herbs")
-    PageTag.objects.create(page=article, tag=tag)
+    ArticlePageFactory(
+        parent=article_index,
+        title="Growing herbs",
+        first_published_at=base + timedelta(days=30),
+        tags=[tag],
+    )
 
     index_response = client.get(article_index.url, headers={"accept": "text/markdown"})
     tag_response = client.get(
@@ -179,9 +169,8 @@ def test_article_index_markdown_renders_filter_and_pagination(client, root_page)
 @pytest.mark.django_db
 def test_article_index_tag_route_adds_breadcrumb(client, root_page):
     article_index = make_index(root_page)
-    article = make_article(article_index, "Growing herbs")
     tag = Tag.objects.create(name="Herbs")
-    PageTag.objects.create(page=article, tag=tag)
+    ArticlePageFactory(parent=article_index, title="Growing herbs", tags=[tag])
 
     response = client.get(f"{article_index.url}tags/{tag.slug}/")
 

@@ -1,6 +1,14 @@
 import factory
-from wagtail_factories import PageFactory, SiteFactory
+from wagtail.blocks import RichTextBlock
+from wagtail_factories import (
+    PageFactory,
+    SiteFactory,
+    StreamBlockFactory,
+    StructBlockFactory,
+)
+from wagtail_factories.blocks import BlockFactory
 
+from core.blocks import ContentStreamBlock, HeadingBlock, HeadingLevel
 from core.models import (
     ContentPage,
     PageRelationship,
@@ -75,3 +83,24 @@ class ContentPageFactory(PageFactory):
 
     class Meta:
         model = ContentPage
+
+
+class HeadingBlockFactory(StructBlockFactory):
+    text = factory.Sequence(lambda index: f"Heading {index}")
+    level = HeadingLevel.H2
+
+    class Meta:
+        model = HeadingBlock
+
+
+class RichTextBlockFactory(BlockFactory):
+    class Meta:
+        model = RichTextBlock
+
+
+class ContentStreamBlockFactory(StreamBlockFactory):
+    heading = factory.SubFactory(HeadingBlockFactory)
+    paragraph = factory.SubFactory(RichTextBlockFactory)
+
+    class Meta:
+        model = ContentStreamBlock
