@@ -12,8 +12,14 @@ import {
 } from "d3";
 import htmx from "htmx.org";
 
+const SMALL_SCREEN_QUERY = "(max-width: 35rem)";
+const LARGE_SCREEN_ASPECT_RATIO = 4 / 3;
+const SMALL_SCREEN_ASPECT_RATIO = 5 / 6;
+const NODE_RADIUS_RANGE = [12, 36];
+const SMALL_SCREEN_NODE_RADIUS_RANGE = [18, 44];
+
 export default class extends Controller {
-    static values = { data: String, width: Number, height: Number };
+    static values = { data: String, height: Number };
     static targets = [
         "chart",
         "detailsAnchor",
@@ -32,10 +38,11 @@ export default class extends Controller {
 
     connect() {
         this.loadData();
-        this.scales();
         this.createChart();
-        this.renderLegend();
+        this.updateResponsiveLayout();
         this.render();
+        this.layout();
+        this.renderLegend();
     }
 
     loadData() {
@@ -58,17 +65,30 @@ export default class extends Controller {
 
     scales() {
         const maxDegree = max(this.nodes, (node) => node.degree);
-        this.radialScale = scaleRadial().domain([0, maxDegree]).range([12, 36]);
+        const radiusRange = this.smallScreen
+            ? SMALL_SCREEN_NODE_RADIUS_RANGE
+            : NODE_RADIUS_RANGE;
+        this.collisionScale = scaleRadial()
+            .domain([0, maxDegree])
+            .range(NODE_RADIUS_RANGE);
+        this.radialScale = scaleRadial()
+            .domain([0, maxDegree])
+            .range(radiusRange);
     }
 
     createChart() {
-        this.chart = select(this.chartTarget)
-            .attr("viewBox", `0 0 ${this.widthValue} ${this.heightValue}`)
-            .append("g")
-            .attr(
-                "transform",
-                `translate(${this.widthValue / 2}, ${this.heightValue / 2})`,
-            );
+        this.chart = select(this.chartTarget).append("g");
+    }
+
+    updateChartDimensions() {
+        select(this.chartTarget).attr(
+            "viewBox",
+            `0 0 ${this.width} ${this.heightValue}`,
+        );
+        this.chart.attr(
+            "transform",
+            `translate(${this.width / 2}, ${this.heightValue / 2})`,
+        );
     }
 
     calculateLegendScaleFactor() {
@@ -181,12 +201,12 @@ export default class extends Controller {
             .selectAll(".node")
             .data(this.nodes)
             .join("circle")
-            .attr("class", (node) => `node ${node.type}`)
-            .attr("r", (node) => {
-                node.radius = this.radialScale(node.degree);
-                return node.radius;
+            .each((node) => {
+                node.collisionRadius = this.collisionScale(node.degree);
             })
-            .attr("cx", 2 * this.widthValue)
+            .attr("class", (node) => `node ${node.type}`)
+            .attr("r", (node) => this.radialScale(node.degree))
+            .attr("cx", 2 * this.width)
             .attr("cy", 2 * this.heightValue)
             .attr(
                 "data-action",
@@ -208,12 +228,14 @@ export default class extends Controller {
                     .filter(Boolean)
                     .join(", ");
             });
+    }
 
+    layout() {
         const simulation = forceSimulation()
             .force("charge", forceManyBody().strength(-20).distanceMax(200))
             .force(
                 "collide",
-                forceCollide().radius((d) => d.radius + 20),
+                forceCollide().radius((d) => d.collisionRadius + 20),
             )
             .force("x", forceX(0))
             .force("y", forceY(0))
@@ -310,6 +332,11 @@ export default class extends Controller {
     }
 
     handleResize() {
+        const smallScreen = window.matchMedia(SMALL_SCREEN_QUERY).matches;
+        if (smallScreen !== this.smallScreen) {
+            this.updateResponsiveLayout(smallScreen);
+        }
+
         this.calculateLegendScaleFactor();
         const legendRadius = (degree) =>
             this.radialScale(degree) * this.legendScaleFactor;
@@ -319,6 +346,25 @@ export default class extends Controller {
         const maxSize = legendRadius(maxDegree);
         this.updateLegend(minSize, maxSize);
         this.updatePopoverAnchors();
+    }
+
+    updateResponsiveLayout(
+        smallScreen = window.matchMedia(SMALL_SCREEN_QUERY).matches,
+    ) {
+        this.setResponsiveWidth(smallScreen);
+        this.scales();
+        this.updateChartDimensions();
+        this.chart
+            .selectAll(".node")
+            .attr("r", (node) => this.radialScale(node.degree));
+    }
+
+    setResponsiveWidth(smallScreen) {
+        this.smallScreen = smallScreen;
+        const aspectRatio = smallScreen
+            ? SMALL_SCREEN_ASPECT_RATIO
+            : LARGE_SCREEN_ASPECT_RATIO;
+        this.width = this.heightValue * aspectRatio;
     }
 
     handleScroll() {

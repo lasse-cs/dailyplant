@@ -39,7 +39,6 @@
                         <div
                             data-controller="explorer-chart"
                             data-explorer-chart-data-value="explorer-data"
-                            data-explorer-chart-width-value="800"
                             data-explorer-chart-height-value="600"
                             data-action="resize@window->explorer-chart#handleResize scroll@window->explorer-chart#handleScroll:passive htmx:afterRequest->explorer-chart#finishDetailsRequest"
                         >
@@ -70,7 +69,11 @@
                             <aside class="explorer-guide" aria-labelledby="explorer-guide-title">
                                 <div>
                                     <h2 id="explorer-guide-title" class="explorer-guide__title">Explore connections on {{ current_site.site_name }}</h2>
-                                    <p>Each circle represents a page on {{ current_site.site_name }}. A line connects two related pages. Press <kbd>Tab</kbd> to enter the chart, then use <span class="explorer-guide__keys"><span class="visually-hidden">arrow keys</span><kbd aria-hidden="true">&larr;</kbd><kbd aria-hidden="true">&uarr;</kbd><kbd aria-hidden="true">&darr;</kbd><kbd aria-hidden="true">&rarr;</kbd></span> to move between circles. Hover over or focus a circle to see its title. Click a circle, or press <kbd>Enter</kbd> or <kbd>Space</kbd>, to view its details.</p>
+                                    <p>
+                                        Each circle represents a page on {{ current_site.site_name }}. A line connects two related pages.
+                                        <span class="explorer-guide__keyboard">Press <kbd>Tab</kbd> to enter the chart, then use <span class="explorer-guide__keys"><span class="visually-hidden">arrow keys</span><kbd aria-hidden="true">&larr;</kbd><kbd aria-hidden="true">&uarr;</kbd><kbd aria-hidden="true">&darr;</kbd><kbd aria-hidden="true">&rarr;</kbd></span> to move between circles. Hover over or focus a circle to see its title. Click a circle, or press <kbd>Enter</kbd> or <kbd>Space</kbd>, to view its details.</span>
+                                        <span class="explorer-guide__touch">Tap a circle to view its title and details.</span>
+                                    </p>
                                 </div>
                             </aside>
 

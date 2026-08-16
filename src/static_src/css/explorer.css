@@ -384,7 +384,19 @@
         white-space: nowrap;
     }
 
+    .explorer-guide__touch {
+        display: none;
+    }
+
     @media (max-width: 35rem) {
+        .explorer-guide__keyboard {
+            display: none;
+        }
+
+        .explorer-guide__touch {
+            display: inline;
+        }
+
         .explorer-table {
             --explorer-table-cell-padding: 0.65rem 0.75rem;
         }
