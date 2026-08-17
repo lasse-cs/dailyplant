@@ -11,6 +11,7 @@
         {% endblock metadata %}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {% wagtail_site as current_site %}
+        <link rel="sitemap" href="{% url 'sitemap' %}">
         <link rel="alternate" type="application/rss+xml" title="{% if current_site %}{{ current_site.site_name }} {% endif %}RSS" href="{% url 'rss_feed' %}">
         <link rel="alternate" type="application/atom+xml" title="{% if current_site %}{{ current_site.site_name }} {% endif %}Atom" href="{% url 'atom_feed' %}">
         <link rel="describedby" type="text/markdown" title="Site index for LLMs" href="{% url 'llms_txt' %}">
