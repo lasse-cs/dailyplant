@@ -11,7 +11,7 @@ dependencies = [
     "wagtail-umami-analytics",
     "gunicorn>=25.3.0",
     "psycopg>=3.3.4",
-    "sentry-sdk>=2.61.0",
+    "sentry-sdk>=2.68.0",
     "wagtail>=7.4,<8.0",
     "atproto>=0.0.67",
     "markdownify>=1.2.3",
@@ -22,17 +22,17 @@ dependencies = [
 dev = [
     "debugpy>=1.8.20",
     "django-browser-reload>=1.21.0",
-    "django-debug-toolbar>=7.0",
+    "django-debug-toolbar>=7.1.0",
     "djhtml>=3.0.11",
     "honcho>=2.0.0",
-    "pre-commit>=4.5.1",
+    "pre-commit>=4.6.2",
     "pytest>=9.0.3",
-    "pytest-django>=4.13.0",
-    "ruff>=0.16.0",
+    "pytest-django>=4.14.0",
+    "ruff>=0.16.2",
     "wagtail-factories>=4.4.0",
 ]
 playwright = [
-    "pytest-playwright>=0.8.0",
+    "pytest-playwright>=0.9.0",
 ]
 
 
