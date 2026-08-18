@@ -10,6 +10,8 @@
 # ///
 
 import argparse
+from functools import cache
+from html.parser import HTMLParser
 
 import httpx
 from rich.console import Console
@@ -20,6 +22,12 @@ error_console = Console(stderr=True)
 
 class CheckError(Exception):
     pass
+
+
+@cache
+def fetch(client: httpx.Client, url: httpx.URL) -> httpx.Response:
+    """Fetch a URL, at most once per run."""
+    return client.get(url)
 
 
 def check_redirect(client, base_url):
@@ -43,7 +51,7 @@ def check_redirect(client, base_url):
 
 def check_homepage(client, base_url):
     """Check that the homepage loads successfully as HTML."""
-    response = client.get(base_url)
+    response = fetch(client, base_url)
 
     if response.status_code != 200:
         raise CheckError(
@@ -59,7 +67,7 @@ def check_homepage(client, base_url):
 
 def check_link_headers(client, base_url):
     """Check that the homepage advertises its discovery resources."""
-    response = client.get(base_url)
+    response = fetch(client, base_url)
     links = response.headers.get_list("Link")
     expected_links = {
         "/llms.txt": 'rel="describedby"',
@@ -79,6 +87,63 @@ def check_link_headers(client, base_url):
         )
 
     console.print(f"PASS {base_url} advertises discovery links", style="green")
+
+
+class LinkHTMLParser(HTMLParser):
+    def __init__(self, *, convert_charrefs=True):
+        super().__init__(convert_charrefs=convert_charrefs)
+        self.links = []
+        self.in_head = False
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "head":
+            self.in_head = True
+        elif tag == "body":
+            self.in_head = False
+        elif tag == "link" and self.in_head:
+            self.links.append(dict(attrs))
+
+    def handle_endtag(self, tag):
+        if tag == "head":
+            self.in_head = False
+
+
+def parse_head_links(html):
+    parser = LinkHTMLParser()
+    parser.feed(html)
+    parser.close()
+    return parser.links
+
+
+def has_rel(link, expected_rel):
+    return expected_rel.lower() in (link.get("rel") or "").lower().split()
+
+
+def check_link_in_head(client, base_url):
+    """Check that the homepage advertises its discovery resources in the <head>."""
+    response = fetch(client, base_url)
+    links = parse_head_links(response.text)
+
+    expected_links = {
+        "/llms.txt": "describedby",
+        "/sitemap.xml": "sitemap",
+        "/rss.xml": "alternate",
+        "/atom.xml": "alternate",
+    }
+    missing_links = [
+        href
+        for href, rel in expected_links.items()
+        if not any(link.get("href") == href and has_rel(link, rel) for link in links)
+    ]
+
+    if missing_links:
+        raise CheckError(
+            f"{base_url}: missing Link in <head> for {', '.join(missing_links)}"
+        )
+
+    console.print(
+        f"PASS {base_url} advertises discovery links in <head>", style="green"
+    )
 
 
 def check_endpoint(client, base_url, path, expected_content_type):
@@ -113,6 +178,25 @@ def check_llms(client, base_url):
     check_endpoint(client, base_url, "llms.txt", "text/markdown")
 
 
+def check_static_file(client, base_url):
+    """Check that static fiels can be loaded - by loading a css file."""
+    response = fetch(client, base_url)
+    links = parse_head_links(response.text)
+    href = next(
+        (
+            link["href"]
+            for link in links
+            if link.get("href") and has_rel(link, "stylesheet")
+        ),
+        None,
+    )
+
+    if href is None:
+        raise CheckError("Found no CSS File to fetch")
+
+    check_endpoint(client, base_url, href, "text/css")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Check a website")
     parser.add_argument("url", help="HTTPS base URL to check")
@@ -129,6 +213,8 @@ def main():
             check_redirect,
             check_homepage,
             check_link_headers,
+            check_link_in_head,
+            check_static_file,
             check_robots,
             check_sitemap,
             check_llms,
