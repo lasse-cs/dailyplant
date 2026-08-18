@@ -2,7 +2,7 @@
 {% load breadcrumb_tags metadata_tags %}
 
 {% block metadata %}
-    {% render_metadata %}
+    {% render_metadata title="Search" description="Search the site" %}
     {% render_json_ld breadcrumbs=breadcrumbs %}
     <meta name="robots" content="noindex">
 {% endblock metadata %}
