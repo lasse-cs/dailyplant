@@ -98,6 +98,17 @@ def check_certificate(client, base_url):
     )
 
 
+def check_not_found(client, base_url):
+    """Check that a missing page returns HTTP 404."""
+    url = base_url.join("page-should-not-be-found/")
+    response = client.get(url)
+
+    if response.status_code != 404:
+        raise CheckError(f"{url}: expected HTTP 404, received {response.status_code}")
+
+    console.print(f"PASS {url} returns HTTP 404", style="green")
+
+
 def check_link_headers(client, base_url):
     """Check that the homepage advertises its discovery resources."""
     response = fetch(client, base_url)
@@ -246,6 +257,7 @@ def main():
             check_redirect,
             check_homepage,
             check_certificate,
+            check_not_found,
             check_link_headers,
             check_link_in_head,
             check_static_file,
