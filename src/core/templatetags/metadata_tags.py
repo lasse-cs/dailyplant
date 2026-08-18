@@ -43,8 +43,9 @@ def build_metadata(page, request, **overrides):
         or settings.image
     )
     image_alt = overrides.get("image_alt") or getattr(page, "metadata_image_alt", None)
-    url = overrides.get("url")
-    if not url:
+    if "url" in overrides:
+        url = overrides["url"]
+    else:
         if page and hasattr(page, "get_metadata_url"):
             url = page.get_metadata_url(request)
         elif page:

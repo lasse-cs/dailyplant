@@ -2,7 +2,8 @@
 {% load metadata_tags %}
 
 {% block metadata %}
-    {% render_metadata title="Page not found" description="Sorry, this page could not be found." %}
+    {% render_metadata title="Page not found" description="Sorry, this page could not be found." url="" %}
+    <meta name="robots" content="noindex">
 {% endblock metadata %}
 
 {% block body_class %}template-404{% endblock %}
