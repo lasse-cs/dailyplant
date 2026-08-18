@@ -10,6 +10,8 @@
 # ///
 
 import argparse
+import ssl
+from datetime import UTC, datetime, timedelta
 from functools import cache
 from html.parser import HTMLParser
 
@@ -18,6 +20,8 @@ from rich.console import Console
 
 console = Console()
 error_console = Console(stderr=True)
+
+CERTIFICATE_MIN_VALIDITY = timedelta(days=14)
 
 
 class CheckError(Exception):
@@ -63,6 +67,35 @@ def check_homepage(client, base_url):
         raise CheckError(f"{base_url}: expected text/html, received {content_type!r}")
 
     console.print(f"PASS {base_url} returns HTML", style="green")
+
+
+def check_certificate(client, base_url):
+    """Check that the TLS certificate is not approaching expiry."""
+    response = fetch(client, base_url)
+    stream = response.extensions.get("network_stream")
+    ssl_object = stream.get_extra_info("ssl_object") if stream else None
+
+    if ssl_object is None:
+        raise CheckError(f"{base_url}: could not inspect TLS certificate")
+
+    certificate = ssl_object.getpeercert()
+    expires_at = datetime.fromtimestamp(
+        ssl.cert_time_to_seconds(certificate["notAfter"]),
+        tz=UTC,
+    )
+    remaining = expires_at - datetime.now(UTC)
+
+    if remaining < CERTIFICATE_MIN_VALIDITY:
+        raise CheckError(
+            f"{base_url}: certificate expires {expires_at:%Y-%m-%d} "
+            f"({remaining.days} days remaining)"
+        )
+
+    console.print(
+        f"PASS {base_url.host} certificate valid until "
+        f"{expires_at:%Y-%m-%d} ({remaining.days} days remaining)",
+        style="green",
+    )
 
 
 def check_link_headers(client, base_url):
@@ -212,6 +245,7 @@ def main():
         for check in (
             check_redirect,
             check_homepage,
+            check_certificate,
             check_link_headers,
             check_link_in_head,
             check_static_file,
