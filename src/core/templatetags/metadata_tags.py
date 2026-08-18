@@ -91,7 +91,7 @@ def build_base_schema(request, metadata):
     same_as = [
         link.url
         for link in social_settings.social_links.all()
-        if link.type != SocialMediaChoices.FEED
+        if link.type not in [SocialMediaChoices.FEED, SocialMediaChoices.ROBOTS]
     ]
     if same_as:
         website["sameAs"] = same_as
