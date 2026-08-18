@@ -17,7 +17,7 @@
 {% endblock skiplinks %}
 
 {% block page_content %}
-    <main id="main" class="search-page" tabindex="-1">
+    <main id="main" class="search-page" tabindex="-1" data-controller="live-search">
         <header class="card wide__card">
             <h1 class="title">Search</h1>
             <form
@@ -49,6 +49,18 @@
             </form>
         </header>
 
-        <section id="search-results" class="card wide__card search-page__results" aria-label="Search results" tabindex="-1">{% if query %}{% include "patterns/components/search/results.html" %}{% endif %}</section>
+        <div
+            class="visually-hidden"
+            role="status"
+            aria-atomic="true"
+            data-live-search-target="status"
+        ></div>
+        <section
+            id="search-results"
+            class="card wide__card search-page__results"
+            aria-label="Search results"
+            tabindex="-1"
+            data-action="htmx:afterSwap->live-search#announce"
+        >{% if query %}{% include "patterns/components/search/results.html" %}{% endif %}</section>
     </main>
 {% endblock page_content %}

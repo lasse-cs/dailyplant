@@ -15,7 +15,7 @@
         aria-labelledby="command-search-title"
         data-action="click->search#dialogClick"
     >
-        <div class="command-search__panel">
+        <div class="command-search__panel" data-controller="live-search">
             <h2 class="visually-hidden" id="command-search-title">Search</h2>
             <label class="visually-hidden" for="command-search-input">Search query</label>
             <div class="command-search__input-wrap">
@@ -36,7 +36,17 @@
                     hx-swap="innerHTML"
                 >
             </div>
-            <div id="command-search-results" class="command-search__results">
+            <div
+                class="visually-hidden"
+                role="status"
+                aria-atomic="true"
+                data-live-search-target="status"
+            ></div>
+            <div
+                id="command-search-results"
+                class="command-search__results"
+                data-action="htmx:afterSwap->live-search#announce"
+            >
                 {% include "patterns/components/search/results.html" with query="" results=None %}
             </div>
         </div>

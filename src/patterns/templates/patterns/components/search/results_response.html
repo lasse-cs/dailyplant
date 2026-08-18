@@ -1,0 +1,10 @@
+<template data-live-search-target="announcement">
+    {% if query and results %}
+        Showing {{ results|length }} result{{ results|length|pluralize }} for "{{ query }}".
+    {% elif query %}
+        No results found for "{{ query }}".
+    {% else %}
+        Search cleared.
+    {% endif %}
+</template>
+{% include "patterns/components/search/results.html" %}

@@ -26,7 +26,7 @@ def search(request):
 
     context = {"query": query, "results": results}
     if "HX-Request" in request.headers:
-        template = "patterns/components/search/results.html"
+        template = "patterns/components/search/results_response.html"
     else:
         template = "patterns/pages/search/search.html"
         site = Site.find_for_request(request)
