@@ -92,6 +92,7 @@
 
 @layer base {
     :root {
+        color-scheme: only light;
         --font-heading: "Cormorant Garamond", serif;
         --font-body: "Source Sans 3", sans-serif;
         --color-bg: #f5f3f1;

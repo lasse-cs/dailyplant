@@ -155,10 +155,11 @@ def check_link_headers(client, base_url):
     console.print(f"PASS {base_url} advertises discovery links", style="green")
 
 
-class LinkHTMLParser(HTMLParser):
+class HeadHTMLParser(HTMLParser):
     def __init__(self, *, convert_charrefs=True):
         super().__init__(convert_charrefs=convert_charrefs)
         self.links = []
+        self.meta = []
         self.in_head = False
 
     def handle_starttag(self, tag, attrs):
@@ -168,6 +169,8 @@ class LinkHTMLParser(HTMLParser):
             self.in_head = False
         elif tag == "link" and self.in_head:
             self.links.append(dict(attrs))
+        elif tag == "meta" and self.in_head:
+            self.meta.append(dict(attrs))
 
     def handle_endtag(self, tag):
         if tag == "head":
@@ -175,10 +178,17 @@ class LinkHTMLParser(HTMLParser):
 
 
 def parse_head_links(html):
-    parser = LinkHTMLParser()
+    parser = HeadHTMLParser()
     parser.feed(html)
     parser.close()
     return parser.links
+
+
+def parse_head_meta(html):
+    parser = HeadHTMLParser()
+    parser.feed(html)
+    parser.close()
+    return parser.meta
 
 
 def has_rel(link, expected_rel):
@@ -210,6 +220,27 @@ def check_link_in_head(client, base_url):
     console.print(
         f"PASS {base_url} advertises discovery links in <head>", style="green"
     )
+
+
+def check_color_scheme(client, base_url):
+    """Check that the homepage declares its supported colour scheme."""
+    response = fetch(client, base_url)
+    meta = parse_head_meta(response.text)
+    color_scheme = next(
+        (
+            item.get("content", "")
+            for item in meta
+            if item.get("name", "").lower() == "color-scheme"
+        ),
+        None,
+    )
+
+    if color_scheme is None or color_scheme.strip().lower() != "only light":
+        raise CheckError(
+            f"{base_url}: expected color-scheme 'only light', received {color_scheme!r}"
+        )
+
+    console.print(f"PASS {base_url} declares color-scheme 'only light'", style="green")
 
 
 def check_endpoint(client, base_url, path, expected_content_type):
@@ -283,6 +314,7 @@ def main():
             check_not_found,
             check_link_headers,
             check_link_in_head,
+            check_color_scheme,
             check_static_file,
             check_robots,
             check_sitemap,
