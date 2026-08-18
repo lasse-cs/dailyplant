@@ -69,6 +69,28 @@ def check_homepage(client, base_url):
     console.print(f"PASS {base_url} returns HTML", style="green")
 
 
+def check_homepage_markdown(client, base_url):
+    """Check that the homepage is available as Markdown."""
+    response = client.get(base_url, headers={"Accept": "text/markdown"})
+
+    if response.status_code != 200:
+        raise CheckError(
+            f"{base_url}: expected HTTP 200 for Markdown, "
+            f"received {response.status_code}"
+        )
+
+    content_type = response.headers.get("Content-Type", "")
+    if not content_type.startswith("text/markdown"):
+        raise CheckError(
+            f"{base_url}: expected text/markdown, received {content_type!r}"
+        )
+
+    if not response.text.strip():
+        raise CheckError(f"{base_url}: received an empty Markdown response")
+
+    console.print(f"PASS {base_url} returns Markdown if requested", style="green")
+
+
 def check_certificate(client, base_url):
     """Check that the TLS certificate is not approaching expiry."""
     response = fetch(client, base_url)
@@ -256,6 +278,7 @@ def main():
         for check in (
             check_redirect,
             check_homepage,
+            check_homepage_markdown,
             check_certificate,
             check_not_found,
             check_link_headers,
