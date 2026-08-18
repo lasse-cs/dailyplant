@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 import pytest
+from django.utils import timezone
 from playwright.sync_api import expect
 
 from core.factories import SocialMediaLinkFactory, SocialMediaSettingsFactory
@@ -40,3 +43,54 @@ def test_homepage(page, home_page_and_site, fact_index_page):
     expect(social_link_element).to_have_attribute("href", social_link.url)
     expect(social_link_element).to_have_attribute("target", "_blank")
     expect(social_link_element).to_have_attribute("rel", "noopener noreferrer")
+
+
+def test_user_can_browse_latest_and_older_facts(
+    page, home_page_and_site, fact_index_page
+):
+    home_page, _ = home_page_and_site
+    today = timezone.localdate()
+    older_fact = FactPageFactory(
+        parent=fact_index_page,
+        title="An older published fact",
+        date=today - timedelta(days=2),
+    )
+    older_fact.save_revision().publish()
+    latest_fact = FactPageFactory(
+        parent=fact_index_page,
+        title="The latest published fact",
+        date=today - timedelta(days=1),
+    )
+    latest_fact.save_revision().publish()
+    future_fact = FactPageFactory(
+        parent=fact_index_page,
+        title="An unpublished future fact",
+        date=today + timedelta(days=1),
+        live=False,
+    )
+
+    page.goto(home_page.full_url)
+
+    latest_fact_link = page.get_by_role("link", name=latest_fact.title, exact=True)
+    expect(latest_fact_link).to_be_visible()
+    expect(
+        page.get_by_role("heading", name=future_fact.title, exact=True)
+    ).to_have_count(0)
+
+    latest_fact_link.click()
+    expect(page).to_have_url(latest_fact.full_url)
+    expect(
+        page.get_by_role("heading", name=latest_fact.title, exact=True)
+    ).to_be_visible()
+
+    page.get_by_role("link", name="Older Fact").click()
+    expect(page).to_have_url(older_fact.full_url)
+    expect(
+        page.get_by_role("heading", name=older_fact.title, exact=True)
+    ).to_be_visible()
+
+    page.get_by_role("link", name="Newer Fact").click()
+    expect(page).to_have_url(latest_fact.full_url)
+    expect(
+        page.get_by_role("heading", name=latest_fact.title, exact=True)
+    ).to_be_visible()
