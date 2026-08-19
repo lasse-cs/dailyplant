@@ -4,6 +4,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.db.models import Prefetch
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.cache import patch_vary_headers
@@ -144,7 +145,7 @@ class FactIndexPage(
         try:
             facts = paginator.page(page_number)
         except PageNotAnInteger, EmptyPage:
-            facts = Paginator([], 1, allow_empty_first_page=True).page(1)
+            raise Http404
         context["facts"] = facts
         context["tags"] = self.get_tags()
         context["active_slug"] = slug
