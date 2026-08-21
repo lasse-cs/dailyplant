@@ -50,10 +50,13 @@ jobs:
       - name: Run Biome
         run: npm run check
 
+      - name: Run the javascript tests
+        run: npm run test:run
+
       - name: Build static assets
         run: npm run build
 
-      - name: Run the tests
+      - name: Run the python tests
         run: uv run pytest src/ --ignore src/e2e
 
       - name: Install playwright

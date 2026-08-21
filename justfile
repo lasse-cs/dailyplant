@@ -37,9 +37,17 @@ migrate *args:
 makemigrations *args:
 	@just manage makemigrations {{args}}
 
-# Run tests, except end-to-end tests
-test *args:
+
+# Run all tests
+test: test-py test-js e2e
+
+# Run python tests, except end-to-end tests
+test-py *args:
   uv run pytest {{args}}
+
+# Run JS tests
+test-js *args:
+	npm run test:run -- {{args}}
 
 # Run end-to-end tests
 e2e *args:

@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
@@ -12,6 +13,10 @@ export default defineConfig({
         alias: {
             "@": resolve(__dirname, "src/static_src/"),
         },
+    },
+    test: {
+        environment: "jsdom",
+        include: ["**/*.test.js"],
     },
     server: {
         origin: "http://localhost:5173",
