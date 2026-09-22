@@ -6,7 +6,7 @@ url: {{ metadata_url }}
 
 # {{ page.title }}
 
-{{ page.introduction|richtext|markdownify }}
+{{ page.introduction|richtext_markdown }}
 
 {% if active_slug %}Filtered on Tag {{ active_slug }}{% endif %}
 

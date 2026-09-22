@@ -6,7 +6,7 @@ url: {% fullpageurl page %}
 
 # {{ page.title }}
 
-{{ page.intro|richtext|markdownify }}
+{{ page.intro|richtext_markdown }}
 
 {% if data.nodes %}
 | Title | Type | Connections | Connected pages |

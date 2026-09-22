@@ -111,7 +111,12 @@ def test_llms_txt_includes_search_description(client, site):
 
 @pytest.mark.django_db
 def test_llms_txt_includes_information(client, site):
-    make_llms_txt_settings(site, [], "SomeInformation")
+    page = ContentPageFactory(parent=site.root_page)
+    make_llms_txt_settings(
+        site,
+        [],
+        f'<p><b>SomeInformation</b>: <a linktype="page" id="{page.pk}">Guide</a></p>',
+    )
 
     response = client.get("/llms.txt")
-    assert "SomeInformation" in response.text
+    assert f"**SomeInformation**: [Guide]({page.url})" in response.text

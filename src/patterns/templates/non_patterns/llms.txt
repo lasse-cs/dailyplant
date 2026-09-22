@@ -3,7 +3,7 @@
 > {{ description }}
 {% endif %}
 {% if information %}
-{{ information|richtext|markdownify }}
+{{ information|richtext_markdown }}
 {% endif %}
 {% for section in sections %}
 ## {{ section.title }}
