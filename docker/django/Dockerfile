@@ -70,7 +70,7 @@ COPY --from=build-static --chown=wagtail:wagtail /app/src/static_built/ /app/sta
 # Collect static files
 RUN ["python", "manage.py", "collectstatic", "--settings", "dailyplant.settings.build"]
 
-CMD ["gunicorn", "--bind", ":8000", "dailyplant.wsgi:application"]
+CMD ["gunicorn", "--no-control-socket", "--bind", ":8000", "dailyplant.wsgi:application"]
 
 
 FROM nginx:1.31.6-alpine AS nginx
