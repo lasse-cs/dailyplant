@@ -800,6 +800,18 @@
         }
     }
 
+    .fact-swipe-area {
+        padding: 1rem;
+
+        &[data-swipe-enabled] {
+            touch-action: pan-y pinch-zoom;
+        }
+
+        & > .card__stack {
+            margin: 0;
+        }
+    }
+
     .fact__footer {
         display: grid;
         grid-template: "newer older" auto / 1fr 1fr;
