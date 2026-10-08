@@ -2,6 +2,7 @@ services:
   nginx:
     environment:
       - VIRTUAL_HOST=${NGINX_SERVER_NAME:?Must set nginx server name}
+      - ACME_HOST=${NGINX_SERVER_NAME:?Must set nginx server name}
       - NGINX_CONF=proxy
     networks:
       - nginx-proxy
