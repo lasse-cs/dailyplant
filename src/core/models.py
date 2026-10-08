@@ -2,7 +2,8 @@ from dataclasses import dataclass, field
 
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
-from django.db.models import Q
+from django.db.models import Max, Q
+from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.utils.cache import patch_vary_headers
 from django.utils.text import slugify
@@ -106,6 +107,24 @@ class MetadataMixin:
     @property
     def metadata_image(self):
         return None
+
+
+class ListingSitemapMixin:
+    def get_sitemap_pages(self):
+        """Return the live pages contributing content to this listing."""
+        raise NotImplementedError
+
+    def get_sitemap_urls(self, request=None):
+        urls = super().get_sitemap_urls(request=request)
+        # Match Wagtail's fallback for legacy pages without last_published_at.
+        lastmod = self.get_sitemap_pages().aggregate(
+            lastmod=Max(Coalesce("last_published_at", "latest_revision_created_at"))
+        )["lastmod"]
+        if lastmod is not None:
+            for url in urls:
+                if url.get("lastmod") is None or lastmod > url["lastmod"]:
+                    url["lastmod"] = lastmod
+        return urls
 
 
 class LLMsTxtListingMixin:

@@ -29,6 +29,7 @@ from wagtail_umami_analytics.panels import UmamiAnalyticsPanel
 from core.breadcrumbs import Breadcrumb
 from core.models import (
     FeedPageMixin,
+    ListingSitemapMixin,
     LLMsTxtListingMixin,
     MarkdownPageMixin,
     MarkdownRoutablePageMixin,
@@ -44,7 +45,11 @@ from search.models import SearchablePageMixin
 
 
 class FactIndexPage(
-    LLMsTxtListingMixin, MetadataMixin, MarkdownRoutablePageMixin, RoutablePage
+    ListingSitemapMixin,
+    LLMsTxtListingMixin,
+    MetadataMixin,
+    MarkdownRoutablePageMixin,
+    RoutablePage,
 ):
     parent_page_types = ["home.HomePage"]
     subpage_types = ["facts.FactPage"]
@@ -94,6 +99,12 @@ class FactIndexPage(
     def get_llms_txt_pages(self):
         return self.get_facts()
 
+    def get_sitemap_pages(self):
+        return self.get_paginator().page(1).object_list
+
+    def get_paginator(self, slug=None):
+        return Paginator(self.get_facts(slug), 18, orphans=2)
+
     def get_tags(self):
         return Tag.objects.filter(
             page_assignments__page__in=self.get_facts()
@@ -141,7 +152,7 @@ class FactIndexPage(
     def get_context(self, request, slug=None):
         context = super().get_context(request)
         page_number = request.GET.get("page", 1)
-        paginator = Paginator(self.get_facts(slug), 18, orphans=2)
+        paginator = self.get_paginator(slug)
         try:
             facts = paginator.page(page_number)
         except PageNotAnInteger, EmptyPage:

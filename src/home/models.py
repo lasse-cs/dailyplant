@@ -1,10 +1,10 @@
 from wagtail.models import Page
 
-from core.models import MarkdownPageMixin
+from core.models import ListingSitemapMixin, MarkdownPageMixin
 from facts.models import FactPage
 
 
-class HomePage(MarkdownPageMixin, Page):
+class HomePage(ListingSitemapMixin, MarkdownPageMixin, Page):
     max_count = 1
     parent_page_types = ["wagtailcore.Page"]
     template = "patterns/pages/home/home_page.html"
@@ -13,6 +13,9 @@ class HomePage(MarkdownPageMixin, Page):
 
     def get_fact(self):
         return FactPage.objects.live().order_by("-date").first()
+
+    def get_sitemap_pages(self):
+        return FactPage.objects.live().order_by("-date")[:1]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
