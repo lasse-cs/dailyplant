@@ -10,10 +10,13 @@
 # ///
 
 import argparse
+import random
+import re
 import ssl
 from datetime import UTC, datetime, timedelta
 from functools import cache
 from html.parser import HTMLParser
+from xml.etree import ElementTree
 
 import httpx
 from rich.console import Console
@@ -22,6 +25,7 @@ console = Console()
 error_console = Console(stderr=True)
 
 CERTIFICATE_MIN_VALIDITY = timedelta(days=14)
+SITEMAP_SAMPLE_SIZE = 5
 
 
 class CheckError(Exception):
@@ -246,7 +250,7 @@ def check_color_scheme(client, base_url):
 def check_endpoint(client, base_url, path, expected_content_type):
     """Check that an endpoint loads with its expected content type."""
     url = base_url.join(path)
-    response = client.get(url)
+    response = fetch(client, url)
 
     if response.status_code != 200:
         raise CheckError(f"{url}: expected HTTP 200, received {response.status_code}")
@@ -258,6 +262,7 @@ def check_endpoint(client, base_url, path, expected_content_type):
         )
 
     console.print(f"PASS {url} returns {expected_content_type}", style="green")
+    return response
 
 
 def check_robots(client, base_url):
@@ -266,8 +271,72 @@ def check_robots(client, base_url):
 
 
 def check_sitemap(client, base_url):
-    """Check that the XML sitemap loads successfully."""
-    check_endpoint(client, base_url, "sitemap.xml", "application/xml")
+    """Check the sitemap and a random sample of its canonical HTML pages."""
+    response = check_endpoint(client, base_url, "sitemap.xml", "application/xml")
+    try:
+        root = ElementTree.fromstring(response.content)
+    except ElementTree.ParseError as error:
+        raise CheckError(f"{response.url}: invalid sitemap XML: {error}") from error
+
+    namespace = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+    if root.tag != f"{namespace}urlset":
+        raise CheckError(f"{response.url}: expected a sitemap urlset")
+    locations = list(
+        dict.fromkeys(
+            (element.text or "").strip()
+            for element in root.findall(f"{namespace}url/{namespace}loc")
+            if (element.text or "").strip()
+        )
+    )
+    if not locations:
+        raise CheckError(f"{response.url}: sitemap contains no URLs")
+
+    failures = []
+    for location in random.sample(locations, min(SITEMAP_SAMPLE_SIZE, len(locations))):
+        try:
+            url = httpx.URL(location)
+            if not url.is_absolute_url or url.scheme not in {"http", "https"}:
+                raise CheckError(f"{location}: expected an absolute HTTP(S) URL")
+            check_sitemap_page(client, url)
+        except (CheckError, httpx.HTTPError, httpx.InvalidURL) as error:
+            failures.append(f"{location}: {error}")
+    if failures:
+        raise CheckError("Sitemap page checks failed:\n" + "\n".join(failures))
+
+
+def check_sitemap_page(client, url):
+    """Check that a sitemap URL serves canonical, indexable HTML."""
+    response = fetch(client, url)
+    if response.status_code != 200:
+        raise CheckError(f"expected HTTP 200, received {response.status_code}")
+    content_type = response.headers.get("Content-Type", "")
+    if content_type.split(";", 1)[0].strip().lower() != "text/html":
+        raise CheckError(f"expected text/html, received {content_type!r}")
+
+    parser = HeadHTMLParser()
+    parser.feed(response.text)
+    parser.close()
+    canonicals = [
+        link.get("href") for link in parser.links if has_rel(link, "canonical")
+    ]
+    if canonicals != [str(url)]:
+        raise CheckError(
+            f"expected one canonical matching {url}, received {canonicals!r}"
+        )
+
+    directives = response.headers.get_list("X-Robots-Tag")
+    directives.extend(
+        item.get("content") or ""
+        for item in parser.meta
+        if (item.get("name") or "").lower()
+        in {"robots", "googlebot", "googlebot-news", "bingbot"}
+    )
+    if any(
+        re.search(r"\b(?:noindex|none)\b", value, re.IGNORECASE) for value in directives
+    ):
+        raise CheckError("page disallows indexing via robots directives")
+
+    console.print(f"PASS {url} serves canonical, indexable HTML", style="green")
 
 
 def check_llms(client, base_url):
