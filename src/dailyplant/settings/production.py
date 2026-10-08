@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *
 
@@ -60,6 +61,7 @@ if os.environ.get("SENTRY_DSN_FILE"):
     sentry_sdk.init(
         dsn=Path(os.environ["SENTRY_DSN_FILE"]).read_text().strip(),
         send_default_pii=False,
+        integrations=[DjangoIntegration()],
     )
 
 if os.environ.get("WAGTAIL_SITE_NAME"):
