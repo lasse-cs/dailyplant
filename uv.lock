@@ -333,17 +333,6 @@ wheels = [
 ]
 
 [[package]]
-name = "django-model-graph"
-version = "0.1.0"
-source = { editable = "../projects/django-model-graph" }
-dependencies = [
-    { name = "django" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "django", specifier = ">=5.2" }]
-
-[[package]]
 name = "django-modelcluster"
 version = "6.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1295,7 +1284,6 @@ source = { virtual = "." }
 dependencies = [
     { name = "atproto" },
     { name = "django" },
-    { name = "django-model-graph" },
     { name = "django-sesame" },
     { name = "django-vite-tags" },
     { name = "gunicorn" },
@@ -1327,7 +1315,6 @@ playwright = [
 requires-dist = [
     { name = "atproto", specifier = ">=0.0.67" },
     { name = "django", specifier = ">=6.0,<6.1" },
-    { name = "django-model-graph", editable = "../projects/django-model-graph" },
     { name = "django-sesame", specifier = ">=3.2.3" },
     { name = "django-vite-tags", git = "https://github.com/lasse-cs/django-vite-tags.git?rev=a69aabf0c10a45bcaa0e6f9cc2f44b4d1d7548fa" },
     { name = "gunicorn", specifier = ">=25.3.0" },
