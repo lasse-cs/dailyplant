@@ -1,5 +1,6 @@
+from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
-from django.http import Http404
+from django.http import FileResponse, Http404
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.cache import cache_control, cache_page
@@ -11,6 +12,19 @@ from wagtail.contrib.sitemaps.views import sitemap as wagtail_sitemap
 from wagtail.coreutils import WAGTAIL_APPEND_SLASH
 from wagtail.models import Page
 from wagtail.views import serve
+
+SECURITY_TXT_PATH = (
+    settings.BASE_DIR / "patterns" / "templates" / "non_patterns" / "security.txt"
+)
+
+
+@require_safe
+@cache_control(max_age=60 * 60, public=True)
+def security_txt(request):
+    return FileResponse(
+        SECURITY_TXT_PATH.open("rb"),
+        content_type="text/plain; charset=utf-8",
+    )
 
 
 def page_not_found(request, exception, template_name="patterns/pages/error/404.html"):

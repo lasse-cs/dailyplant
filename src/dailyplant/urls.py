@@ -9,7 +9,13 @@ from wagtail.images.views.serve import ServeView
 
 from core.feeds import AtomFeed, RSSFeed
 from core.views import llms_txt
-from dailyplant.views import error_500_test, markdown_suffix_page, robots_txt, sitemap
+from dailyplant.views import (
+    error_500_test,
+    markdown_suffix_page,
+    robots_txt,
+    security_txt,
+    sitemap,
+)
 from search.views import search
 from users.views import EmailLoginView
 
@@ -25,6 +31,7 @@ urlpatterns = [
     path("sitemap.xml", sitemap, name="sitemap"),
     path("robots.txt", robots_txt, name="robots_txt"),
     path("llms.txt", llms_txt, name="llms_txt"),
+    path(".well-known/security.txt", security_txt, name="security_txt"),
     re_path(
         r"^images/([^/]*)/(\d*)/([^/]*)/[^/]*$",
         ServeView.as_view(),

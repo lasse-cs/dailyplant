@@ -270,6 +270,50 @@ def check_robots(client, base_url):
     check_endpoint(client, base_url, "robots.txt", "text/plain")
 
 
+def check_security_txt(client, base_url):
+    """Check the required security.txt fields and expiry at the well-known URL."""
+    response = check_endpoint(
+        client, base_url, "/.well-known/security.txt", "text/plain"
+    )
+    fields = {}
+    for line in response.text.splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        name, separator, value = line.partition(":")
+        if separator:
+            fields.setdefault(name.strip().lower(), []).append(value.strip())
+
+    contacts = fields.get("contact", [])
+    if not contacts or not all(contacts):
+        raise CheckError(f"{response.url}: expected a non-empty Contact field")
+
+    expires_values = fields.get("expires", [])
+    if len(expires_values) != 1:
+        raise CheckError(f"{response.url}: expected exactly one Expires field")
+
+    value = expires_values[0]
+    try:
+        expires_at = datetime.fromisoformat(value)
+    except ValueError as error:
+        raise CheckError(
+            f"{response.url}: invalid Expires timestamp {value!r}"
+        ) from error
+    if expires_at.tzinfo is None:
+        raise CheckError(
+            f"{response.url}: Expires must include a timezone, received {value!r}"
+        )
+
+    remaining = expires_at - datetime.now(UTC)
+    if remaining <= timedelta(0):
+        raise CheckError(f"{response.url}: Expires {value!r} is not in the future")
+    if remaining > timedelta(days=365):
+        raise CheckError(f"{response.url}: Expires {value!r} is more than a year away")
+
+    console.print(
+        f"PASS {response.url} has required fields and expires {value}", style="green"
+    )
+
+
 def check_sitemap(client, base_url):
     """Check the sitemap and a random sample of its canonical HTML pages."""
     response = check_endpoint(client, base_url, "sitemap.xml", "application/xml")
@@ -386,6 +430,7 @@ def main():
             check_color_scheme,
             check_static_file,
             check_robots,
+            check_security_txt,
             check_sitemap,
             check_llms,
         ):
