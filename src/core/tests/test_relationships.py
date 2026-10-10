@@ -91,7 +91,7 @@ def test_unsaved_page_and_empty_graph_do_not_query(django_assert_num_queries):
         assert graph_for_pages([]).adjacency == {}
 
 
-def test_manual_graph_discovery_uses_one_bulk_query(
+def test_graph_without_image_pages_uses_bulk_queries(
     root_page, django_assert_num_queries
 ):
     pages = [
@@ -101,7 +101,8 @@ def test_manual_graph_discovery_uses_one_bulk_query(
     for target in pages[1:]:
         PageRelationship.objects.create(source=pages[0], target=target)
 
-    with django_assert_num_queries(1):
+    # One manual-edge query and one check for Image pages in the graph.
+    with django_assert_num_queries(2):
         graph = graph_for_pages(pages)
 
     assert graph.neighbors(pages[0].pk) == sorted(page.pk for page in pages[1:])

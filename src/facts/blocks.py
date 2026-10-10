@@ -1,12 +1,6 @@
-from wagtail.blocks import RichTextBlock, StreamBlock, StructBlock, URLBlock
+from wagtail.blocks import StreamBlock
 
-
-class ReferenceStructBlock(StructBlock):
-    label = RichTextBlock(features=["bold", "italic"])
-    url = URLBlock()
-
-    class Meta:
-        template = "patterns/components/facts/reference.html"
+from core.blocks import ReferenceStructBlock
 
 
 class ReferenceStreamBlock(StreamBlock):

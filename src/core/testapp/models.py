@@ -1,4 +1,6 @@
+from django.db import models
 from wagtail.fields import StreamField
+from wagtail.images import get_image_model_string
 from wagtail.models import Page
 
 from core.breadcrumbs import Breadcrumb
@@ -29,6 +31,14 @@ class RelatedPagesTestPage(RelatedPagesMixin, Page):
     template = "core_testapp/related_pages_test_page.html"
     related_page_details_template = "core_testapp/related_page_details.html"
     related_type = "test"
+
+    image = models.ForeignKey(
+        get_image_model_string(),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
 
 class MissingDetailsTemplatePage(RelatedPagesMixin, Page):

@@ -1,0 +1,34 @@
+{% extends "patterns/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block page_content %}
+    <main id="main" class="index-stack" tabindex="-1">
+        <header class="card wide__card">
+            <h1 class="title">{{ page.title }}</h1>
+            {{ page.introduction|richtext }}
+        </header>
+        <div class="archive-grid">
+            {% for image_page in images %}
+                <article class="card">
+                    <a href="{% pageurl image_page %}">
+                        {% image image_page.image width-480 alt=image_page.image_alt_text loading="lazy" %}
+                        <h2>{{ image_page.title }}</h2>
+                    </a>
+                    <p>{{ image_page.metadata_description|truncatewords:30 }}</p>
+                </article>
+            {% empty %}
+                <p class="card wide__card">No images found.</p>
+            {% endfor %}
+        </div>
+        {% if images.has_previous or images.has_next %}
+            <nav aria-label="Pagination">
+                {% if images.has_previous %}
+                    <a href="{% querystring page=images.previous_page_number %}">← Newer images</a>
+                {% endif %}
+                {% if images.has_next %}
+                    <a href="{% querystring page=images.next_page_number %}">Older images →</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </main>
+{% endblock page_content %}

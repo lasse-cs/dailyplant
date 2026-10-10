@@ -6,6 +6,14 @@ from wagtail import blocks
 from wagtail.models import get_page_models
 
 
+class ReferenceStructBlock(blocks.StructBlock):
+    label = blocks.RichTextBlock(features=["bold", "italic"])
+    url = blocks.URLBlock()
+
+    class Meta:
+        template = "patterns/components/core/reference.html"
+
+
 class HeadingLevel(models.TextChoices):
     H2 = "2", "Heading 2"
     H3 = "3", "Heading 3"
