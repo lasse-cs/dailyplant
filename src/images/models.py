@@ -86,10 +86,11 @@ class ImagePage(
     related_page_details_template = "non_patterns/images/related_page_details.html"
     related_type = "image"
 
-    image = models.OneToOneField(
+    # Wagtail's reference index tracks foreign keys, but not one-to-one fields.
+    image = models.ForeignKey(
         get_image_model_string(),
         on_delete=models.PROTECT,
-        related_name="image_page",
+        related_name="+",
         help_text="The image this page describes.",
     )
     description = RichTextField()
@@ -133,6 +134,9 @@ class ImagePage(
     class Meta:
         verbose_name = "image"
         verbose_name_plural = "images"
+        constraints = [
+            models.UniqueConstraint(fields=["image"], name="unique_image_page_image"),
+        ]
 
     @property
     def image_alt_text(self):
