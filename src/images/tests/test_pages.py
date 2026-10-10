@@ -16,7 +16,6 @@ def test_image_page_renders_html_markdown_and_explorer_details(client, root_page
         parent=listing,
         description="<p>A <strong>leaf</strong> in detail.</p>",
         image_alt="Veins running through a leaf",
-        image_description="A leaf photographed in summer.",
         references=[
             (
                 "reference",
@@ -32,15 +31,13 @@ def test_image_page_renders_html_markdown_and_explorer_details(client, root_page
     assert "A <strong>leaf</strong> in detail." in html.text
     assert page.metadata_description == "A leaf in detail."
     assert page.metadata_image == page.image
-    assert 'class="content-media__caption"' in html.text
-    assert page.image_description in html.text
+    assert "<figcaption" not in html.text
     assert 'href="https://example.com/leaves"' in html.text
 
     markdown = client.get(page.url.rstrip("/") + ".md")
     assert markdown.status_code == 200
     assert "A **leaf** in detail." in markdown.text
     assert f"![{page.image_alt}]" in markdown.text
-    assert page.image_description in markdown.text
     assert "[Leaf anatomy](https://example.com/leaves)" in markdown.text
 
     details = client.get(
@@ -50,7 +47,7 @@ def test_image_page_renders_html_markdown_and_explorer_details(client, root_page
     assertTemplateUsed(details, "non_patterns/images/related_page_details.html")
     assert "View image" in details.text
     assert "HX-Target" in details.headers["Vary"]
-    assert page.image_description in details.text
+    assert "<figcaption" not in details.text
 
 
 def test_revision_cannot_select_an_image_claimed_by_another_page(root_page):
@@ -71,7 +68,9 @@ def test_listing_limits_to_live_children_and_paginates(client, root_page, monkey
     draft = ImagePageFactory(parent=listing, live=False)
     outside = ImagePageFactory(parent=root_page)
     monkeypatch.setattr(
-        ImagesListingPage, "get_paginator", lambda self: Paginator(self.get_images(), 2)
+        ImagesListingPage,
+        "get_paginator",
+        lambda self, slug=None: Paginator(self.get_images(slug), 2),
     )
     response = client.get(listing.url)
     assert response.status_code == 200
@@ -82,9 +81,11 @@ def test_listing_limits_to_live_children_and_paginates(client, root_page, monkey
     second = client.get(listing.url, {"page": 2})
     assert list(second.context["images"]) == [pages[0]]
     assert f"{listing.full_url}?page=2" in second.text
-    markdown = client.get(listing.url.rstrip("/") + ".md", {"page": 2})
+    markdown = client.get(listing.url, {"page": 2}, headers={"Accept": "text/markdown"})
     assert markdown.status_code == 200
     assert pages[0].title in markdown.text
+    assert f"url: {listing.full_url}?page=2" in markdown.text
+    assert "Content-Location" not in markdown.headers
     assert set(listing.get_llms_txt_pages()) == set(pages)
     assert list(listing.get_sitemap_pages()) == [pages[2], pages[1]]
 
@@ -100,3 +101,45 @@ def test_empty_listing(client, root_page):
     response = client.get(listing.url)
     assert response.status_code == 200
     assert "No images found." in response.text
+
+
+def test_image_tags_link_to_filtered_listing(client, root_page, monkeypatch):
+    listing = ImagesListingPageFactory(parent=root_page)
+    leaves = [ImagePageFactory(parent=listing, tags=["Leaves"]) for _ in range(3)]
+    ImagePageFactory(parent=listing, tags=["Flowers"])
+    ImagePageFactory(parent=listing, tags=["Draft only"], live=False)
+    monkeypatch.setattr(
+        ImagesListingPage,
+        "get_paginator",
+        lambda self, slug=None: Paginator(self.get_images(slug), 2),
+    )
+    tag_url = listing.url + "tags/leaves/"
+    detail = client.get(leaves[0].url)
+    assert 'class="tag-list"' in detail.text
+    assert f'href="{tag_url}"' in detail.text
+
+    response = client.get(tag_url)
+    assert response.status_code == 200
+    assert list(response.context["images"]) == [leaves[2], leaves[1]]
+    assert 'aria-current="page"' in response.text
+    second = client.get(tag_url, {"page": 2})
+    assert list(second.context["images"]) == [leaves[0]]
+    assert f"{listing.full_url}tags/leaves/?page=2" in second.text
+    markdown = client.get(tag_url, headers={"Accept": "text/markdown"})
+    assert markdown.status_code == 200
+    assert "text/markdown" in markdown.headers["Content-Type"]
+    assert f"url: {listing.full_url}tags/leaves/\n" in markdown.text
+    assert "Filtered on Tag leaves" in markdown.text
+    assert f"[Older images]({listing.full_url}tags/leaves/?page=2)" in markdown.text
+    assert "Content-Location" not in markdown.headers
+    second_markdown = client.get(
+        tag_url, {"page": 2}, headers={"Accept": "text/markdown"}
+    )
+    assert second_markdown.status_code == 200
+    assert f"url: {listing.full_url}tags/leaves/?page=2" in second_markdown.text
+    assert (
+        f"[Newer images]({listing.full_url}tags/leaves/?page=1)" in second_markdown.text
+    )
+    assert "Content-Location" not in second_markdown.headers
+    assert client.get(listing.url + "tags/missing/").status_code == 404
+    assert client.get(listing.url + "tags/draft-only/").status_code == 404

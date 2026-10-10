@@ -2,7 +2,5 @@
 
 <figure>
     {% image page.image width-480 alt=page.image_alt_text %}
-    {% if page.image_description %}<figcaption>{{ page.image_description }}</figcaption>{% endif %}
 </figure>
-<div class="content-card__lead">{{ page.description|richtext }}</div>
 <a href="{% pageurl page %}" class="link-muted link-forward">View image<span class="visually-hidden">: {{ page.title }}</span></a>

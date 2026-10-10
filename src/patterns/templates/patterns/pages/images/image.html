@@ -2,28 +2,28 @@
 {% load wagtailcore_tags %}
 
 {% block page_content %}
-    <main id="main" class="page-stack" tabindex="-1">
-        <article class="card wide__card">
-            <h1 class="title">{{ page.title }}</h1>
-            {% include "patterns/components/core/content_media.html" with image=page.image alt=page.image_alt_text caption=page.image_description rendition="uncropped" only %}
-            <div class="prose">{{ page.description|richtext }}</div>
-            {% if page.references %}
-                <section aria-labelledby="image-references">
-                    <h2 id="image-references">References</h2>
-                    <ul>
-                        {% for reference in page.references %}
-                            <li>{% include_block reference %}</li>
-                        {% endfor %}
-                    </ul>
-                </section>
-            {% endif %}
-            {% with tags=page.get_tags %}
-                {% if tags %}
-                    <ul aria-label="Tags">
-                        {% for tag in tags %}<li>{{ tag.name }}</li>{% endfor %}
-                    </ul>
+    <main id="main" class="page-stack image-page" style="--image-width: {{ page.image.width }}px" tabindex="-1">
+        <article class="card image-card">
+            {% include "patterns/components/core/content_media.html" with image=page.image alt=page.image_alt_text rendition="uncropped" only %}
+            <div class="image-card__body">
+                <h1 class="title">{{ page.title }}</h1>
+                <div class="prose">{{ page.description|richtext }}</div>
+                {% if page.references %}
+                    <section aria-labelledby="image-references">
+                        <h2 id="image-references">References</h2>
+                        <ul>
+                            {% for reference in page.references %}
+                                <li>{% include_block reference %}</li>
+                            {% endfor %}
+                        </ul>
+                    </section>
                 {% endif %}
-            {% endwith %}
+                {% with tags=page.get_tags %}
+                    {% if tags %}
+                        {% include "patterns/components/tags/tag_list.html" %}
+                    {% endif %}
+                {% endwith %}
+            </div>
         </article>
         {% if related_pages %}
             <section class="related__card card wide__card">

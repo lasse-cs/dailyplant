@@ -7,9 +7,6 @@ url: {% fullpageurl page %}
 # {{ page.title }}
 
 ![{{ page.image_alt_text }}]({{ page.get_site.root_url }}{% image_url page.image 'width-1120' 'wagtailimages_serve' %})
-{% if page.image_description %}
-{{ page.image_description }}
-{% endif %}
 
 {{ page.description|richtext_markdown }}
 
