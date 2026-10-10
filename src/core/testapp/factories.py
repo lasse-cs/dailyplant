@@ -59,6 +59,8 @@ class BreadcrumbPageFactory(PageFactory):
 
 
 class RelatedPagesTestPageFactory(PageFactory):
+    title = factory.Sequence(lambda index: f"Related test page {index}")
+
     class Meta:
         model = RelatedPagesTestPage
 

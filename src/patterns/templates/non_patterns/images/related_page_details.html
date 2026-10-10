@@ -1,0 +1,6 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<figure>
+    {% image page.image width-480 alt=page.image_alt_text %}
+</figure>
+<a href="{% pageurl page %}" class="link-muted link-forward">View image<span class="visually-hidden">: {{ page.title }}</span></a>

@@ -1,0 +1,39 @@
+{% extends "patterns/base.html" %}
+{% load wagtailcore_tags %}
+
+{% block page_content %}
+    <main id="main" class="page-stack image-page" style="--image-width: {{ page.image.width }}px" tabindex="-1">
+        <article class="card image-card">
+            {% include "patterns/components/core/content_media.html" with image=page.image alt=page.image_alt_text rendition="uncropped" only %}
+            <div class="image-card__body">
+                <h1 class="title">{{ page.title }}</h1>
+                <div class="prose">{{ page.description|richtext }}</div>
+                {% if page.references %}
+                    <section aria-labelledby="image-references">
+                        <h2 id="image-references">References</h2>
+                        <ul>
+                            {% for reference in page.references %}
+                                <li>{% include_block reference %}</li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                {% endif %}
+                {% with tags=page.get_tags %}
+                    {% if tags %}
+                        {% include "patterns/components/tags/tag_list.html" %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </article>
+        {% if related_pages %}
+            <section class="related__card card wide__card">
+                <h2 class="related__header">Related Pages</h2>
+                <ul class="related__listing" role="list">
+                    {% for related_page in related_pages %}
+                        <li><a href="{% pageurl related_page %}">{{ related_page.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+    </main>
+{% endblock page_content %}

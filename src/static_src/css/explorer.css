@@ -21,12 +21,24 @@
         --pattern: url(#pattern-circles);
     }
 
+    .image,
+    #pattern-crosshatch {
+        --color-node-fill: hsl(38, 70%, 80%);
+        --color-node-stroke: hsl(38, 65%, 45%);
+    }
+
+    .image {
+        --pattern: url(#pattern-crosshatch);
+    }
+
     #pattern-lines rect,
-    #pattern-circles rect {
+    #pattern-circles rect,
+    #pattern-crosshatch rect {
         fill: var(--color-node-fill);
     }
 
-    #pattern-lines line {
+    #pattern-lines line,
+    #pattern-crosshatch path {
         stroke: var(--color-node-stroke);
     }
 

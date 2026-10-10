@@ -1100,6 +1100,82 @@
         gap: 1rem;
     }
 
+    .image-page {
+        inline-size: min(100%, var(--image-width), 35rem);
+        margin-inline: auto;
+    }
+
+    .image-card {
+        inline-size: min(100%, var(--image-width), 35rem);
+        align-self: start;
+        justify-self: center;
+        margin-inline: auto;
+        overflow-wrap: anywhere;
+
+        & .content-media {
+            margin: 0;
+        }
+
+        & .content-media__image {
+            display: block;
+            inline-size: 100%;
+            block-size: auto;
+            border-radius: calc(var(--radius-card) - 1.5px)
+                calc(var(--radius-card) - 1.5px) 0 0;
+        }
+
+        & .content-media__caption {
+            padding: 1rem var(--card-padding) 0;
+        }
+    }
+
+    .image-card__body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: var(--card-padding);
+        padding-block-start: 1rem;
+
+        & .title {
+            margin-block-end: 0;
+        }
+    }
+
+    .image-grid .image-card {
+        display: grid;
+        aspect-ratio: 4 / 3;
+        inline-size: 100%;
+        max-inline-size: 35rem;
+        align-self: stretch;
+
+        & .content-media {
+            position: absolute;
+            inset: 0;
+        }
+
+        & .content-media__image {
+            block-size: 100%;
+            object-fit: cover;
+            border-radius: calc(var(--radius-card) - 1.5px);
+        }
+    }
+
+    .image-card__overlay-title {
+        align-self: end;
+        justify-self: center;
+        inline-size: fit-content;
+        max-inline-size: calc(100% - 1.5rem);
+        z-index: 1;
+        margin: 0.75rem;
+        padding: 0.3rem 0.875rem;
+        background: var(--color-surface);
+        font-family: var(--font-heading);
+        font-size: clamp(1rem, 1.5vw, 1.375rem);
+        font-weight: 400;
+        line-height: 1.2;
+        text-align: center;
+    }
+
     .login__card {
         padding: var(--card-padding);
         inline-size: clamp(10rem, 75vw, 40rem);

@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "home",
     "articles",
     "facts",
+    "images",
     "core",
     "users",
     "social",

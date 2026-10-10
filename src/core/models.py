@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
-from django.db.models import Max, Q
+from django.db.models import Max
 from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.utils.cache import patch_vary_headers
@@ -17,6 +17,7 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.images import get_image_model_string
 from wagtail.models import Orderable, Page, PreviewableMixin
 
+from core import relationships
 from core.blocks import HeadingBlock, LLMsTxtSectionsBlock
 from core.panels import RelatedPageChooserPanel
 
@@ -194,10 +195,7 @@ class RelatedPagesMixin:
             return Page.objects.none()
         return (
             Page.objects.live()
-            .filter(
-                Q(outgoing_page_relationships__target=self)
-                | Q(incoming_page_relationships__source=self)
-            )
+            .filter(pk__in=relationships.related_page_ids(self))
             .exclude(pk=self.pk)
             .distinct()
             .specific()
@@ -505,27 +503,16 @@ class RelatedPagesExplorerPage(MarkdownPageMixin, Page):
     def get_context(self, request):
         context = super().get_context(request)
         pages = Page.objects.type(RelatedPagesMixin).live().specific(defer=True)
-        page_relationships = PageRelationship.objects.filter(
-            source__in=pages, target__in=pages
-        )
-        degrees = {page.pk: 0 for page in pages}
-        edges = {page.pk: [] for page in pages}
-        for page_relationship in page_relationships:
-            to_page = page_relationship.source_id
-            from_page = page_relationship.target_id
-            degrees[to_page] += 1
-            degrees[from_page] += 1
-            edges[to_page].append(from_page)
-            edges[from_page].append(to_page)
+        graph = relationships.graph_for_pages(pages)
         nodes = {
             page.pk: {
                 "id": page.pk,
                 "title": page.title,
                 "type": page.related_type,
-                "degree": degrees[page.pk],
+                "degree": graph.degree(page.pk),
                 "url": page.get_url(request=request),
                 "markdown_url": markdown_page_url(page, request),
-                "edges": edges[page.pk],
+                "edges": graph.neighbors(page.pk),
             }
             for page in pages
         }

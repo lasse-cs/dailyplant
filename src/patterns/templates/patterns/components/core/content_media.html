@@ -2,7 +2,9 @@
 
 {% if image %}
     <figure class="content-media">
-        {% if rendition == "compact" %}
+        {% if rendition == "uncropped" %}
+            {% picture image format-{webp,jpeg} width-1120 class="content-media__image" alt=alt %}
+        {% elif rendition == "compact" %}
             {% picture image format-{webp,jpeg} fill-400x225-c90 class="content-media__image" alt=alt %}
         {% elif rendition == "full" %}
             {% picture image format-{webp,jpeg} fill-1120x630-c90 class="content-media__image" alt=alt %}

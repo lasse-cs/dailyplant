@@ -1,0 +1,52 @@
+{% extends "patterns/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block page_content %}
+    <main id="main" class="index-stack" tabindex="-1">
+        <header class="card wide__card">
+            <h1 class="title">{{ page.title }}</h1>
+            {{ page.introduction|richtext }}
+            {% if tags %}
+                <div class="filters-container">
+                    <p>
+                        Select a tag to filter items by that tag.
+                    </p>
+                    <div class="filters-bar">
+                        {% include "patterns/components/tags/tag_list.html" with index_page=page %}
+                        {% if active_slug %}
+                            <div>
+                                <a href="{% pageurl page %}" class="button link-unstyled">
+                                    Clear
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </header>
+        <div class="archive-grid image-grid">
+            {% for image_page in images %}
+                <article class="card image-card">
+                    <figure class="content-media">
+                        {% image image_page.image fill-640x480 class="content-media__image" alt=image_page.image_alt_text loading="lazy" %}
+                    </figure>
+                    <h2 class="card image-card__overlay-title">
+                        <a href="{% pageurl image_page %}" class="link-unstyled">{{ image_page.title }}</a>
+                    </h2>
+                </article>
+            {% empty %}
+                <p class="card wide__card">No images found.</p>
+            {% endfor %}
+        </div>
+        {% if images.has_previous or images.has_next %}
+            <nav aria-label="Pagination">
+                {% if images.has_previous %}
+                    <a href="{% querystring page=images.previous_page_number %}">← Newer images</a>
+                {% endif %}
+                {% if images.has_next %}
+                    <a href="{% querystring page=images.next_page_number %}">Older images →</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </main>
+{% endblock page_content %}

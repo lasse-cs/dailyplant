@@ -9,10 +9,16 @@ from wagtail_umami_analytics.views import (
     register_umami_page_analytics_urls,
 )
 
+from core.relationship_providers import ManualRelationshipProvider
 from core.viewsets import TagSnippetViewSet
 
 register_setting(UmamiAnalyticsSetting)
 register_snippet(TagSnippetViewSet)
+
+
+@hooks.register("register_relationship_provider")
+def register_manual_relationship_provider():
+    return ManualRelationshipProvider()
 
 
 @hooks.register("register_admin_viewset")
