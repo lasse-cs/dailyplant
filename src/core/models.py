@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.db.models import Max
@@ -487,6 +488,10 @@ class MarkdownPageMixin:
         return self.markdown_template
 
 
+EXPLORER_DATA_CACHE_KEY = "related_pages_explorer:data"
+EXPLORER_DATA_CACHE_TIMEOUT = 60 * 60
+
+
 class RelatedPagesExplorerPage(MarkdownPageMixin, Page):
     parent_page_types = ["home.HomePage"]
     subpage_types = []
@@ -502,6 +507,17 @@ class RelatedPagesExplorerPage(MarkdownPageMixin, Page):
 
     def get_context(self, request):
         context = super().get_context(request)
+        if getattr(request, "is_preview", False):
+            context["data"] = self.build_explorer_data(request)
+        else:
+            context["data"] = cache.get_or_set(
+                EXPLORER_DATA_CACHE_KEY,
+                lambda: self.build_explorer_data(request),
+                EXPLORER_DATA_CACHE_TIMEOUT,
+            )
+        return context
+
+    def build_explorer_data(self, request):
         pages = Page.objects.type(RelatedPagesMixin).live().specific(defer=True)
         graph = relationships.graph_for_pages(pages)
         nodes = {
@@ -517,11 +533,10 @@ class RelatedPagesExplorerPage(MarkdownPageMixin, Page):
             for page in pages
         }
         types = {page.related_type: page.get_verbose_name() for page in pages}
-        context["data"] = {
+        return {
             "nodes": nodes,
             "types": types,
         }
-        return context
 
 
 class ContentPage(MarkdownPageMixin, Page):
