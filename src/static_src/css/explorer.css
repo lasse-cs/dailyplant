@@ -12,13 +12,13 @@
     }
 
     .fact,
-    #pattern-circles {
+    #pattern-stripes {
         --color-node-fill: hsl(90, 39%, 75%);
         --color-node-stroke: hsl(90, 39%, 53%);
     }
 
     .fact {
-        --pattern: url(#pattern-circles);
+        --pattern: url(#pattern-stripes);
     }
 
     .image,
@@ -32,18 +32,15 @@
     }
 
     #pattern-lines rect,
-    #pattern-circles rect,
+    #pattern-stripes rect,
     #pattern-crosshatch rect {
         fill: var(--color-node-fill);
     }
 
     #pattern-lines line,
+    #pattern-stripes line,
     #pattern-crosshatch path {
         stroke: var(--color-node-stroke);
-    }
-
-    #pattern-circles circle {
-        fill: var(--color-node-stroke);
     }
 
     .legend-node {
