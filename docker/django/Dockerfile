@@ -73,7 +73,7 @@ RUN ["python", "manage.py", "collectstatic", "--settings", "dailyplant.settings.
 CMD ["gunicorn", "--no-control-socket", "--bind", ":8000", "dailyplant.wsgi:application"]
 
 
-FROM nginx:1.31.6-alpine AS nginx
+FROM nginx:1.31.8-alpine AS nginx
 
 # Copy in the build static files
 COPY --from=production /app/static/ /srv/app/static/
