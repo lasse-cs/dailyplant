@@ -6,7 +6,7 @@
 #   "rich>=15.0.0",
 # ]
 # [tool.uv]
-# exclude-newer = "2026-07-30T00:00:00Z"
+# exclude-newer = "2026-10-23T00:00:00Z"
 # ///
 
 import argparse
