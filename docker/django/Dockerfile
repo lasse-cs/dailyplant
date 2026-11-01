@@ -1,4 +1,4 @@
-FROM node:24-bookworm-slim AS build-static
+FROM node:26-bookworm-slim AS build-static
 
 COPY ./package.json ./package-lock.json ./vite.config.js /app/
 
@@ -11,7 +11,7 @@ COPY ./src/static_src /app/src/static_src
 
 RUN ["npm", "run", "build"]
 
-FROM python:3.14-slim-bookworm AS builder
+FROM python:3.15-slim-bookworm AS builder
 COPY --from=ghcr.io/astral-sh/uv:0.11.8 /uv /uvx /bin/
 
 WORKDIR /app
@@ -36,7 +36,7 @@ COPY ./pyproject.toml ./uv.lock /app/
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
 
-FROM python:3.14-slim-bookworm AS production
+FROM python:3.15-slim-bookworm AS production
 
 RUN useradd wagtail
 WORKDIR /app
